@@ -8,8 +8,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Timer extends BukkitRunnable {
     private int nowTime;
+    private Player player;
     private World world;
-    public Timer() {
+    public Timer(Player player) {
         this.nowTime = 20;
         this.world = Bukkit.getWorld("stefanovarentino");
 
@@ -20,10 +21,7 @@ public class Timer extends BukkitRunnable {
             cancel();
             return;
         }
-        for (Player player: world.getPlayers()) {
-            player.sendMessage(ChatColor.YELLOW + "<かくれんぼ> " + nowTime + "秒");
-        }
+        this.player.sendMessage(ChatColor.YELLOW + "<かくれんぼ>" + nowTime + "秒");
         nowTime--;
-
     }
 }

@@ -10,14 +10,16 @@ import java.util.ArrayList;
 
 public class AthleticTimer extends BukkitRunnable {
     ArrayList<String> athleticPlayerList;
+    Player player;
 
     public static int AthleticTime;
 
     private World world;
 
-    public AthleticTimer() {
+    public AthleticTimer(Player player) {
         AthleticTime = 0;
         this.world = Bukkit.getWorld("stefanovarentino");
+        this.player = player;
     }
     @Override
     public void run() {
@@ -25,9 +27,7 @@ public class AthleticTimer extends BukkitRunnable {
             cancel();
             return;
         }
-        for (Player player: world.getPlayers()) {
-            player.setLevel(AthleticTime);
-        }
+        this.player.setLevel(AthleticTime);
         AthleticTime++;
     }
 }
