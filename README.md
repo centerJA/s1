@@ -1,2 +1,3 @@
 # s1
-## git clone "URL"
+## git　クローン
+git clone "URL"
