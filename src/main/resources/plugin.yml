@@ -1,0 +1,4 @@
+name: S1
+version: '${project.version}'
+main: stefano.s1.S1
+api-version: 1.19
