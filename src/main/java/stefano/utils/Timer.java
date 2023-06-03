@@ -13,7 +13,7 @@ public class Timer extends BukkitRunnable {
     public Timer(Player player) {
         this.nowTime = 20;
         this.world = Bukkit.getWorld("stefanovarentino");
-
+        this.player = player;
     }
     @Override
     public void run() {
@@ -21,7 +21,7 @@ public class Timer extends BukkitRunnable {
             cancel();
             return;
         }
-        this.player.sendMessage(ChatColor.YELLOW + "<かくれんぼ>" + nowTime + "秒");
+        player.sendMessage(ChatColor.YELLOW + "<pvp>" + nowTime + "秒");
         nowTime--;
     }
 }
