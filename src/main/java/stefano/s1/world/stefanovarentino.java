@@ -43,11 +43,11 @@ public class stefanovarentino implements Listener {
     Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
 
-    private BukkitTask athleticTimer;
+    private BukkitTask athleticTimer, Timer;
 
     public stefanovarentino(S1 plugin) {
         this.plugin = plugin;
-        this.plugin.getServer().getPluginManager().registerEvents(this,plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.world = Bukkit.getWorld("stefanovarentino");
         this.lobby = new Location(world, 25.500, 223, 25.500, -90, 0);
         this.taikijyo = new Location(world, 31.500, 240, 25.500, -90, 0);
@@ -63,19 +63,19 @@ public class stefanovarentino implements Listener {
     }
 
     @EventHandler
-    public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e){
+    public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e) {
         Player player = e.getPlayer();
         World world = player.getWorld();
         if (this.world != world) return;
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        player.setGameMode(GameMode.ADVENTURE);
-                    }
-                }, 20L);
+            @Override
+            public void run() {
+                player.setGameMode(GameMode.ADVENTURE);
+            }
+        }, 20L);
         player.setFoodLevel(20);
         player.setHealth(20);
-        player.sendTitle(player.getName() + ChatColor.AQUA + "さん",ChatColor.AQUA + "こんにちは！", 20,40,20);
+        player.sendTitle(player.getName() + ChatColor.AQUA + "さん", ChatColor.AQUA + "こんにちは！", 20, 40, 20);
         player.sendMessage(ChatColor.AQUA + "-----Stefano Varentinoへようこそ!-----");
         player.sendMessage(ChatColor.YELLOW + "アスレチックやPVPなど、いくつかのゲームがあります");
         player.sendMessage(ChatColor.GREEN + "アスレチック…レッドストーンブロックをクリック!");
@@ -90,6 +90,7 @@ public class stefanovarentino implements Listener {
 
 
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent e) throws IOException {
         Player player = e.getPlayer();
@@ -97,12 +98,12 @@ public class stefanovarentino implements Listener {
         if (this.world != world) return;
 
 //        if (e.getItem() == null) return;
-        if(e.getAction() == Action.RIGHT_CLICK_BLOCK){
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = e.getClickedBlock();
-            if(block != null && block.getType() == Material.WALL_SIGN){
-                Sign sign = (Sign)block.getState();
+            if (block != null && block.getType() == Material.WALL_SIGN) {
+                Sign sign = (Sign) block.getState();
                 String[] lines = sign.getLines();
-                if(Objects.equals(lines[0], "tyekkupoinnto") || Objects.equals(lines[0], "チェックポイント")){
+                if (Objects.equals(lines[0], "tyekkupoinnto") || Objects.equals(lines[0], "チェックポイント")) {
                     player.sendMessage(ChatColor.DARK_GREEN + "無事にチェックポイントを設定しました!");
                     checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
                 }
@@ -114,7 +115,7 @@ public class stefanovarentino implements Listener {
                     player.sendMessage(ChatColor.YELLOW + "ゴールにつきました！おめでとうございます！");
                     athleticClear.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
                     athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
-                    player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20,40,20);
+                    player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
                     player.sendMessage("あなたの記録は" + String.valueOf(AthleticTime - 1) + "でした！");
                     if (this.athleticTimer != null) {
                         this.athleticTimer.cancel();
@@ -134,38 +135,52 @@ public class stefanovarentino implements Listener {
             }
         }
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
-            ItemStack itemStack = e.getItem();
-            if (itemStack.getType() == Material.RED_MUSHROOM) {
-
-                player.teleport(this.lobby);
-                if (this.athleticTimer != null) {
-                    this.athleticTimer.cancel();
-                }
-                player.setLevel(0);
-                player.getInventory().clear();
-                player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
-                player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
-                player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-                playerList.remove(player.getName());
-            }
-            if (itemStack.getType() == Material.EMERALD) {
-                player.teleport(this.taikijyo);
-                player.getInventory().clear();
-                player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                if (!playerList.contains(player.getName())) {
-                    playerList.add(player.getName());
-                }
-                player.sendMessage(ChatColor.AQUA + playerList.toString());
-                if (this.playerList.size() > 1) {
-                    float originalSpeed = player.getWalkSpeed();
-                    for (String player1 : playerList) {
-                        new Timer(Bukkit.getPlayer(player1)).runTaskTimer(this.plugin, 0L, 20L);
+            if (e.getItem() != null) {
+                ItemStack itemStack = e.getItem();
+                if (itemStack.getType() == Material.RED_MUSHROOM) {
+                    player.teleport(this.lobby);
+                    if (this.athleticTimer != null) {
+                        this.athleticTimer.cancel();
                     }
+                    player.setLevel(0);
+                    player.getInventory().clear();
+                    player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
+                    player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
+                    player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
+                    player.sendMessage("削除します");
+                    playerList.remove(player.getName());
+                    player.sendMessage("削除完了");
+                }
+                if (itemStack.getType() == Material.EMERALD) {
+                    player.teleport(this.taikijyo);
+                    player.getInventory().clear();
+                    player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                    if (!playerList.contains(player.getName())) {
+                        playerList.add(player.getName());
+                    }
+                    player.sendMessage(ChatColor.AQUA + playerList.toString());
+                    if (this.playerList.size() == 2) {
+                        float originalSpeed = player.getWalkSpeed();
+                        player.sendMessage("タイマースタート");
+                        this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
+                    }
+                    if (this.playerList.size() == 1) {
+                        player.sendMessage("1人です");
+                        if (this.Timer != null) {
+                            this.Timer.cancel();
+                        } else {
+                            player.sendMessage("timerがnullです");
+                        }
 
+                        for (String player1 : playerList) {
+                            Bukkit.getPlayer(player1).sendMessage("キャンセルされました");
+                        }
+                    }
                     Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                         @Override
                         public void run() {
-                            for (String PlayerName: playerList){
+                            Playing_Game = true;
+                            for (String PlayerName : playerList) {
                                 Bukkit.getPlayer(PlayerName).teleport(pvpStart);
                                 Bukkit.getPlayer(PlayerName).setGameMode(GameMode.ADVENTURE);
                                 Bukkit.getPlayer(PlayerName).setFoodLevel(6);
@@ -187,19 +202,13 @@ public class stefanovarentino implements Listener {
                     Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                         @Override
                         public void run() {
-                            for (String PlayerName: playerList){
+                            for (String PlayerName : playerList) {
                                 Bukkit.getPlayer(PlayerName).setFoodLevel(20);
                                 Bukkit.getPlayer(PlayerName).setSprinting(true);
                                 ItemStack pvpsword = new ItemStack(Material.IRON_SWORD, 1);
                                 Bukkit.getPlayer(PlayerName).getInventory().setItem(0, pvpsword);
                                 ItemStack pvpfood = new ItemStack(Material.COOKED_BEEF, 1);
                                 Bukkit.getPlayer(PlayerName).getInventory().setItem(1, pvpfood);
-//                                ItemStack pvppotion1 = new ItemStack(Material.POTION, 1, (short) 14);
-//                                Bukkit.getPlayer(PlayerName).getInventory().setItem(2, pvppotion1);
-//                                ItemStack pvppotion2 = new ItemStack(Material.POTION, 1, (short) 10);
-//                                Bukkit.getPlayer(PlayerName).getInventory().setItem(3, pvppotion2);
-//                                ItemStack pvppotion3 = new ItemStack(Material.POTION, 1, (short) 6);
-//                                Bukkit.getPlayer(PlayerName).getInventory().setItem(4, pvppotion3);
                                 Bukkit.getPlayer(PlayerName).getInventory().setItem(2, ItemUtil.setCustomPotionMeta(PotionEffectType.INVISIBILITY, Material.SPLASH_POTION, "透明化"));
                                 Bukkit.getPlayer(PlayerName).getInventory().setItem(3, ItemUtil.setCustomPotionMeta(PotionEffectType.REGENERATION, Material.SPLASH_POTION, "再生する"));
                                 Bukkit.getPlayer(PlayerName).getInventory().setItem(4, ItemUtil.setCustomPotionMeta(PotionEffectType.POISON, Material.LINGERING_POTION, "毒"));
@@ -208,48 +217,39 @@ public class stefanovarentino implements Listener {
                                 ItemStack pvparrow = new ItemStack(Material.ARROW, 64);
                                 Bukkit.getPlayer(PlayerName).getInventory().setItem(34, pvparrow);
                                 Bukkit.getPlayer(PlayerName).getInventory().setItem(35, pvparrow);
-                                Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.AQUA + "",ChatColor.RED + "最後まで生き残れ！", 20,40,20);
-
-
+                                Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
                             }
                         }
                     }, 900);
-
-
-                }
-                else {
+                } else {
                     player.sendMessage(ChatColor.AQUA + "<かくれんぼ> 人数が足りません。最低2人が必要です。");
                 }
-            }
-            if (itemStack.getType() == Material.REDSTONE_BLOCK) {
-                String name = player.getDisplayName();
-                athleticPlayerList.add(name);
-                for (String PlayerName: athleticPlayerList){
-                    player.teleport(this.athletic);
-                    player.getInventory().clear();
-                    player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                    player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る", Material.REDSTONE_BLOCK));
-                    player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
-                    player.sendMessage(ChatColor.AQUA + "チェックポイントの設定は、押した時にいた場所がチェックポイントに設定されます。");
-                    player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
-                    player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
-                    player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
+                if (itemStack.getType() == Material.REDSTONE_BLOCK) {
+                    String name = player.getDisplayName();
+                    athleticPlayerList.add(name);
+                    for (String PlayerName : athleticPlayerList) {
+                        player.teleport(this.athletic);
+                        player.getInventory().clear();
+                        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                        player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る", Material.REDSTONE_BLOCK));
+                        player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
+                        player.sendMessage(ChatColor.AQUA + "チェックポイントの設定は、押した時にいた場所がチェックポイントに設定されます。");
+                        player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
+                        player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
+                        player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
+
+                    }
 
                 }
-
-            }
-
-            if (itemStack.getType() == Material.BOOK) {
-                if (checkpointList.getString(String.valueOf(player.getUniqueId())) == null) {
-                    player.sendMessage(ChatColor.RED + "チェックポイントが設定されていないよ!");
-                    player.sendMessage(ChatColor.YELLOW + "何も持たずにチェックポイントと書いてある看板をクリックしてチェックポイントを設定！");
-                }
-                else {
-                    player.teleport((Location) checkpointList.get(String.valueOf(player.getUniqueId())));
+                if (itemStack.getType() == Material.BOOK) {
+                    if (checkpointList.getString(String.valueOf(player.getUniqueId())) == null) {
+                        player.sendMessage(ChatColor.RED + "チェックポイントが設定されていないよ!");
+                        player.sendMessage(ChatColor.YELLOW + "何も持たずにチェックポイントと書いてある看板をクリックしてチェックポイントを設定！");
+                    } else {
+                        player.teleport((Location) checkpointList.get(String.valueOf(player.getUniqueId())));
+                    }
                 }
             }
-
-
 
         }
     }
@@ -295,7 +295,11 @@ public class stefanovarentino implements Listener {
                 double yy1 = player.getLocation().getY();
                 double zz1 = player.getLocation().getZ();
                 double gap = -Config.Range - xx1;
-                double xxx1 = xx1 + (-gap);
+                gap = -gap;
+                double xxx1 = xx1 - gap;
+                player.sendMessage(String.valueOf(gap));
+                player.sendMessage(String.valueOf(xxx1));
+
                 Location playerlocation = new Location(world, xxx1, yy1, zz1, -90, 0);
                 player.teleport(playerlocation);
             }
@@ -304,7 +308,8 @@ public class stefanovarentino implements Listener {
                 double yy1 = player.getLocation().getY();
                 double zz1 = player.getLocation().getZ();
                 double gap = -Config.Range - zz1;
-                double zzz1 = zz1 + (-gap);
+                gap = -gap;
+                double zzz1 = zz1 - gap;
                 Location playerlocation = new Location(world, xx1, yy1, zzz1, 0, 0);
                 player.teleport(playerlocation);
             }
@@ -317,11 +322,20 @@ public class stefanovarentino implements Listener {
         Player player = e.getEntity();
         World world = player.getWorld();
         if (this.world != world) return;
+        player.sendMessage("test");
+        player.sendMessage(String.valueOf(Playing_Game));
         if (Playing_Game) {
             player.sendTitle("死んでしまった！", "", 20, 40, 20);
             player.sendMessage("赤いキノコをクリックしてロビーに戻る");
             player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-
+            playerList.remove(player.getName());
+            if (playerList.size() == 1) {
+                for (String PlayerName : playerList) {
+                    Bukkit.getPlayer(PlayerName).sendMessage("勝ち！");
+                    Bukkit.getPlayer(PlayerName).sendMessage("赤いキノコをクリックしてロビーに戻る");
+                    Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                }
+            }
         }
         if (!Playing_Game) {
 

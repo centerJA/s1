@@ -6,14 +6,16 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+
 public class Timer extends BukkitRunnable {
     private int nowTime;
-    private Player player;
+    private ArrayList<String> playerList;
     private World world;
-    public Timer(Player player) {
+    public Timer(ArrayList<String> playerList) {
         this.nowTime = 20;
         this.world = Bukkit.getWorld("stefanovarentino");
-        this.player = player;
+        this.playerList = playerList;
     }
     @Override
     public void run() {
@@ -21,7 +23,9 @@ public class Timer extends BukkitRunnable {
             cancel();
             return;
         }
-        player.sendMessage(ChatColor.YELLOW + "<pvp>" + nowTime + "秒");
+        for (String PlayerName: playerList) {
+            Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.YELLOW + "<pvp>" + nowTime + "秒");
+        }
         nowTime--;
     }
 }
