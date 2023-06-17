@@ -9,11 +9,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -147,9 +149,7 @@ public class stefanovarentino implements Listener {
                     player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
                     player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-                    player.sendMessage("削除します");
                     playerList.remove(player.getName());
-                    player.sendMessage("削除完了");
                 }
                 if (itemStack.getType() == Material.EMERALD) {
                     player.teleport(this.taikijyo);
@@ -161,69 +161,59 @@ public class stefanovarentino implements Listener {
                     player.sendMessage(ChatColor.AQUA + playerList.toString());
                     if (this.playerList.size() == 2) {
                         float originalSpeed = player.getWalkSpeed();
-                        player.sendMessage("タイマースタート");
+                        player.sendMessage("すでに1人が参加しているので、開始します。");
                         this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
-                    }
-                    if (this.playerList.size() == 1) {
-                        player.sendMessage("1人です");
-                        if (this.Timer != null) {
-                            this.Timer.cancel();
-                        } else {
-                            player.sendMessage("timerがnullです");
-                        }
-
-                        for (String player1 : playerList) {
-                            Bukkit.getPlayer(player1).sendMessage("キャンセルされました");
-                        }
-                    }
-                    Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            Playing_Game = true;
-                            for (String PlayerName : playerList) {
-                                Bukkit.getPlayer(PlayerName).teleport(pvpStart);
-                                Bukkit.getPlayer(PlayerName).setGameMode(GameMode.ADVENTURE);
-                                Bukkit.getPlayer(PlayerName).setFoodLevel(6);
-                                Bukkit.getPlayer(PlayerName).setSprinting(false);
-                                Bukkit.getPlayer(PlayerName).setNoDamageTicks(600);
-                                Bukkit.getPlayer(PlayerName).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 600, 1));
-                                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.YELLOW + "範囲は、x=-125~125、z=-125~125です");
-                                Bukkit.getPlayer(PlayerName).getInventory().clear();
-                                ItemStack lobby = new ItemStack(Material.RED_MUSHROOM, 1);
-                                ItemMeta lobbyMeta = lobby.getItemMeta();
-                                lobbyMeta.setDisplayName("ロビーに戻る");
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(9, lobby);
+                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                Playing_Game = true;
+                                for (String PlayerName : playerList) {
+                                    Bukkit.getPlayer(PlayerName).teleport(pvpStart);
+                                    Bukkit.getPlayer(PlayerName).setGameMode(GameMode.ADVENTURE);
+                                    Bukkit.getPlayer(PlayerName).setFoodLevel(6);
+                                    Bukkit.getPlayer(PlayerName).setSprinting(false);
+                                    Bukkit.getPlayer(PlayerName).setNoDamageTicks(600);
+                                    Bukkit.getPlayer(PlayerName).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 600, 1));
+                                    Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.YELLOW + "範囲は、x=-125~125、z=-125~125です");
+                                    Bukkit.getPlayer(PlayerName).getInventory().clear();
+                                    ItemStack lobby = new ItemStack(Material.RED_MUSHROOM, 1);
+                                    ItemMeta lobbyMeta = lobby.getItemMeta();
+                                    lobbyMeta.setDisplayName("ロビーに戻る");
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(9, lobby);
+                                }
                             }
-                        }
-                    }, 400L);
-                    new LimitTimer().runTaskTimer(this.plugin, 0L, 20L);
+                        }, 400L);
+                        new LimitTimer().runTaskTimer(this.plugin, 0L, 20L);
 
 
-                    Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            for (String PlayerName : playerList) {
-                                Bukkit.getPlayer(PlayerName).setFoodLevel(20);
-                                Bukkit.getPlayer(PlayerName).setSprinting(true);
-                                ItemStack pvpsword = new ItemStack(Material.IRON_SWORD, 1);
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(0, pvpsword);
-                                ItemStack pvpfood = new ItemStack(Material.COOKED_BEEF, 1);
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(1, pvpfood);
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(2, ItemUtil.setCustomPotionMeta(PotionEffectType.INVISIBILITY, Material.SPLASH_POTION, "透明化"));
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(3, ItemUtil.setCustomPotionMeta(PotionEffectType.REGENERATION, Material.SPLASH_POTION, "再生する"));
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(4, ItemUtil.setCustomPotionMeta(PotionEffectType.POISON, Material.LINGERING_POTION, "毒"));
-                                ItemStack pvpbow = new ItemStack(Material.BOW, 1);
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(5, pvpbow);
-                                ItemStack pvparrow = new ItemStack(Material.ARROW, 64);
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(34, pvparrow);
-                                Bukkit.getPlayer(PlayerName).getInventory().setItem(35, pvparrow);
-                                Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
+                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                for (String PlayerName : playerList) {
+                                    Bukkit.getPlayer(PlayerName).setFoodLevel(20);
+                                    Bukkit.getPlayer(PlayerName).setSprinting(true);
+                                    ItemStack pvpsword = new ItemStack(Material.IRON_SWORD, 1);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(0, pvpsword);
+                                    ItemStack pvpfood = new ItemStack(Material.COOKED_BEEF, 1);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(1, pvpfood);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(2, ItemUtil.setCustomPotionMeta(PotionEffectType.INVISIBILITY, Material.SPLASH_POTION, "透明化"));
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(3, ItemUtil.setCustomPotionMeta(PotionEffectType.REGENERATION, Material.SPLASH_POTION, "再生する"));
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(4, ItemUtil.setCustomPotionMeta(PotionEffectType.POISON, Material.LINGERING_POTION, "毒"));
+                                    ItemStack pvpbow = new ItemStack(Material.BOW, 1);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(5, pvpbow);
+                                    ItemStack pvparrow = new ItemStack(Material.ARROW, 64);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(34, pvparrow);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(35, pvparrow);
+                                    Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
+                                }
                             }
-                        }
-                    }, 900);
-                } else {
-                    player.sendMessage(ChatColor.AQUA + "<かくれんぼ> 人数が足りません。最低2人が必要です。");
+                        }, 900);
+                    } else {
+                        player.sendMessage(ChatColor.AQUA + "<かくれんぼ> 人数が足りません。最低2人が必要です。");
+                    }
                 }
+
+
                 if (itemStack.getType() == Material.REDSTONE_BLOCK) {
                     String name = player.getDisplayName();
                     athleticPlayerList.add(name);
@@ -322,25 +312,44 @@ public class stefanovarentino implements Listener {
         Player player = e.getEntity();
         World world = player.getWorld();
         if (this.world != world) return;
-        player.sendMessage("test");
-        player.sendMessage(String.valueOf(Playing_Game));
         if (Playing_Game) {
-            player.sendTitle("死んでしまった！", "", 20, 40, 20);
-            player.sendMessage("赤いキノコをクリックしてロビーに戻る");
-            player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
             playerList.remove(player.getName());
             if (playerList.size() == 1) {
                 for (String PlayerName : playerList) {
-                    Bukkit.getPlayer(PlayerName).sendMessage("勝ち！");
+                    Bukkit.getPlayer(PlayerName).sendMessage(String.valueOf(PlayerName));
+                    Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.GOLD + "勝ち！");
+                    Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.MAGIC + "", ChatColor.DARK_PURPLE + "勝ち！", 20, 40, 20);
                     Bukkit.getPlayer(PlayerName).sendMessage("赤いキノコをクリックしてロビーに戻る");
                     Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                    Bukkit.getPlayer(PlayerName).getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
                 }
             }
         }
-        if (!Playing_Game) {
 
-        }
 
     }
 
+    @EventHandler
+    public void onEntityDamageEvent(EntityDamageEvent e) {
+        Player player = (Player) e.getEntity();
+        World world = player.getWorld();
+        if (this.world != world) return;
+        if (Playing_Game) {
+            if (player.getHealth() == 0) {
+                player.sendTitle("死んでしまった！", "死んでしまった！", 20, 40, 20);
+            }
+        }
+    }
+    @EventHandler
+    public void onPlayerRespawnEvent(PlayerRespawnEvent e) {
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        if (this.world != world) return;
+        player.setLevel(0);
+        player.getInventory().clear();
+        player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
+        player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
+        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
+        playerList.remove(player.getName());
+    }
 }
