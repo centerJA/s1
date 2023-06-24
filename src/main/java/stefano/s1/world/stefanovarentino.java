@@ -37,7 +37,7 @@ import static stefano.utils.AthleticTimer.AthleticTime;
 public class stefanovarentino implements Listener {
     S1 plugin;
     World world;
-    Location lobby, taikijyo, athletic, checkpoint1, athleticClear, athleticStart, pvpStart;
+    Location lobby, taikijyo, athletic, checkpoint1, athleticClear, athleticStart, pvpStart, pvpFinal;
 
     ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
@@ -55,6 +55,7 @@ public class stefanovarentino implements Listener {
         this.taikijyo = new Location(world, 31.500, 240, 25.500, -90, 0);
         this.athletic = new Location(world, 50.500, 239, 25.500, -90, 0);
         this.checkpoint1 = new Location(world, 76.500, 244, 80.500, 0, 0);
+        this.pvpFinal = new Location(world, 15.999, 248.500, 17.999, -90, 0);
         this.athleticClear = new Location(world, 16, 239, 41);
         this.athleticStart = new Location(world, 55, 239, 25);
         this.pvpStart = new Location(world, 25, 70, 24, -90, 0);
@@ -144,6 +145,9 @@ public class stefanovarentino implements Listener {
                     if (this.athleticTimer != null) {
                         this.athleticTimer.cancel();
                     }
+                    if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
+                        checkpointList.set(String.valueOf(player.getUniqueId()), null);
+                    }
                     player.setLevel(0);
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
@@ -183,7 +187,7 @@ public class stefanovarentino implements Listener {
                                 }
                             }
                         }, 400L);
-                        new LimitTimer().runTaskTimer(this.plugin, 0L, 20L);
+                        new LimitTimer(playerList, pvpFinal).runTaskTimer(this.plugin, 0L, 20L);
 
 
                         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
@@ -217,19 +221,18 @@ public class stefanovarentino implements Listener {
                 if (itemStack.getType() == Material.REDSTONE_BLOCK) {
                     String name = player.getDisplayName();
                     athleticPlayerList.add(name);
-                    for (String PlayerName : athleticPlayerList) {
-                        player.teleport(this.athletic);
-                        player.getInventory().clear();
-                        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                        player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る", Material.REDSTONE_BLOCK));
-                        player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
-                        player.sendMessage(ChatColor.AQUA + "チェックポイントの設定は、押した時にいた場所がチェックポイントに設定されます。");
-                        player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
-                        player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
-                        player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
-
+                    if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
+                        checkpointList.set(String.valueOf(player.getUniqueId()), null);
                     }
-
+                    player.teleport(this.athletic);
+                    player.getInventory().clear();
+                    player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                    player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る", Material.REDSTONE_BLOCK));
+                    player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
+                    player.sendMessage(ChatColor.AQUA + "チェックポイントの設定は、押した時にいた場所がチェックポイントに設定されます。");
+                    player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
+                    player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
+                    player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
                 }
                 if (itemStack.getType() == Material.BOOK) {
                     if (checkpointList.getString(String.valueOf(player.getUniqueId())) == null) {
@@ -336,7 +339,7 @@ public class stefanovarentino implements Listener {
         if (this.world != world) return;
         if (Playing_Game) {
             if (player.getHealth() == 0) {
-                player.sendTitle("死んでしまった！", "死んでしまった！", 20, 40, 20);
+                player.sendTitle("負け...", "死んでしまった！", 20, 40, 20);
             }
         }
     }
