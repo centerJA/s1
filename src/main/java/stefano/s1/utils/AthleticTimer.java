@@ -1,4 +1,4 @@
-package stefano.utils;
+package stefano.s1.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

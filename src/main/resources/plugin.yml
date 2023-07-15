@@ -2,3 +2,16 @@ name: S1
 version: '${project.version}'
 main: stefano.s1.S1
 api-version: 1.19
+commands:
+  sv:
+    description: effect DRAGON_BREATH
+  sv command list:
+    description: sendMessage command list
+  sv tell origin:
+    description: sendMessage tell origin
+  sv tell cooperative:
+    description: sendMessage cooperative player
+  sv tp lobby:
+    description: teleport lobby
+  sv tp athletic:
+    description: teleport athletic

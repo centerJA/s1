@@ -1,4 +1,4 @@
-package stefano.utils;
+package stefano.s1.utils;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
