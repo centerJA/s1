@@ -4,7 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
-import Config;
+
+import stefano.s1.Config;
 
 import java.util.ArrayList;
 

@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
+import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.AthleticTimer;
 import stefano.s1.utils.ItemUtil;
@@ -28,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static stefano.s1.utils.AthleticTimer.AthleticTime;
 
 
 
@@ -43,7 +43,8 @@ public class stefanovarentino implements Listener {
     Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
 
-    private BukkitTask athleticTimer, Timer;
+    BukkitTask Timer;
+    AthleticTimer athleticTimer;
 
     public stefanovarentino(S1 plugin) {
         this.plugin = plugin;
@@ -62,6 +63,7 @@ public class stefanovarentino implements Listener {
         this.deathPlayerList = new ArrayList<>();
         this.athleticPlayerList = new ArrayList<>();
         this.checkpointList = plugin.getConfig();
+        this.athleticTimer = new AthleticTimer();
     }
 
     @EventHandler
@@ -123,21 +125,16 @@ public class stefanovarentino implements Listener {
                     athleticClear.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
                     athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
-                    player.sendMessage("あなたの記録は" + (AthleticTime - 1) + "でした！");
-                    if (this.athleticTimer != null) {
-                        this.athleticTimer.cancel();
-                    }
+                    athleticTimer.stopTimer(player);
+                    player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
                     player.setLevel(0);
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
                     player.sendMessage("アスレチックスタート！");
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチックスタート！", 20, 40, 20);
                     athleticStart.getWorld().playEffect(player.getLocation(), Effect.PORTAL_TRAVEL, 0, 10);
-                    if (this.athleticTimer != null) {
-                        this.athleticTimer.cancel();
-                    }
-                    this.athleticTimer = new AthleticTimer(player).runTaskTimer(this.plugin, 0L, 20L);
-                    player.setLevel(0);
+//                    athleticTimer.startTimer(player);
+                    this.Timer = AthleticTimer.getTaskId(player);
                 }
             }
         }
@@ -146,9 +143,7 @@ public class stefanovarentino implements Listener {
                 ItemStack itemStack = e.getItem();
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
                     player.teleport(this.lobby);
-                    if (this.athleticTimer != null) {
-                        this.athleticTimer.cancel();
-                    }
+                    athleticTimer.stopTimer(player);
                     if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
                         checkpointList.set(String.valueOf(player.getUniqueId()), null);
                     }
@@ -376,6 +371,7 @@ public class stefanovarentino implements Listener {
         String msg = e.getMessage();
         if (this.world != world) return;
         if (msg.equals("test")) {
+
         }
 
     }

@@ -9,11 +9,21 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
+import stefano.s1.S1;
+import stefano.s1.utils.AthleticTimer;
 import stefano.s1.utils.ItemUtil;
 
 
 public class SvCommand implements CommandExecutor {
+    private static final S1 plugin = S1.getPlugin(S1.class);
+    private AthleticTimer athleticTimer;
+
+    public SvCommand(AthleticTimer athleticTimer) {
+        this.athleticTimer = athleticTimer;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
@@ -39,7 +49,7 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage("ハンカチの名前から来てるとは思いませんね…");
                     }
                     if (args[1].equals("cooperative")) {
-                        player.sendMessage("NameTag");
+                        player.sendMessage("Cooperative Player");
                         player.sendMessage("1.usikuzin");
                     }
                 }
@@ -47,12 +57,21 @@ public class SvCommand implements CommandExecutor {
                     if (args[1].equals("lobby")) {
                         player.sendMessage("lobbyにテレポートします");
                         player.teleport(Config.lobby);
-                        if (athleticTimer != null) {
-                            this.athleticTimer.cancel();
-                        }
-                        if (Config.checkpointList.get(String.valueOf(player.getUniqueId())) != null) {
-                            Config.checkpointList.set(String.valueOf(player.getUniqueId()), null);
-                        }
+                        athleticTimer.stopTimer(player);
+                        AthleticTimer.getTaskId(player).cancel();
+//                        if (athleticTimer != null) {
+//                            BukkitTask athleticTimer1 = new AthleticTimer(player).runTaskTimer(plugin, 0L, 20L);
+//                            athleticTimer1.cancel();
+//                            athleticTimer.stopStopwatch();
+//                            athleticTimer = null;
+//                        }
+//                        player.sendMessage(Config.checkpointList.get(0));
+//                        for (int i=0; i<=Config.checkpointList.size(); i++) {
+//
+//                        }
+//                        if (Config.checkpointList.!= null) {
+//                            Config.checkpointList.set(String.valueOf(player.getUniqueId()), null);
+//                        }
                         player.setLevel(0);
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
