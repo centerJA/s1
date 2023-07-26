@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.S1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AthleticTimer  {
     ArrayList<String> athleticPlayerList;
@@ -22,12 +23,9 @@ public class AthleticTimer  {
 
     private World world;
 
-//    public AthleticTimer(Player player) {
-//        athleticTime = 0;
-//        this.world = Bukkit.getWorld("stefanovarentino");
-//        this.player = player;
-//        this.isStopped = false;
-//    }
+    public static HashMap<Player, BukkitTask> tasks = new HashMap<>();
+
+
     public void startTimer(Player player) {
         if (timerTask != null) {
             timerTask.cancel();
@@ -43,15 +41,11 @@ public class AthleticTimer  {
                 athleticTime++;
             }
         };
-        timerTask.runTaskTimer(S1.getPlugin(S1.class), 0, 20);
+        tasks.put(player, timerTask.runTaskTimer(S1.getPlugin(S1.class), 0, 20));
         athleticTime = 0;
     }
     public void stopTimer(Player player) {
-//        if (timerTask != null) {
-//            timerTask.cancel();
-//            timerTask = null;
-//        }
-        getTaskId(player).cancel();
+       tasks.get(player).cancel();
     }
 
     public static BukkitTask getTaskId(Player player) {
@@ -69,20 +63,4 @@ public class AthleticTimer  {
         return taskId;
     }
 
-//    @Override
-//    public void run() {
-//        if (isStopped) {
-//            cancel();
-//            return;
-//        }
-//        if (AthleticTime > 600) {
-//            cancel();
-//            return;
-//        }
-//        this.player.setLevel(AthleticTime);
-//        AthleticTime++;
-//    }
-//    public void stopStopwatch() {
-//        isStopped = true;
-//    }
 }

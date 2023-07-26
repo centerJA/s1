@@ -15,3 +15,5 @@ commands:
     description: teleport lobby
   sv tp athletic:
     description: teleport athletic
+  sv tp svinfo:
+    description: teleport sv information center

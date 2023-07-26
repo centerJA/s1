@@ -14,6 +14,9 @@ import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.AthleticTimer;
 import stefano.s1.utils.ItemUtil;
+import stefano.s1.utils.ScoreBoardUtil;
+
+import static stefano.s1.utils.AthleticTimer.tasks;
 
 
 public class SvCommand implements CommandExecutor {
@@ -41,6 +44,7 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage("/sv tell cooperative…このワールドの共同製作者を表示します");
                         player.sendMessage("/sv tp lobby…ロビーにテレポートします");
                         player.sendMessage("/sv tp athletic…アスレチックにテレポートします");
+                        player.sendMessage("/sv tp svinfo…情報センターにテレポートします");
                     }
                 }
                 if (args[0].equals("tell")) {
@@ -56,22 +60,9 @@ public class SvCommand implements CommandExecutor {
                 if (args[0].equals("tp")) {
                     if (args[1].equals("lobby")) {
                         player.sendMessage("lobbyにテレポートします");
+                        ScoreBoardUtil.removeScoreboard(player);
                         player.teleport(Config.lobby);
                         athleticTimer.stopTimer(player);
-                        AthleticTimer.getTaskId(player).cancel();
-//                        if (athleticTimer != null) {
-//                            BukkitTask athleticTimer1 = new AthleticTimer(player).runTaskTimer(plugin, 0L, 20L);
-//                            athleticTimer1.cancel();
-//                            athleticTimer.stopStopwatch();
-//                            athleticTimer = null;
-//                        }
-//                        player.sendMessage(Config.checkpointList.get(0));
-//                        for (int i=0; i<=Config.checkpointList.size(); i++) {
-//
-//                        }
-//                        if (Config.checkpointList.!= null) {
-//                            Config.checkpointList.set(String.valueOf(player.getUniqueId()), null);
-//                        }
                         player.setLevel(0);
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
@@ -90,6 +81,12 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
                         player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
                         player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
+                    }
+                    if (args[1].equals("svinfo")) {
+                        player.sendMessage("svInfoにテレポートします");
+                        player.teleport(Config.svinfo);
+                        player.getInventory().clear();
+                        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     }
                 }
             }

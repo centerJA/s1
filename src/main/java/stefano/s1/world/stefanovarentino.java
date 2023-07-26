@@ -20,10 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
-import stefano.s1.utils.AthleticTimer;
-import stefano.s1.utils.ItemUtil;
-import stefano.s1.utils.LimitTimer;
-import stefano.s1.utils.Timer;
+import stefano.s1.utils.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -127,14 +124,15 @@ public class stefanovarentino implements Listener {
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
                     athleticTimer.stopTimer(player);
                     player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
+                    ScoreBoardUtil.updateRanking(player);
+                    PlayerScore.changePlayerTime();
                     player.setLevel(0);
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
                     player.sendMessage("アスレチックスタート！");
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチックスタート！", 20, 40, 20);
                     athleticStart.getWorld().playEffect(player.getLocation(), Effect.PORTAL_TRAVEL, 0, 10);
-//                    athleticTimer.startTimer(player);
-                    this.Timer = AthleticTimer.getTaskId(player);
+                    athleticTimer.startTimer(player);
                 }
             }
         }
@@ -143,7 +141,7 @@ public class stefanovarentino implements Listener {
                 ItemStack itemStack = e.getItem();
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
                     player.teleport(this.lobby);
-                    athleticTimer.stopTimer(player);
+                    ScoreBoardUtil.removeScoreboard(player);
                     if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
                         checkpointList.set(String.valueOf(player.getUniqueId()), null);
                     }
@@ -230,6 +228,7 @@ public class stefanovarentino implements Listener {
                     if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
                         checkpointList.set(String.valueOf(player.getUniqueId()), null);
                     }
+                    ScoreBoardUtil.showScoreboard(player);
                     player.teleport(this.athletic);
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
