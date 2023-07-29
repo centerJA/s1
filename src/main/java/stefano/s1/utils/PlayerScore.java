@@ -30,7 +30,7 @@ public class PlayerScore {
             PlayerTime.set(player.getName(), time);
         }
     }
-    public static void removePlayerTime(YamlConfiguration PlayerTime, Player player, int time) {
+    public static void removePlayerTime(YamlConfiguration PlayerTime, Player player) {
         if (PlayerTime.get(player.getName()) != null) {
             PlayerTime.set(player.getName(), null);
         }

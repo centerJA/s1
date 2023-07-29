@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
+import org.yaml.snakeyaml.Yaml;
 import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.*;
@@ -37,7 +39,7 @@ public class stefanovarentino implements Listener {
     ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
     String stetasu = "taiki";
-    Boolean Playing_Game = false;
+    public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
 
     BukkitTask Timer;
@@ -107,6 +109,9 @@ public class stefanovarentino implements Listener {
                     player.sendMessage(ChatColor.DARK_GREEN + "無事にチェックポイントを設定しました!");
                     checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
                 }
+                if (Objects.equals(lines[0], "アスレの王者")) {
+                    player.getWorld().playEffect(player.getLocation(), Effect.WITHER_SHOOT, 0, 1);
+                }
                 if (Objects.equals(lines[0], "stefanovarentino")) {
                     athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 1);
                 }
@@ -125,8 +130,9 @@ public class stefanovarentino implements Listener {
                     athleticTimer.stopTimer(player);
                     player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
                     ScoreBoardUtil.updateRanking(player);
-                    PlayerScore.changePlayerTime();
+                    PlayerScore.changePlayerTime(new YamlConfiguration(), player, player.getLevel());
                     player.setLevel(0);
+                    PlayerScore.setPlayerTime(new YamlConfiguration(), player, player.getLevel());
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
                     player.sendMessage("アスレチックスタート！");

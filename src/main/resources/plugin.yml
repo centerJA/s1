@@ -11,9 +11,15 @@ commands:
     description: sendMessage tell origin
   sv tell cooperative:
     description: sendMessage cooperative player
+  sv tell homePageURL:
+    description: sendMessage SV homePage URL
   sv tp lobby:
     description: teleport lobby
   sv tp athletic:
     description: teleport athletic
   sv tp svinfo:
     description: teleport sv information center
+  sv op athleticTime remove:
+    description: remove athletic player ranking(restriction.player with op)
+  sv tp pvpMap:
+    description: teleport pvpMap(restriction.!Playing_Game)

@@ -23,6 +23,7 @@ public class ScoreBoardUtil {
 
     }
     public static void showScoreboard(Player player) {
+        player.sendMessage("test");
         Scoreboard scoreboard = createScoreboard();
         String ObjectiveName = "Ranking";
         Objective objective = scoreboard.getObjective(ObjectiveName);

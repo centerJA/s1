@@ -7,6 +7,8 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import org.bukkit.scheduler.BukkitTask;
@@ -14,6 +16,7 @@ import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.AthleticTimer;
 import stefano.s1.utils.ItemUtil;
+import stefano.s1.utils.PlayerScore;
 import stefano.s1.utils.ScoreBoardUtil;
 
 import static stefano.s1.utils.AthleticTimer.tasks;
@@ -39,12 +42,16 @@ public class SvCommand implements CommandExecutor {
             else {
                 if (args[0].equals("command")) {
                     if (args[1].equals("list")) {
-                        player.sendMessage("/sv command list…コマンドの一覧を表示します");
-                        player.sendMessage("/sv tell origin…名前の由来を表示します");
-                        player.sendMessage("/sv tell cooperative…このワールドの共同製作者を表示します");
-                        player.sendMessage("/sv tp lobby…ロビーにテレポートします");
-                        player.sendMessage("/sv tp athletic…アスレチックにテレポートします");
-                        player.sendMessage("/sv tp svinfo…情報センターにテレポートします");
+                        player.sendMessage("Stefano Varentino command list");
+                        player.sendMessage(ChatColor.RED + "Color:RED" + ChatColor.WHITE + "は開発中のコマンド");
+                        player.sendMessage("/sv command list       コマンドの一覧を表示します");
+                        player.sendMessage("/sv tell origin        名前の由来を表示します");
+                        player.sendMessage("/sv tell cooperative   このワールドの共同製作者を表示します");
+                        player.sendMessage("/sv tell homePageURL   ホームページのURLを表示します");
+                        player.sendMessage("/sv tp lobby           ロビーにテレポートします");
+                        player.sendMessage(ChatColor.RED + "/sv tp athletic        アスレチックにテレポートします");
+                        player.sendMessage(ChatColor.RED + "/sv tp pvpMap          pvpの時に使用するマップにテレポートします");
+                        player.sendMessage("/sv tp svinfo          情報センターにテレポートします");
                     }
                 }
                 if (args[0].equals("tell")) {
@@ -53,8 +60,12 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage("ハンカチの名前から来てるとは思いませんね…");
                     }
                     if (args[1].equals("cooperative")) {
-                        player.sendMessage("Cooperative Player");
+                        player.sendMessage("Cooperative Player List");
                         player.sendMessage("1.usikuzin");
+                    }
+                    if (args[1].equals("homePageURL")) {
+                        player.sendMessage(ChatColor.YELLOW + ">" + ChatColor.RED + ">" + ChatColor.DARK_RED + ">" + ChatColor.WHITE + "Click URL" + ChatColor.DARK_RED + "<" + ChatColor.RED + "<" + ChatColor.YELLOW + "<");
+                        player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/215");
                     }
                 }
                 if (args[0].equals("tp")) {
@@ -82,6 +93,10 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
                         player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
                     }
+                    if (args[1].equals("pvpMap")) {
+                        player.sendMessage("pvpMapにテレポートします");
+                        player.teleport(Config.pvpStart);
+                    }
                     if (args[1].equals("svinfo")) {
                         player.sendMessage("svInfoにテレポートします");
                         player.teleport(Config.svinfo);
@@ -89,6 +104,15 @@ public class SvCommand implements CommandExecutor {
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     }
                 }
+
+                if (args[0].equals("op")) {
+                    if (args[1].equals("athleticTime")) {
+                        if (args[2].equals("remove")) {
+                            PlayerScore.removePlayerTime(new YamlConfiguration(), player);
+                        }
+                    }
+                }
+
             }
 
         }
