@@ -3,6 +3,8 @@ package stefano.s1.utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class PlayerScore {
@@ -21,14 +23,16 @@ public class PlayerScore {
     public int time() {
         return time;
     }
-    public static void setPlayerTime(YamlConfiguration PlayerTime, Player player, int time) {
-        PlayerTime.set(player.getName(), time);
-
-    }
-    public static void changePlayerTime(YamlConfiguration PlayerTime, Player player, int time) {
-        if (PlayerTime.get(player.getName()) != null) {
-            PlayerTime.set(player.getName(), time);
+    public static void setPlayerTime(YamlConfiguration PlayerTime, Player player, int goalTime, File file) throws IOException {
+        if (PlayerTime.get(player.getName()) == null) {
+            PlayerTime.set(player.getName(), goalTime);
+        } else {
+            if (goalTime < (int)PlayerTime.get(player.getName())) {
+                PlayerTime.set(player.getName(), goalTime);
+            }
         }
+        PlayerTime.save(file);
+
     }
     public static void removePlayerTime(YamlConfiguration PlayerTime, Player player) {
         if (PlayerTime.get(player.getName()) != null) {

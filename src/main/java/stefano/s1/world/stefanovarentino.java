@@ -24,6 +24,7 @@ import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -41,6 +42,10 @@ public class stefanovarentino implements Listener {
     String stetasu = "taiki";
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
+
+    public YamlConfiguration PlayerTime;
+
+    File PlayerAthleticTime;
 
     BukkitTask Timer;
     AthleticTimer athleticTimer;
@@ -63,6 +68,8 @@ public class stefanovarentino implements Listener {
         this.athleticPlayerList = new ArrayList<>();
         this.checkpointList = plugin.getConfig();
         this.athleticTimer = new AthleticTimer();
+        this.PlayerAthleticTime = new File("./playerTime.yml");
+        this.PlayerTime = YamlConfiguration.loadConfiguration(PlayerAthleticTime);
     }
 
     @EventHandler
@@ -116,7 +123,7 @@ public class stefanovarentino implements Listener {
                     athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 1);
                 }
                 if (Objects.equals(lines[0], "この世界の名前は")) {
-                    player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + "!");
+                    player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "!");
                 }
             }
         }
@@ -129,10 +136,9 @@ public class stefanovarentino implements Listener {
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
                     athleticTimer.stopTimer(player);
                     player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
-                    ScoreBoardUtil.updateRanking(player);
-                    PlayerScore.changePlayerTime(new YamlConfiguration(), player, player.getLevel());
+                    ScoreBoardUtil.updateRanking(player, PlayerTime);
+                    PlayerScore.setPlayerTime(PlayerTime, player, player.getLevel(), PlayerAthleticTime);
                     player.setLevel(0);
-                    PlayerScore.setPlayerTime(new YamlConfiguration(), player, player.getLevel());
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
                     player.sendMessage("アスレチックスタート！");
@@ -234,8 +240,8 @@ public class stefanovarentino implements Listener {
                     if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
                         checkpointList.set(String.valueOf(player.getUniqueId()), null);
                     }
-                    ScoreBoardUtil.showScoreboard(player);
                     player.teleport(this.athletic);
+                    ScoreBoardUtil.showScoreboard(player);
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る", Material.APPLE));
