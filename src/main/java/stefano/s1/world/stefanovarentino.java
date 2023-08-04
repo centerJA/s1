@@ -24,6 +24,7 @@ import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.*;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,13 +43,11 @@ public class stefanovarentino implements Listener {
     String stetasu = "taiki";
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
-
     public YamlConfiguration PlayerTime;
-
     File PlayerAthleticTime;
-
     BukkitTask Timer;
     AthleticTimer athleticTimer;
+
 
     public stefanovarentino(S1 plugin) {
         this.plugin = plugin;
@@ -125,6 +124,17 @@ public class stefanovarentino implements Listener {
                 if (Objects.equals(lines[0], "この世界の名前は")) {
                     player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "!");
                 }
+                if (Objects.equals(lines[0], "op")) {
+                    if (Objects.equals(lines[1], "athleticPlayer")) {
+                        if (Objects.equals(lines[2], "remove")) {
+                            if (e.getPlayer().getName().equals("InfInc") || e.getPlayer().getName().equals("markcs11")) {
+                                PlayerScore.removePlayerTime(PlayerTime, player);
+                            } else {
+                                player.sendMessage("このアクションを実行できません");
+                            }
+                        }
+                    }
+                }
             }
         }
         if (e.getAction().equals(Action.PHYSICAL)) {
@@ -152,6 +162,9 @@ public class stefanovarentino implements Listener {
             if (e.getItem() != null) {
                 ItemStack itemStack = e.getItem();
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
+                    if (athleticTimer != null) {
+                        athleticTimer.stopTimer(player);
+                    }
                     player.teleport(this.lobby);
                     ScoreBoardUtil.removeScoreboard(player);
                     if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {

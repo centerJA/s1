@@ -1,9 +1,6 @@
 package stefano.s1.SvCommand;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -65,6 +62,7 @@ public class SvCommand implements CommandExecutor {
                     }
                     if (args[1].equals("homePageURL")) {
                         player.sendMessage(ChatColor.YELLOW + ">" + ChatColor.RED + ">" + ChatColor.DARK_RED + ">" + ChatColor.WHITE + "Click URL" + ChatColor.DARK_RED + "<" + ChatColor.RED + "<" + ChatColor.YELLOW + "<");
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1);
                         player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/215");
                     }
                 }
@@ -102,14 +100,6 @@ public class SvCommand implements CommandExecutor {
                         player.teleport(Config.svinfo);
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                    }
-                }
-
-                if (args[0].equals("op")) {
-                    if (args[1].equals("athleticTime")) {
-                        if (args[2].equals("remove")) {
-                            PlayerScore.removePlayerTime(new YamlConfiguration(), player);
-                        }
                     }
                 }
 
