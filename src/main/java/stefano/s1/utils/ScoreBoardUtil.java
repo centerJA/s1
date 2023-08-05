@@ -38,7 +38,6 @@ public class ScoreBoardUtil {
             if (team == null) {
                 team = scoreboard.registerNewTeam("Rank" + count);
             }
-            team.setPrefix(ChatColor.values()[count] + "");
             team.addEntry(PlayerName);
             objective.getScore(PlayerName).setScore(time);
         }
@@ -48,7 +47,6 @@ public class ScoreBoardUtil {
 
     }
     public static void showScoreboard(Player player) {
-        player.sendMessage("test");
         Scoreboard scoreboard = createScoreboard();
         String ObjectiveName = "Ranking";
         Objective objective = scoreboard.getObjective(ObjectiveName);

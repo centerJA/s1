@@ -128,9 +128,12 @@ public class stefanovarentino implements Listener {
                     if (Objects.equals(lines[1], "athleticPlayer")) {
                         if (Objects.equals(lines[2], "remove")) {
                             if (e.getPlayer().getName().equals("InfInc") || e.getPlayer().getName().equals("markcs11")) {
+                                player.sendMessage(ChatColor.DARK_PURPLE + "(OP Action)" + ChatColor.DARK_RED + "remove:athleticPlayer");
                                 PlayerScore.removePlayerTime(PlayerTime, player);
+                                player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                             } else {
-                                player.sendMessage("このアクションを実行できません");
+                                player.sendMessage(ChatColor.DARK_RED + "このアクションを実行できません");
+                                player.sendMessage(ChatColor.DARK_RED + "Action fail(REASON)You do not have op(0)");
                             }
                         }
                     }
@@ -183,6 +186,9 @@ public class stefanovarentino implements Listener {
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る", Material.APPLE));
                     player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
+                    if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
+                        checkpointList.set(String.valueOf(player.getUniqueId()), null);
+                    }
                 }
                 if (itemStack.getType() == Material.EMERALD) {
                     player.teleport(this.taikijyo);
@@ -364,6 +370,7 @@ public class stefanovarentino implements Listener {
 
     @EventHandler
     public void onEntityDamageEvent(EntityDamageEvent e) {
+        if (!(e.getEntity() instanceof Player)) return;
         Player player = (Player) e.getEntity();
         World world = player.getWorld();
         if (this.world != world) return;
@@ -378,6 +385,13 @@ public class stefanovarentino implements Listener {
         Player player = e.getPlayer();
         World world = player.getWorld();
         if (this.world != world) return;
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+                player.setGameMode(GameMode.ADVENTURE);
+                player.teleport(lobby);
+            }
+        }, 10L);
         player.setLevel(0);
         player.getInventory().clear();
         player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
@@ -394,8 +408,9 @@ public class stefanovarentino implements Listener {
         World world = player.getWorld();
         String msg = e.getMessage();
         if (this.world != world) return;
-        if (msg.equals("test")) {
-
+        if (msg.equals("SV")) {
+            player.sendMessage("a");
+            player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_SHOOT, 1, 4);
         }
 
     }

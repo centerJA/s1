@@ -45,7 +45,9 @@ public class AthleticTimer  {
         athleticTime = 0;
     }
     public void stopTimer(Player player) {
-       tasks.get(player).cancel();
+        if (tasks.get(player) != null) {
+            tasks.get(player).cancel();
+        }
     }
 
     public static BukkitTask getTaskId(Player player) {

@@ -1,5 +1,6 @@
 package stefano.s1.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -36,8 +37,8 @@ public class PlayerScore {
     }
     public static void removePlayerTime(YamlConfiguration PlayerTime, Player player) {
         if (PlayerTime.get(player.getName()) != null) {
-            PlayerTime.set(player.getName(), null);
 
         }
+
     }
 }
