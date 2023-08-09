@@ -149,8 +149,8 @@ public class stefanovarentino implements Listener {
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
                     athleticTimer.stopTimer(player);
                     player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
-                    ScoreBoardUtil.updateRanking(player, PlayerTime);
                     PlayerScore.setPlayerTime(PlayerTime, player, player.getLevel(), PlayerAthleticTime);
+                    ScoreBoardUtil.updateRanking(player, PlayerTime);
                     player.setLevel(0);
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
@@ -260,7 +260,7 @@ public class stefanovarentino implements Listener {
                         checkpointList.set(String.valueOf(player.getUniqueId()), null);
                     }
                     player.teleport(this.athletic);
-                    ScoreBoardUtil.showScoreboard(player);
+                    ScoreBoardUtil.updateRanking(player, PlayerTime);
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る", Material.APPLE));
