@@ -13,7 +13,7 @@ public class ScoreBoardUtil {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard scoreboard = manager.getNewScoreboard();
 
-        Objective objective = scoreboard.registerNewObjective("Ranking", "dummy");
+        Objective objective = scoreboard.registerNewObjective("1st player", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         return scoreboard;
     }
@@ -21,22 +21,21 @@ public class ScoreBoardUtil {
     public static void updateRanking(Player player, YamlConfiguration yamlConfiguration) {
         Scoreboard scoreboard = createScoreboard();
         Map<String, Integer> TimesMap = new HashMap<>();
-        Objective objective = scoreboard.getObjective("Ranking");
+        Objective objective = scoreboard.getObjective("1st player");
 
         for (String playerName : yamlConfiguration.getKeys(false)) {
             int time = yamlConfiguration.getInt(playerName);
             TimesMap.put(playerName, time);
         }
         int count = 0;
-//        List<Map.Entry<String, Integer>>
-        player.sendMessage(getSortedEntries(TimesMap).toString());
+//        player.sendMessage(getSortedEntries(TimesMap).toString());
         for (Map.Entry<String, Integer> entry : getSortedEntries(TimesMap)) {
 
-            if (count >= 5) break;
+            if (count == 1) break;
             count++;
             String PlayerName = entry.getKey();
-            player.sendMessage(String.valueOf(count));
-            player.sendMessage(PlayerName);
+//            player.sendMessage(String.valueOf(count));
+//            player.sendMessage(PlayerName);
             int time = entry.getValue();
             Team team = scoreboard.getTeam("Rank" + count);
             if (team == null) {
@@ -52,16 +51,16 @@ public class ScoreBoardUtil {
     }
     public static void showScoreboard(Player player) {
         Scoreboard scoreboard = createScoreboard();
-        String ObjectiveName = "Ranking";
+        String ObjectiveName = "1st player";
         Objective objective = scoreboard.getObjective(ObjectiveName);
         if (objective == null) {
-            player.sendMessage(ChatColor.DARK_RED + "オブジェクトが見つかりませんでした(REASON)CANNOT FIND OBJECT");
+            player.sendMessage(ChatColor.DARK_RED + "オブジェクトが見つかりませんでした(REASON)CANNOT FIND OBJECT(0)");
             return;
         }
-        player.sendMessage("ひょうじします");
+//        player.sendMessage("ひょうじします");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(scoreboard);
-        player.sendMessage("ひょうじしました");
+//        player.sendMessage("ひょうじしました");
     }
 
     public static void removeScoreboard(Player player) {
@@ -73,8 +72,7 @@ public class ScoreBoardUtil {
     public static List<Map.Entry<String, Integer>> getSortedEntries(Map<String, Integer> map) {
         List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<>(map.entrySet());
         sortedEntries.sort(Map.Entry.comparingByValue());
-//        sortedEntries.subList(0, 5);
-        Collections.reverse(sortedEntries);
+//        Collections.reverse(sortedEntries);
         return sortedEntries;
     }
 

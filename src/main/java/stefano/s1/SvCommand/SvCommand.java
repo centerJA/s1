@@ -61,7 +61,7 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage("1.usikuzin");
                     }
                     if (args[1].equals("homePageURL")) {
-                        player.sendMessage(ChatColor.YELLOW + ">" + ChatColor.RED + ">" + ChatColor.DARK_RED + ">" + ChatColor.WHITE + "Click URL" + ChatColor.DARK_RED + "<" + ChatColor.RED + "<" + ChatColor.YELLOW + "<");
+//                        player.sendMessage(ChatColor.YELLOW + ">" + ChatColor.RED + ">" + ChatColor.DARK_RED + ">" + ChatColor.WHITE + "Click URL" + ChatColor.DARK_RED + "<" + ChatColor.RED + "<" + ChatColor.YELLOW + "<");
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1);
                         player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/215");
                     }

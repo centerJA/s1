@@ -35,10 +35,10 @@ public class PlayerScore {
         PlayerTime.save(file);
 
     }
-    public static void removePlayerTime(YamlConfiguration PlayerTime, Player player) {
+    public static void removePlayerTime(YamlConfiguration PlayerTime, Player player, File file) throws IOException {
         if (PlayerTime.get(player.getName()) != null) {
-
+            PlayerTime.set(player.getName(), 100000);
+            PlayerTime.save(file);
         }
-
     }
 }

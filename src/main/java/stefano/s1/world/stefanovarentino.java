@@ -19,12 +19,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
-import org.yaml.snakeyaml.Yaml;
 import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.*;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,11 +69,24 @@ public class stefanovarentino implements Listener {
         this.PlayerTime = YamlConfiguration.loadConfiguration(PlayerAthleticTime);
     }
 
+    public static void removePlayerList(Player player, ArrayList playerList) {
+        playerList.remove(player.getName());
+    }
+
     @EventHandler
     public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e) {
         Player player = e.getPlayer();
         World world = player.getWorld();
-        if (this.world != world) return;
+        if (this.world != world) {
+            ScoreBoardUtil.removeScoreboard(player);
+            AthleticTimer.stopTimer(player);
+            e.getPlayer().setLevel(0);
+            player.sendMessage(String.valueOf(playerList));
+            return;
+        }
+        if (playerList.contains(player.getName())) {
+            removePlayerList(player, playerList);
+        }
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
@@ -97,6 +108,8 @@ public class stefanovarentino implements Listener {
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
         player.getInventory().addItem(ItemUtil.setItemMeta("PVP", Material.EMERALD));
         player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
+
+
 
 
     }
@@ -129,11 +142,11 @@ public class stefanovarentino implements Listener {
                         if (Objects.equals(lines[2], "remove")) {
                             if (e.getPlayer().getName().equals("InfInc") || e.getPlayer().getName().equals("markcs11")) {
                                 player.sendMessage(ChatColor.DARK_PURPLE + "(OP Action)" + ChatColor.DARK_RED + "remove:athleticPlayer");
-                                PlayerScore.removePlayerTime(PlayerTime, player);
+                                PlayerScore.removePlayerTime(PlayerTime, player, PlayerAthleticTime);
                                 player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                             } else {
                                 player.sendMessage(ChatColor.DARK_RED + "このアクションを実行できません");
-                                player.sendMessage(ChatColor.DARK_RED + "Action fail(REASON)You do not have op(0)");
+                                player.sendMessage(ChatColor.DARK_RED + "Action fail(REASON)YOU DO NOT HAVE OP(0)");
                             }
                         }
                     }
@@ -164,6 +177,7 @@ public class stefanovarentino implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
             if (e.getItem() != null) {
                 ItemStack itemStack = e.getItem();
+                String playerName = player.getName();
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
                     if (athleticTimer != null) {
                         athleticTimer.stopTimer(player);

@@ -44,7 +44,7 @@ public class AthleticTimer  {
         tasks.put(player, timerTask.runTaskTimer(S1.getPlugin(S1.class), 0, 20));
         athleticTime = 0;
     }
-    public void stopTimer(Player player) {
+    public static void stopTimer(Player player) {
         if (tasks.get(player) != null) {
             tasks.get(player).cancel();
         }
@@ -54,7 +54,7 @@ public class AthleticTimer  {
         BukkitTask taskId = S1.getPlugin(S1.class).getServer().getScheduler().runTaskTimer(S1.getPlugin(S1.class), new Runnable() {
             @Override
             public void run() {
-                if (athleticTime > 600) {
+                if (athleticTime > 1200) {
 
                     return;
                 }
