@@ -28,14 +28,11 @@ public class ScoreBoardUtil {
             TimesMap.put(playerName, time);
         }
         int count = 0;
-//        player.sendMessage(getSortedEntries(TimesMap).toString());
         for (Map.Entry<String, Integer> entry : getSortedEntries(TimesMap)) {
 
             if (count == 1) break;
             count++;
             String PlayerName = entry.getKey();
-//            player.sendMessage(String.valueOf(count));
-//            player.sendMessage(PlayerName);
             int time = entry.getValue();
             Team team = scoreboard.getTeam("Rank" + count);
             if (team == null) {
@@ -57,10 +54,8 @@ public class ScoreBoardUtil {
             player.sendMessage(ChatColor.DARK_RED + "オブジェクトが見つかりませんでした(REASON)CANNOT FIND OBJECT(0)");
             return;
         }
-//        player.sendMessage("ひょうじします");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(scoreboard);
-//        player.sendMessage("ひょうじしました");
     }
 
     public static void removeScoreboard(Player player) {
@@ -72,7 +67,6 @@ public class ScoreBoardUtil {
     public static List<Map.Entry<String, Integer>> getSortedEntries(Map<String, Integer> map) {
         List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<>(map.entrySet());
         sortedEntries.sort(Map.Entry.comparingByValue());
-//        Collections.reverse(sortedEntries);
         return sortedEntries;
     }
 

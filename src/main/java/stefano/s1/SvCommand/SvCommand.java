@@ -8,6 +8,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
@@ -23,8 +26,11 @@ public class SvCommand implements CommandExecutor {
     private static final S1 plugin = S1.getPlugin(S1.class);
     private AthleticTimer athleticTimer;
 
+    World world;
+
     public SvCommand(AthleticTimer athleticTimer) {
         this.athleticTimer = athleticTimer;
+        this.world = Bukkit.getWorld("stefanovarentino");
     }
 
     @Override
@@ -68,6 +74,9 @@ public class SvCommand implements CommandExecutor {
                 }
                 if (args[0].equals("tp")) {
                     if (args[1].equals("lobby")) {
+                        if (Config.playerList.contains(player.getName())) {
+                            Config.playerList.remove(player.getName());
+                        }
                         player.sendMessage("lobbyにテレポートします");
                         ScoreBoardUtil.removeScoreboard(player);
                         player.teleport(Config.lobby);
@@ -80,22 +89,28 @@ public class SvCommand implements CommandExecutor {
                         Config.playerList.remove(player.getName());
                     }
                     if (args[1].equals("athletic")) {
-                        player.sendMessage("athleticにテレポートします");
-                        player.teleport(Config.athletic);
-                        player.getInventory().clear();
-                        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                        player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る", Material.APPLE));
-                        player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
-                        player.sendMessage(ChatColor.AQUA + "チェックポイントの設定は、押した時にいた場所がチェックポイントに設定されます。");
-                        player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
-                        player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
-                        player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
+                        if (Config.playerList.contains(player.getName())) {
+                            Config.playerList.remove(player.getName());
+                        }
+                        Inventory athleticInventory = Bukkit.createInventory(null, 54, "アスレチック一覧");
+                        athleticInventory.setItem(0, ItemUtil.setItemMeta("シンプル", Material.PAPER));
+                        player.getPlayer().openInventory(athleticInventory);
+                        player.addScoreboardTag("athletic");
                     }
                     if (args[1].equals("pvpMap")) {
+                        if (!Config.playerList.contains(player.getName())) {
+                            Config.playerList.add(player.getName());
+                        }
+
                         player.sendMessage("pvpMapにテレポートします");
                         player.teleport(Config.pvpStart);
+                        player.getInventory().clear();
+                        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     }
                     if (args[1].equals("svinfo")) {
+                        if (Config.playerList.contains(player.getName())) {
+                            Config.playerList.remove(player.getName());
+                        }
                         player.sendMessage("svInfoにテレポートします");
                         player.teleport(Config.svinfo);
                         player.getInventory().clear();
@@ -107,5 +122,60 @@ public class SvCommand implements CommandExecutor {
 
         }
         return false;
+    }
+
+    @EventHandler
+    public void onPlayerMoveEvent(PlayerMoveEvent e){
+        for (String PlayerName: Config.playerList){
+            Player player = Bukkit.getPlayer(PlayerName);
+            World world = player.getWorld();
+            if (this.world != world) return;
+            if (player.getLocation().getX() > Config.Range){
+                double xx1 = player.getLocation().getX();
+                double yy1 = player.getLocation().getY();
+                double zz1 = player.getLocation().getZ();
+                double gap = xx1 - Config.Range;
+                double xxx1 = xx1 - gap;
+                Location playerlocation = new Location(world, xxx1, yy1, zz1, 90, 0);
+                player.teleport(playerlocation);
+            }
+            if (player.getLocation().getZ() > Config.Range){
+                double xx1 = player.getLocation().getX();
+                double yy1 = player.getLocation().getY();
+                double zz1 = player.getLocation().getZ();
+                double gap = zz1 - Config.Range;
+                double zzz1 = zz1 - gap;
+                Location playerlocation = new Location(world, xx1, yy1, zzz1, -180, 0);
+                player.teleport(playerlocation);
+            }
+
+
+
+
+
+            if (player.getLocation().getX() < -Config.Range){
+                double xx1 = player.getLocation().getX();
+                double yy1 = player.getLocation().getY();
+                double zz1 = player.getLocation().getZ();
+                double gap = -Config.Range - xx1;
+                gap = -gap;
+                double xxx1 = xx1 - gap;
+                player.sendMessage(String.valueOf(gap));
+                player.sendMessage(String.valueOf(xxx1));
+
+                Location playerlocation = new Location(world, xxx1, yy1, zz1, -90, 0);
+                player.teleport(playerlocation);
+            }
+            if (player.getLocation().getZ() < -Config.Range){
+                double xx1 = player.getLocation().getX();
+                double yy1 = player.getLocation().getY();
+                double zz1 = player.getLocation().getZ();
+                double gap = -Config.Range - zz1;
+                gap = -gap;
+                double zzz1 = zz1 - gap;
+                Location playerlocation = new Location(world, xx1, yy1, zzz1, 0, 0);
+                player.teleport(playerlocation);
+            }
+        }
     }
 }
