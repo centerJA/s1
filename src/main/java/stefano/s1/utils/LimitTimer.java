@@ -2,12 +2,14 @@ package stefano.s1.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import stefano.s1.Config;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class LimitTimer extends BukkitRunnable {
 
@@ -17,15 +19,21 @@ public class LimitTimer extends BukkitRunnable {
 
     ArrayList<String> playerList;
 
-    Location pvpFinal;
+    Location pvpFinal, randomLocation;
 
+    Random random;
 
+    int randomTime;
+
+    double randomX, randomZ;
 
     public LimitTimer(ArrayList<String> playerList, Location pvpFinal) {
         this.limitTime = 1850;
         this.world = Bukkit.getWorld("stefanovarentino");
         this.playerList = playerList;
         this.pvpFinal = pvpFinal;
+        this.random = new Random();
+        this.randomTime = random.nextInt(100) + 1700;
     }
 
     @Override
@@ -33,6 +41,14 @@ public class LimitTimer extends BukkitRunnable {
         if (limitTime < 0) {
             cancel();
             return;
+        }
+        if (limitTime == randomTime) {
+            Config.itemList1.add(Material.GOLDEN_APPLE);
+            Config.itemList1.add(Material.DIAMOND_SWORD);
+            this.randomX = random.nextInt(10) + 30;
+            this.randomZ = random.nextInt(10) + 55;
+            this.randomLocation = new Location(world, randomX, 70, randomZ);
+            ChestUtil.setChest(randomLocation, Config.itemList1);
         }
         if (limitTime == 1330) {
             Config.Range = 125;
@@ -77,7 +93,6 @@ public class LimitTimer extends BukkitRunnable {
             Config.Range = 125;
             for (String PlayerName: playerList){
                 Bukkit.getPlayer(PlayerName).sendMessage("3");
-
             }
         }
         if (limitTime == 32) {

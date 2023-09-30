@@ -140,19 +140,21 @@ public class stefanovarentino implements Listener {
                 if (Objects.equals(lines[0], "この世界の名前は")) {
                     player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "!");
                 }
-                if (Objects.equals(lines[0], "op")) {
-                    if (Objects.equals(lines[1], "athleticPlayer")) {
-                        if (Objects.equals(lines[2], "remove")) {
-                            if (e.getPlayer().getName().equals("InfInc") || e.getPlayer().getName().equals("markcs11")) {
-                                player.sendMessage(ChatColor.DARK_PURPLE + "(OP Action)" + ChatColor.DARK_RED + "remove:athleticPlayer");
-                                PlayerScore.removePlayerTime(PlayerTime, player, PlayerAthleticTime);
-                                ScoreBoardUtil.updateRanking(player, PlayerTime);
-                                player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
-                            } else {
-                                player.sendMessage(ChatColor.DARK_RED + "このアクションを実行できません");
-                                player.sendMessage(ChatColor.DARK_RED + "Action fail(REASON)YOU DO NOT HAVE OP(0)");
-                            }
-                        }
+                if (Objects.equals(lines[0], "この看板をクリックして") || Objects.equals(lines[0], "opathletic")) {
+                    if (Objects.equals(lines[1], "タイムをリセットします") || Objects.equals(lines[1], "remove")) {
+//                            if (e.getPlayer().getName().equals("InfInc") || e.getPlayer().getName().equals("markcs11")) {
+//                                player.sendMessage(ChatColor.DARK_PURPLE + "(OP Action)" + ChatColor.DARK_RED + "remove:athleticPlayer");
+//                                PlayerScore.removePlayerTime(PlayerTime, player, PlayerAthleticTime);
+//                                ScoreBoardUtil.updateRanking(player, PlayerTime);
+//                                player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
+//                            } else {
+//                                player.sendMessage(ChatColor.DARK_RED + "このアクションを実行できません");
+//                                player.sendMessage(ChatColor.DARK_RED + "Action fail(REASON)YOU DO NOT HAVE OP(0)");
+//                            }
+                        player.sendMessage(ChatColor.DARK_PURPLE + "(OP Action)" + ChatColor.DARK_RED + "remove:athleticPlayer");
+                        PlayerScore.removePlayerTime(PlayerTime, player, PlayerAthleticTime);
+                        ScoreBoardUtil.updateRanking(player, PlayerTime);
+                        player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                     }
                 }
             }
@@ -186,8 +188,8 @@ public class stefanovarentino implements Listener {
                     if (athleticTimer != null) {
                         athleticTimer.stopTimer(player);
                     }
-                    if (Config.playerList.contains(player.getName())) {
-                        Config.playerList.remove(player.getName());
+                    if (playerList.contains(player.getName())) {
+                        playerList.remove(player.getName());
                     }
                     player.teleport(this.lobby);
                     ScoreBoardUtil.removeScoreboard(player);
@@ -346,9 +348,6 @@ public class stefanovarentino implements Listener {
                 double gap = -Config.Range - xx1;
                 gap = -gap;
                 double xxx1 = xx1 - gap;
-                player.sendMessage(String.valueOf(gap));
-                player.sendMessage(String.valueOf(xxx1));
-
                 Location playerlocation = new Location(world, xxx1, yy1, zz1, -90, 0);
                 player.teleport(playerlocation);
             }
@@ -467,8 +466,25 @@ public class stefanovarentino implements Listener {
         World world = player.getWorld();
         Set<String> userTag = e.getPlayer().getScoreboardTags();
         if (this.world != world) return;
+
         if (userTag.contains("athletic")) {
             e.getPlayer().removeScoreboardTag("athletic");
+        }
+    }
+    @EventHandler
+    public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent e) {
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        if (this.world != world) return;
+        String command = e.getMessage();
+        String[] args = command.split(" ");
+        if (args.length > 0) {
+            String commandContents = args[2];
+            if (commandContents.equalsIgnoreCase("pvpMap")) {
+                if (!playerList.contains(player.getName())) {
+                    playerList.add(player.getName());
+                }
+            }
         }
     }
 }

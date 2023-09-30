@@ -2,8 +2,10 @@ package stefano.s1;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Config {
     public static int Range = 125;
@@ -15,6 +17,8 @@ public class Config {
 
     public static ArrayList<String> playerList = new ArrayList<>()
                  ,checkpointList = new ArrayList<>();
+
+    public static ArrayList<Material> itemList1 = new ArrayList<>();
 }
 
 
