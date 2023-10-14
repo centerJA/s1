@@ -1,5 +1,6 @@
 package stefano.s1.utils;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +24,7 @@ public class LimitTimer extends BukkitRunnable {
 
     Random random;
 
-    int randomTime;
+    int randomTime, randomTime1;
 
     double randomX, randomZ;
 
@@ -33,7 +34,8 @@ public class LimitTimer extends BukkitRunnable {
         this.playerList = playerList;
         this.pvpFinal = pvpFinal;
         this.random = new Random();
-        this.randomTime = random.nextInt(100) + 1700;
+        this.randomTime = random.nextInt(1000) + 100;
+        this.randomTime1 = random.nextInt(1000) + 100;
     }
 
     @Override
@@ -49,6 +51,21 @@ public class LimitTimer extends BukkitRunnable {
             this.randomZ = random.nextInt(10) + 55;
             this.randomLocation = new Location(world, randomX, 70, randomZ);
             ChestUtil.setChest(randomLocation, Config.itemList1);
+            for(String PlayerName: playerList) {
+                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.AQUA + "チェストがスポーンしました！");
+                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.AQUA + "通常よりも強い装備をもらうことができます！");
+            }
+        }
+        if (limitTime == randomTime1) {
+            Config.itemList1.add(Material.DIAMOND_AXE);
+            this.randomX = random.nextInt(10) + 30;
+            this.randomZ = random.nextInt(10) + 55;
+            this.randomLocation = new Location(world, randomX, 70, randomZ);
+            ChestUtil.setChest(randomLocation, Config.itemList1);
+            for(String PlayerName: playerList) {
+                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.AQUA + "チェストがスポーンしました！");
+                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.AQUA + "通常よりも強い装備をもらうことができます！");
+            }
         }
         if (limitTime == 1330) {
             Config.Range = 125;
@@ -136,6 +153,7 @@ public class LimitTimer extends BukkitRunnable {
                 Bukkit.getPlayer(PlayerName).sendMessage("引き分け!");
                 Bukkit.getPlayer(PlayerName).sendTitle("引き分け", "", 20, 400, 20);
             }
+            pvpUtil.blockBreak();
         }
         limitTime--;
 

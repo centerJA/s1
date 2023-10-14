@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -19,6 +20,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -84,7 +86,8 @@ public class stefanovarentino implements Listener {
             ScoreBoardUtil.removeScoreboard(player);
             AthleticTimer.stopTimer(player);
             e.getPlayer().setLevel(0);
-            player.sendMessage(String.valueOf(playerList));
+            player.getInventory().clear();
+
             return;
         }
         if (playerList.contains(player.getName())) {
@@ -121,6 +124,10 @@ public class stefanovarentino implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) throws IOException {
         Player player = e.getPlayer();
         World world = player.getWorld();
+        ItemStack ironHelmet = new ItemStack(Material.IRON_HELMET);
+        ItemStack ironChestPlate = new ItemStack(Material.IRON_CHESTPLATE);
+        ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS);
+        ItemStack ironLeggings = new ItemStack(Material.IRON_LEGGINGS);
         if (this.world != world) return;
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = e.getClickedBlock();
@@ -142,15 +149,6 @@ public class stefanovarentino implements Listener {
                 }
                 if (Objects.equals(lines[0], "この看板をクリックして") || Objects.equals(lines[0], "opathletic")) {
                     if (Objects.equals(lines[1], "タイムをリセットします") || Objects.equals(lines[1], "remove")) {
-//                            if (e.getPlayer().getName().equals("InfInc") || e.getPlayer().getName().equals("markcs11")) {
-//                                player.sendMessage(ChatColor.DARK_PURPLE + "(OP Action)" + ChatColor.DARK_RED + "remove:athleticPlayer");
-//                                PlayerScore.removePlayerTime(PlayerTime, player, PlayerAthleticTime);
-//                                ScoreBoardUtil.updateRanking(player, PlayerTime);
-//                                player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
-//                            } else {
-//                                player.sendMessage(ChatColor.DARK_RED + "このアクションを実行できません");
-//                                player.sendMessage(ChatColor.DARK_RED + "Action fail(REASON)YOU DO NOT HAVE OP(0)");
-//                            }
                         player.sendMessage(ChatColor.DARK_PURPLE + "(OP Action)" + ChatColor.DARK_RED + "remove:athleticPlayer");
                         PlayerScore.removePlayerTime(PlayerTime, player, PlayerAthleticTime);
                         ScoreBoardUtil.updateRanking(player, PlayerTime);
@@ -270,6 +268,12 @@ public class stefanovarentino implements Listener {
                                     ItemStack pvparrow = new ItemStack(Material.ARROW, 64);
                                     Bukkit.getPlayer(PlayerName).getInventory().setItem(34, pvparrow);
                                     Bukkit.getPlayer(PlayerName).getInventory().setItem(35, pvparrow);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setHelmet(ironHelmet);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setChestplate(ironChestPlate);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setBoots(ironBoots);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setLeggings(ironLeggings);
+                                    ItemStack pvpBlock = new ItemStack(Material.STONE, 64);
+                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(6, pvpBlock);
                                     Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
                                 }
                             }
@@ -395,6 +399,8 @@ public class stefanovarentino implements Listener {
         if (Playing_Game) {
             if (player.getHealth() == 0) {
                 player.sendTitle("負け", "死んでしまった！", 20, 40, 20);
+                Playing_Game = false;
+                pvpUtil.blockBreak();
             }
         }
     }
@@ -464,11 +470,28 @@ public class stefanovarentino implements Listener {
         HumanEntity human = e.getPlayer();
         Player player = Bukkit.getPlayer(human.getName());
         World world = player.getWorld();
+        Inventory inventory = e.getInventory();
+        ItemStack[] contents = inventory.getContents();
+        PlayerInventory playerInventory = player.getInventory();
+        boolean isEmpty = true;
         Set<String> userTag = e.getPlayer().getScoreboardTags();
         if (this.world != world) return;
 
         if (userTag.contains("athletic")) {
             e.getPlayer().removeScoreboardTag("athletic");
+        }
+        for (ItemStack item: contents) {
+            if (item != null && !item.getType().isBlock()) {
+                isEmpty = false;
+                break;
+            }
+        }
+
+        if (isEmpty && inventory.getType().name().equals("CHEST")) {
+            e.getInventory().getLocation().getBlock().setType(Material.AIR);
+            for (String PlayerName: playerList) {
+                Bukkit.getPlayer(PlayerName).sendMessage("チェストが空になったため消滅しました！");
+            }
         }
     }
     @EventHandler
@@ -478,13 +501,33 @@ public class stefanovarentino implements Listener {
         if (this.world != world) return;
         String command = e.getMessage();
         String[] args = command.split(" ");
-        if (args.length > 0) {
+        if (args.length > 1) {
             String commandContents = args[2];
             if (commandContents.equalsIgnoreCase("pvpMap")) {
                 if (!playerList.contains(player.getName())) {
                     playerList.add(player.getName());
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlaceEvent(BlockPlaceEvent e) {
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        if (this.world != world) return;
+        player.sendMessage("aaaaa");
+        if (Playing_Game) {
+            player.sendMessage("bbbbb");
+            Location location = e.getBlock().getLocation();
+            pvpUtil.blockLocation(location);
+            player.sendMessage("ababababab");
+            player.sendMessage(String.valueOf(pvpUtil.blockLocationList));
+            player.sendMessage("zzzzzzzzzzzzzzzzzz!");
+        }
+
+        else {
+            player.sendMessage("プレイイングじゃありません");
         }
     }
 }
