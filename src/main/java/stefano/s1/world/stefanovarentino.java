@@ -133,7 +133,7 @@ public class stefanovarentino implements Listener {
                                 player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                             } else {
                                 player.sendMessage(ChatColor.DARK_RED + "このアクションを実行できません");
-                                player.sendMessage(ChatColor.DARK_RED + "Action fail(REASON)You do not have op(0)");
+                                player.sendMessage(ChatColor.DARK_RED + "Action fail(REASON)You do not have op(00gitrr )");
                             }
                         }
                     }
