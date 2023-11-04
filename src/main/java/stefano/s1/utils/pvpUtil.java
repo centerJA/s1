@@ -19,4 +19,12 @@ public class pvpUtil {
             blockBreak.getBlock().setType(Material.AIR);
         }
     }
+
+    public static void blockLocationAllRemove() {
+        if (blockLocationList.size() != 0) {
+            for (Location blockLocation: blockLocationList) {
+                blockLocationList.remove(blockLocation);
+            }
+        }
+    }
 }

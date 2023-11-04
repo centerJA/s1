@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import stefano.s1.Config;
@@ -14,7 +15,7 @@ import java.util.Random;
 
 public class LimitTimer extends BukkitRunnable {
 
-    private int limitTime;
+    public static int limitTime;
 
     private World world;
 
@@ -163,6 +164,10 @@ public class LimitTimer extends BukkitRunnable {
         }
         limitTime--;
 
+    }
+
+    public static void stopTimer() {
+        limitTime = -100;
     }
 }
 

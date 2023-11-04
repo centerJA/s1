@@ -12,7 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -225,6 +224,7 @@ public class stefanovarentino implements Listener {
                     }
                     player.sendMessage(ChatColor.YELLOW + playerList.toString());
                     if (this.playerList.size() == 2) {
+                        pvpUtil.blockLocationAllRemove();
                         player.sendMessage("すでに1人が参加しているので、開始します。");
                         this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
                         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
@@ -233,7 +233,7 @@ public class stefanovarentino implements Listener {
                                 Playing_Game = true;
                                 for (String PlayerName : playerList) {
                                     Bukkit.getPlayer(PlayerName).teleport(pvpStart);
-                                    Bukkit.getPlayer(PlayerName).setGameMode(GameMode.ADVENTURE);
+                                    Bukkit.getPlayer(PlayerName).setGameMode(GameMode.SURVIVAL);
                                     Bukkit.getPlayer(PlayerName).setFoodLevel(6);
                                     Bukkit.getPlayer(PlayerName).setSprinting(false);
                                     Bukkit.getPlayer(PlayerName).setNoDamageTicks(600);
@@ -376,7 +376,10 @@ public class stefanovarentino implements Listener {
         if (Playing_Game) {
             playerList.remove(player.getName());
             if (playerList.size() == 1) {
+                pvpUtil.blockBreak();
+                LimitTimer.stopTimer();
                 for (String PlayerName : playerList) {
+                    Bukkit.getPlayer(PlayerName).sendMessage("pvp終了!");
                     Bukkit.getPlayer(PlayerName).sendMessage(String.valueOf(PlayerName));
                     Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.GOLD + "勝ち！");
                     Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.MAGIC + "", ChatColor.DARK_PURPLE + "勝ち！", 20, 40, 40);
@@ -390,20 +393,25 @@ public class stefanovarentino implements Listener {
 
     }
 
-    @EventHandler
-    public void onEntityDamageEvent(EntityDamageEvent e) {
-        if (!(e.getEntity() instanceof Player)) return;
-        Player player = (Player) e.getEntity();
-        World world = player.getWorld();
-        if (this.world != world) return;
-        if (Playing_Game) {
-            if (player.getHealth() == 0) {
-                player.sendTitle("負け", "死んでしまった！", 20, 40, 20);
-                Playing_Game = false;
-                pvpUtil.blockBreak();
-            }
-        }
-    }
+//    @EventHandler
+//    public void onEntityDamageEvent(EntityDamageEvent e) {
+//        if (!(e.getEntity() instanceof Player)) return;
+//        Player player = (Player) e.getEntity();
+//        World world = player.getWorld();
+//        if (this.world != world) return;
+//        player.sendMessage("shinda");
+//        if (Playing_Game) {
+//            player.sendMessage("メッセージ");
+//            player.sendMessage(String.valueOf(player.getHealth()));
+//            if (player.getHealth() <= 0) {
+//                player.sendMessage("aaaaaaaaa");
+//                player.sendTitle("負け", "死んでしまった！", 20, 40, 20);
+//                Playing_Game = false;
+//
+//                player.sendMessage("bbbbbbbb");
+//            }
+//        }
+//    }
     @EventHandler
     public void onPlayerRespawnEvent(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
