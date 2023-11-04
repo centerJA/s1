@@ -148,10 +148,16 @@ public class LimitTimer extends BukkitRunnable {
                 Bukkit.getPlayer(PlayerName).sendMessage("引き分けまで残り5秒!");
             }
         }
-        if (limitTime == 1) {
+        if (limitTime == 0) {
             for (String PlayerName: playerList){
                 Bukkit.getPlayer(PlayerName).sendMessage("引き分け!");
                 Bukkit.getPlayer(PlayerName).sendTitle("引き分け", "", 20, 400, 20);
+                Bukkit.getPlayer(PlayerName).setHealth(20);
+                Bukkit.getPlayer(PlayerName).setFoodLevel(20);
+                for (String playerName: playerList) {
+                    playerList.remove(playerName);
+                }
+                Bukkit.getPlayer(PlayerName).teleport(Config.lobby);
             }
             pvpUtil.blockBreak();
         }
