@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class Timer extends BukkitRunnable {
-    private int nowTime;
+    public static int nowTime;
     private ArrayList<String> playerList;
     private World world;
     public Timer(ArrayList<String> playerList) {
@@ -27,5 +27,9 @@ public class Timer extends BukkitRunnable {
             Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.YELLOW + "<pvp>" + nowTime + "秒");
         }
         nowTime--;
+    }
+
+    public static void stopCountDownTimer() {
+        nowTime = -100;
     }
 }

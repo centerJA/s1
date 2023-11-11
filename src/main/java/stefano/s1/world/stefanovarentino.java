@@ -43,6 +43,8 @@ public class stefanovarentino implements Listener {
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
     String stetasu = "taiki";
+
+    private int tof;
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
     public YamlConfiguration PlayerTime;
@@ -71,6 +73,7 @@ public class stefanovarentino implements Listener {
         this.athleticTimer = new AthleticTimer();
         this.PlayerAthleticTime = new File("./playerTime.yml");
         this.PlayerTime = YamlConfiguration.loadConfiguration(PlayerAthleticTime);
+        this.tof = 0;
     }
 
     public static void removePlayerList(Player player, ArrayList playerList) {
@@ -187,6 +190,15 @@ public class stefanovarentino implements Listener {
                     }
                     if (playerList.contains(player.getName())) {
                         playerList.remove(player.getName());
+                        stefano.s1.utils.Timer.stopCountDownTimer();
+                        if (tof == 0) {
+                         e.getPlayer().sendMessage("pvpをキャンセルしました。");
+                        }
+                        if (playerList.size() > 0) {
+                            for (String PlayerName: playerList) {
+                                Bukkit.getPlayer(PlayerName).sendMessage("pvpがキャンセルされました。");
+                            }
+                        }
                     }
                     player.teleport(this.lobby);
                     ScoreBoardUtil.removeScoreboard(player);
@@ -223,15 +235,20 @@ public class stefanovarentino implements Listener {
                         playerList.add(player.getName());
                     }
                     player.sendMessage(ChatColor.YELLOW + playerList.toString());
+                    pvpUtil.blockLocationAllRemove();
                     if (this.playerList.size() == 2) {
-                        pvpUtil.blockLocationAllRemove();
                         player.sendMessage("すでに1人が参加しているので、開始します。");
+                        tof = 0;
                         this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
                         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                             @Override
                             public void run() {
                                 Playing_Game = true;
                                 for (String PlayerName : playerList) {
+                                    if (playerList.size() < 2) {
+                                        LimitTimer.stopTimer();
+                                        break;
+                                    }
                                     Bukkit.getPlayer(PlayerName).teleport(pvpStart);
                                     Bukkit.getPlayer(PlayerName).setGameMode(GameMode.SURVIVAL);
                                     Bukkit.getPlayer(PlayerName).setFoodLevel(6);
@@ -254,6 +271,9 @@ public class stefanovarentino implements Listener {
                             @Override
                             public void run() {
                                 for (String PlayerName : playerList) {
+                                    if (playerList.size() < 2) {
+                                        return;
+                                    }
                                     Bukkit.getPlayer(PlayerName).setFoodLevel(20);
                                     Bukkit.getPlayer(PlayerName).setSprinting(true);
                                     ItemStack pvpsword = new ItemStack(Material.IRON_SWORD, 1);
@@ -378,6 +398,7 @@ public class stefanovarentino implements Listener {
             if (playerList.size() == 1) {
                 pvpUtil.blockBreak();
                 LimitTimer.stopTimer();
+                tof = 1;
                 for (String PlayerName : playerList) {
                     Bukkit.getPlayer(PlayerName).sendMessage("pvp終了!");
                     Bukkit.getPlayer(PlayerName).sendMessage(String.valueOf(PlayerName));
@@ -393,25 +414,7 @@ public class stefanovarentino implements Listener {
 
     }
 
-//    @EventHandler
-//    public void onEntityDamageEvent(EntityDamageEvent e) {
-//        if (!(e.getEntity() instanceof Player)) return;
-//        Player player = (Player) e.getEntity();
-//        World world = player.getWorld();
-//        if (this.world != world) return;
-//        player.sendMessage("shinda");
-//        if (Playing_Game) {
-//            player.sendMessage("メッセージ");
-//            player.sendMessage(String.valueOf(player.getHealth()));
-//            if (player.getHealth() <= 0) {
-//                player.sendMessage("aaaaaaaaa");
-//                player.sendTitle("負け", "死んでしまった！", 20, 40, 20);
-//                Playing_Game = false;
-//
-//                player.sendMessage("bbbbbbbb");
-//            }
-//        }
-//    }
+
     @EventHandler
     public void onPlayerRespawnEvent(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
@@ -526,12 +529,18 @@ public class stefanovarentino implements Listener {
         if (this.world != world) return;
         player.sendMessage("aaaaa");
         if (Playing_Game) {
-            player.sendMessage("bbbbb");
+            player.sendMessage("u8w9e83e39eu93id");
+            for (String PlayerName: playerList) {
+                player.sendMessage("111111111");
+                if (!playerList.contains(player.getName())) {
+                    player.sendMessage("82828218u4");
+                    return;
+                }
+            }
+            player.sendMessage("93399u1343782432472347238347324278");
             Location location = e.getBlock().getLocation();
             pvpUtil.blockLocation(location);
-            player.sendMessage("ababababab");
-            player.sendMessage(String.valueOf(pvpUtil.blockLocationList));
-            player.sendMessage("zzzzzzzzzzzzzzzzzz!");
+            player.sendMessage("iwuhuialksmdlsajdjssjdajdjwad");
         }
 
         else {

@@ -22,9 +22,7 @@ public class pvpUtil {
 
     public static void blockLocationAllRemove() {
         if (blockLocationList.size() != 0) {
-            for (Location blockLocation: blockLocationList) {
-                blockLocationList.remove(blockLocation);
-            }
+            blockLocationList.clear();
         }
     }
 }
