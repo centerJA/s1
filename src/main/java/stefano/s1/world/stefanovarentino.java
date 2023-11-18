@@ -45,6 +45,8 @@ public class stefanovarentino implements Listener {
     String stetasu = "taiki";
 
     private int tof;
+
+    public int flag;
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
     public YamlConfiguration PlayerTime;
@@ -74,6 +76,7 @@ public class stefanovarentino implements Listener {
         this.PlayerAthleticTime = new File("./playerTime.yml");
         this.PlayerTime = YamlConfiguration.loadConfiguration(PlayerAthleticTime);
         this.tof = 0;
+        this.flag = 0;
     }
 
     public static void removePlayerList(Player player, ArrayList playerList) {
@@ -228,79 +231,91 @@ public class stefanovarentino implements Listener {
                     }
                 }
                 if (itemStack.getType() == Material.EMERALD) {
-                    player.teleport(this.taikijyo);
-                    player.getInventory().clear();
-                    player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                    if (!playerList.contains(player.getName())) {
-                        playerList.add(player.getName());
-                    }
-                    player.sendMessage(ChatColor.YELLOW + playerList.toString());
-                    pvpUtil.blockLocationAllRemove();
-                    if (this.playerList.size() == 2) {
-                        player.sendMessage("すでに1人が参加しているので、開始します。");
-                        tof = 0;
-                        this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
-                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                Playing_Game = true;
-                                for (String PlayerName : playerList) {
-                                    if (playerList.size() < 2) {
-                                        LimitTimer.stopTimer();
-                                        break;
+                    Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            flag = 0;
+                        }
+                    }, 40L);
+
+                    if (flag == 0) {
+                        this.flag = 1;
+                        player.teleport(this.taikijyo);
+                        player.getInventory().clear();
+                        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                        if (!playerList.contains(player.getName())) {
+                            playerList.add(player.getName());
+                        }
+                        player.sendMessage(ChatColor.YELLOW + playerList.toString());
+                        pvpUtil.blockLocationAllRemove();
+                        if (this.playerList.size() == 2) {
+                            player.sendMessage("すでに1人が参加しているので、開始します。");
+                            tof = 0;
+                            this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
+                            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    Playing_Game = true;
+                                    for (String PlayerName : playerList) {
+                                        if (playerList.size() < 2) {
+                                            LimitTimer.stopTimer();
+                                            break;
+                                        }
+                                        Bukkit.getPlayer(PlayerName).teleport(pvpStart);
+                                        Bukkit.getPlayer(PlayerName).setGameMode(GameMode.SURVIVAL);
+                                        Bukkit.getPlayer(PlayerName).setFoodLevel(6);
+                                        Bukkit.getPlayer(PlayerName).setSprinting(false);
+                                        Bukkit.getPlayer(PlayerName).setNoDamageTicks(600);
+                                        Bukkit.getPlayer(PlayerName).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 600, 1));
+                                        Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.YELLOW + "範囲は、x=-125~125、z=-125~125です");
+                                        Bukkit.getPlayer(PlayerName).getInventory().clear();
+                                        ItemStack lobby = new ItemStack(Material.RED_MUSHROOM, 1);
+                                        ItemMeta lobbyMeta = lobby.getItemMeta();
+                                        lobbyMeta.setDisplayName("ロビーに戻る");
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(9, lobby);
                                     }
-                                    Bukkit.getPlayer(PlayerName).teleport(pvpStart);
-                                    Bukkit.getPlayer(PlayerName).setGameMode(GameMode.SURVIVAL);
-                                    Bukkit.getPlayer(PlayerName).setFoodLevel(6);
-                                    Bukkit.getPlayer(PlayerName).setSprinting(false);
-                                    Bukkit.getPlayer(PlayerName).setNoDamageTicks(600);
-                                    Bukkit.getPlayer(PlayerName).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 600, 1));
-                                    Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.YELLOW + "範囲は、x=-125~125、z=-125~125です");
-                                    Bukkit.getPlayer(PlayerName).getInventory().clear();
-                                    ItemStack lobby = new ItemStack(Material.RED_MUSHROOM, 1);
-                                    ItemMeta lobbyMeta = lobby.getItemMeta();
-                                    lobbyMeta.setDisplayName("ロビーに戻る");
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(9, lobby);
                                 }
-                            }
-                        }, 400L);
-                        new LimitTimer(playerList, pvpFinal).runTaskTimer(this.plugin, 0L, 20L);
+                            }, 400L);
+                            new LimitTimer(playerList, pvpFinal).runTaskTimer(this.plugin, 0L, 20L);
 
 
-                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                for (String PlayerName : playerList) {
-                                    if (playerList.size() < 2) {
-                                        return;
+                            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    for (String PlayerName : playerList) {
+                                        if (playerList.size() < 2) {
+                                            return;
+                                        }
+                                        Bukkit.getPlayer(PlayerName).setFoodLevel(20);
+                                        Bukkit.getPlayer(PlayerName).setSprinting(true);
+                                        ItemStack pvpsword = new ItemStack(Material.IRON_SWORD, 1);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(0, pvpsword);
+                                        ItemStack pvpfood = new ItemStack(Material.COOKED_BEEF, 64);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(1, pvpfood);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(2, ItemUtil.setCustomPotionMeta(PotionEffectType.INVISIBILITY, Material.SPLASH_POTION, "透明化"));
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(3, ItemUtil.setCustomPotionMeta(PotionEffectType.REGENERATION, Material.SPLASH_POTION, "再生する"));
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(4, ItemUtil.setCustomPotionMeta(PotionEffectType.POISON, Material.LINGERING_POTION, "毒"));
+                                        ItemStack pvpbow = new ItemStack(Material.BOW, 1);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(5, pvpbow);
+                                        ItemStack pvparrow = new ItemStack(Material.ARROW, 64);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(34, pvparrow);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(35, pvparrow);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setHelmet(ironHelmet);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setChestplate(ironChestPlate);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setBoots(ironBoots);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setLeggings(ironLeggings);
+                                        ItemStack pvpBlock = new ItemStack(Material.STONE, 64);
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(6, pvpBlock);
+                                        Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
                                     }
-                                    Bukkit.getPlayer(PlayerName).setFoodLevel(20);
-                                    Bukkit.getPlayer(PlayerName).setSprinting(true);
-                                    ItemStack pvpsword = new ItemStack(Material.IRON_SWORD, 1);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(0, pvpsword);
-                                    ItemStack pvpfood = new ItemStack(Material.COOKED_BEEF, 1);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(1, pvpfood);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(2, ItemUtil.setCustomPotionMeta(PotionEffectType.INVISIBILITY, Material.SPLASH_POTION, "透明化"));
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(3, ItemUtil.setCustomPotionMeta(PotionEffectType.REGENERATION, Material.SPLASH_POTION, "再生する"));
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(4, ItemUtil.setCustomPotionMeta(PotionEffectType.POISON, Material.LINGERING_POTION, "毒"));
-                                    ItemStack pvpbow = new ItemStack(Material.BOW, 1);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(5, pvpbow);
-                                    ItemStack pvparrow = new ItemStack(Material.ARROW, 64);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(34, pvparrow);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(35, pvparrow);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setHelmet(ironHelmet);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setChestplate(ironChestPlate);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setBoots(ironBoots);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setLeggings(ironLeggings);
-                                    ItemStack pvpBlock = new ItemStack(Material.STONE, 64);
-                                    Bukkit.getPlayer(PlayerName).getInventory().setItem(6, pvpBlock);
-                                    Bukkit.getPlayer(PlayerName).sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
                                 }
-                            }
-                        }, 900);
+                            }, 900);
+                        } else {
+                            player.sendMessage(ChatColor.AQUA + "人数が足りません。最低2人が必要です。");
+                            player.sendMessage(ChatColor.AQUA + "現在1人です。");
+                        }
                     } else {
-                        player.sendMessage(ChatColor.AQUA + "人数が足りません。最低2人が必要です。");
-                        player.sendMessage(ChatColor.AQUA + "現在1人です。");
+                        player.sendMessage("少しお待ちください!");
                     }
                 }
 
@@ -512,7 +527,7 @@ public class stefanovarentino implements Listener {
         if (this.world != world) return;
         String command = e.getMessage();
         String[] args = command.split(" ");
-        if (args.length > 1) {
+        if (args.length > 2) {
             String commandContents = args[2];
             if (commandContents.equalsIgnoreCase("pvpMap")) {
                 if (!playerList.contains(player.getName())) {
