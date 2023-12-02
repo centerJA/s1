@@ -5,7 +5,7 @@ api-version: 1.19
 commands:
   sv:
     description: effect DRAGON_BREATH
-  sv command list:
+  sv tell command list:
     description: sendMessage command list
   sv tell origin:
     description: sendMessage tell origin

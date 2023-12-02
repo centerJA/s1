@@ -43,21 +43,6 @@ public class SvCommand implements CommandExecutor {
                 player.sendMessage("Stefano Varentino");
             }
             else {
-                if (args[0].equals("command")) {
-                    if (args[1].equals("list")) {
-                        player.sendMessage(ChatColor.AQUA + "----------Stefano Varentino command list----------");
-                        player.sendMessage(ChatColor.RED + "Color:RED" + ChatColor.WHITE + "は開発中のコマンド");
-                        player.sendMessage("/sv command list       コマンドの一覧を表示します");
-                        player.sendMessage("/sv tell origin        名前の由来を表示します");
-                        player.sendMessage("/sv tell cooperative   このワールドの共同製作者を表示します");
-                        player.sendMessage("/sv tell homePageURL   ホームページのURLを表示します");
-                        player.sendMessage("/sv tp lobby           ロビーにテレポートします");
-                        player.sendMessage("/sv tp athletic        アスレチックにテレポートします");
-                        player.sendMessage("/sv tp pvpMap          pvpの時に使用するマップにテレポートします");
-                        player.sendMessage("/sv tp svinfo          情報センターにテレポートします");
-                        player.sendMessage(ChatColor.AQUA + "------------------------------------------------");
-                    }
-                }
                 if (args[0].equals("tell")) {
                     if (args[1].equals("origin")) {
                         player.sendMessage("Stefano Varentinoの由来はハンカチです。");
@@ -70,6 +55,21 @@ public class SvCommand implements CommandExecutor {
                     if (args[1].equals("homePageURL")) {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1);
                         player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/215");
+                    }
+                    if (args[1].equals("command")) {
+                        if (args[2].equals("list")) {
+                            player.sendMessage(ChatColor.AQUA + "----------Stefano Varentino command list----------");
+                            player.sendMessage(ChatColor.RED + "Color:RED" + ChatColor.WHITE + "は開発中のコマンド");
+                            player.sendMessage("/sv tell command list       コマンドの一覧を表示します");
+                            player.sendMessage("/sv tell origin        名前の由来を表示します");
+                            player.sendMessage("/sv tell cooperative   このワールドの共同製作者を表示します");
+                            player.sendMessage("/sv tell homePageURL   ホームページのURLを表示します");
+                            player.sendMessage("/sv tp lobby           ロビーにテレポートします");
+                            player.sendMessage("/sv tp athletic        アスレチックにテレポートします");
+                            player.sendMessage("/sv tp pvpMap          pvpの時に使用するマップにテレポートします");
+                            player.sendMessage("/sv tp svinfo          情報センターにテレポートします");
+                            player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                        }
                     }
                 }
                 if (args[0].equals("tp")) {

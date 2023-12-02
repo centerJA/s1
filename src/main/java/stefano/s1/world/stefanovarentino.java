@@ -109,10 +109,10 @@ public class stefanovarentino implements Listener {
         player.sendTitle(player.getName() + ChatColor.AQUA + "さん", ChatColor.AQUA + "こんにちは！", 20, 40, 20);
         player.sendMessage(ChatColor.AQUA + "-----Stefano Varentinoへようこそ!-----");
         player.sendMessage(ChatColor.YELLOW + "アスレチックやPVPなど、いくつかのゲームがあります");
-        player.sendMessage(ChatColor.GREEN + "アスレチック…レッドストーンブロックをクリック!");
-        player.sendMessage(ChatColor.GREEN + "ロビー…赤いきのこをクリック!");
-        player.sendMessage(ChatColor.GREEN + "PVP…エメラルドをクリック!");
-        player.sendMessage(ChatColor.GREEN + "/sv command list…コマンド一覧を表示します");
+        player.sendMessage(ChatColor.GREEN + "レッドストーンブロック…アスレチックがプレイできます。");
+        player.sendMessage(ChatColor.GREEN + "エメラルド…PVPがプレイできます。");
+        player.sendMessage(ChatColor.GREEN + "赤いきのこ…ロビーの中心に戻ります。");
+        player.sendMessage(ChatColor.GREEN + "/sv tell command list…コマンド一覧を表示します。");
         player.sendMessage(ChatColor.AQUA + "------------------------------");
         player.teleport(this.lobby);
         player.getInventory().clear();
@@ -159,6 +159,10 @@ public class stefanovarentino implements Listener {
                         ScoreBoardUtil.updateRanking(player, PlayerTime);
                         player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                     }
+                }
+                if (Objects.equals(lines[0], "pbba")) {
+                    PlayerScore.removePlayerTimeAll(PlayerTime, player, PlayerAthleticTime);
+                    player.sendMessage("aaa");
                 }
             }
         }
@@ -284,7 +288,7 @@ public class stefanovarentino implements Listener {
                                 public void run() {
                                     for (String PlayerName : playerList) {
                                         if (playerList.size() < 2) {
-                                            return;
+                                            break;
                                         }
                                         Bukkit.getPlayer(PlayerName).setFoodLevel(20);
                                         Bukkit.getPlayer(PlayerName).setSprinting(true);
@@ -532,6 +536,11 @@ public class stefanovarentino implements Listener {
             if (commandContents.equalsIgnoreCase("pvpMap")) {
                 if (!playerList.contains(player.getName())) {
                     playerList.add(player.getName());
+                }
+            }
+            if (commandContents.equalsIgnoreCase("creative")) {
+                if (e.getPlayer().getName().equals("markcs11")) {
+                    player.sendMessage("test");
                 }
             }
         }

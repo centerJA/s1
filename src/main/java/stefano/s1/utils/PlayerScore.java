@@ -1,5 +1,6 @@
 package stefano.s1.utils;
 
+import com.sun.org.apache.bcel.internal.generic.IOR;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -40,5 +41,14 @@ public class PlayerScore {
             PlayerTime.set(player.getName(), 100000);
             PlayerTime.save(file);
         }
+    }
+    public static void removePlayerTimeAll(YamlConfiguration PlayerTime, Player player, File file) throws IOException {
+        for (String PlayerAthleticTime: PlayerTime) {
+//            if (PlayerTime.get(player.getName()) != null) {
+//                PlayerTime.set(player.getName(), 100000);
+//                PlayerTime.save(file);
+//            }
+//        }
+
     }
 }
