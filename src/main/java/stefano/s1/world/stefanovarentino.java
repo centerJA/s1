@@ -49,7 +49,6 @@ public class stefanovarentino implements Listener {
     public int flag;
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
-    public YamlConfiguration PlayerTime;
     File PlayerAthleticTime;
     BukkitTask Timer;
     AthleticTimer athleticTimer;
@@ -73,8 +72,6 @@ public class stefanovarentino implements Listener {
         this.athleticPlayerList = new ArrayList<>();
         this.checkpointList = plugin.getConfig();
         this.athleticTimer = new AthleticTimer();
-        this.PlayerAthleticTime = new File("./playerTime.yml");
-        this.PlayerTime = YamlConfiguration.loadConfiguration(PlayerAthleticTime);
         this.tof = 0;
         this.flag = 0;
     }
@@ -142,6 +139,7 @@ public class stefanovarentino implements Listener {
                 if (Objects.equals(lines[0], "tyekkupoinnto") || Objects.equals(lines[0], "チェックポイント")) {
                     player.sendMessage(ChatColor.DARK_GREEN + "無事にチェックポイントを設定しました!");
                     checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
+                    player.getInventory().setHeldItemSlot(3);
                 }
                 if (Objects.equals(lines[0], "アスレの王者")) {
                     player.getWorld().playEffect(player.getLocation(), Effect.WITHER_SHOOT, 0, 1);
@@ -152,17 +150,16 @@ public class stefanovarentino implements Listener {
                 if (Objects.equals(lines[0], "この世界の名前は")) {
                     player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "!");
                 }
-                if (Objects.equals(lines[0], "この看板をクリックして") || Objects.equals(lines[0], "opathletic")) {
-                    if (Objects.equals(lines[1], "タイムをリセットします") || Objects.equals(lines[1], "remove")) {
-                        player.sendMessage(ChatColor.DARK_PURPLE + "(OP Action)" + ChatColor.DARK_RED + "remove:athleticPlayer");
-                        PlayerScore.removePlayerTime(PlayerTime, player, PlayerAthleticTime);
-                        ScoreBoardUtil.updateRanking(player, PlayerTime);
+                if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
+                    if (Objects.equals(lines[1], "てタイムをリセット") || Objects.equals(lines[1], "remove")) {
+                        player.sendMessage(ChatColor.AQUA + "タイムをリセットします。");
+                        PlayerScore.removePlayerTime(PlayerScore.playerScoreFileConfig, player, PlayerAthleticTime);
+                        ScoreBoardUtil.updateRanking(player, PlayerScore.playerScoreFileConfig);
                         player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                     }
                 }
-                if (Objects.equals(lines[0], "pbba")) {
-                    PlayerScore.removePlayerTimeAll(PlayerTime, player, PlayerAthleticTime);
-                    player.sendMessage("aaa");
+                if (Objects.equals(lines[0], "2mnsppoi")) {
+                    PlayerScore.removePlayerTimeAll(player);
                 }
             }
         }
@@ -175,8 +172,8 @@ public class stefanovarentino implements Listener {
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
                     athleticTimer.stopTimer(player);
                     player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
-                    PlayerScore.setPlayerTime(PlayerTime, player, player.getLevel(), PlayerAthleticTime);
-                    ScoreBoardUtil.updateRanking(player, PlayerTime);
+                    PlayerScore.setPlayerTime(PlayerScore.playerScoreFileConfig, player, player.getLevel(), PlayerAthleticTime);
+                    ScoreBoardUtil.updateRanking(player, PlayerScore.playerScoreFileConfig);
                     player.setLevel(0);
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
@@ -360,6 +357,8 @@ public class stefanovarentino implements Listener {
         for (String PlayerName: playerList){
             Player player = Bukkit.getPlayer(PlayerName);
             World world = player.getWorld();
+            Location playerNewLocation = player.getLocation();
+            if (playerNewLocation == null) return;
             if (this.world != world) return;
             if (player.getLocation().getX() > Config.Range){
                 double xx1 = player.getLocation().getX();
@@ -367,8 +366,8 @@ public class stefanovarentino implements Listener {
                 double zz1 = player.getLocation().getZ();
                 double gap = xx1 - Config.Range;
                 double xxx1 = xx1 - gap;
-                Location playerlocation = new Location(world, xxx1, yy1, zz1, 90, 0);
-                player.teleport(playerlocation);
+                Location playerLocation = new Location(world, xxx1, yy1, zz1, 90, 0);
+                player.teleport(playerLocation);
             }
             if (player.getLocation().getZ() > Config.Range){
                 double xx1 = player.getLocation().getX();
@@ -376,8 +375,8 @@ public class stefanovarentino implements Listener {
                 double zz1 = player.getLocation().getZ();
                 double gap = zz1 - Config.Range;
                 double zzz1 = zz1 - gap;
-                Location playerlocation = new Location(world, xx1, yy1, zzz1, -180, 0);
-                player.teleport(playerlocation);
+                Location playerLocation = new Location(world, xx1, yy1, zzz1, -180, 0);
+                player.teleport(playerLocation);
             }
 
 
@@ -391,8 +390,8 @@ public class stefanovarentino implements Listener {
                 double gap = -Config.Range - xx1;
                 gap = -gap;
                 double xxx1 = xx1 - gap;
-                Location playerlocation = new Location(world, xxx1, yy1, zz1, -90, 0);
-                player.teleport(playerlocation);
+                Location playerLocation = new Location(world, xxx1, yy1, zz1, -90, 0);
+                player.teleport(playerLocation);
             }
             if (player.getLocation().getZ() < -Config.Range){
                 double xx1 = player.getLocation().getX();
@@ -401,8 +400,8 @@ public class stefanovarentino implements Listener {
                 double gap = -Config.Range - zz1;
                 gap = -gap;
                 double zzz1 = zz1 - gap;
-                Location playerlocation = new Location(world, xx1, yy1, zzz1, 0, 0);
-                player.teleport(playerlocation);
+                Location playerLocation = new Location(world, xx1, yy1, zzz1, 0, 0);
+                player.teleport(playerLocation);
             }
         }
     }
@@ -481,7 +480,7 @@ public class stefanovarentino implements Listener {
             if (itemStack.getType() != null) {
                 if (itemStack.getType() == Material.PAPER && itemStack.getItemMeta().getDisplayName().equals("シンプル")) {
                     player.teleport(this.athletic1);
-                    ScoreBoardUtil.updateRanking(player, PlayerTime);
+                    ScoreBoardUtil.updateRanking(player, PlayerScore.playerScoreFileConfig);
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る(athletic1)", Material.APPLE));
@@ -539,8 +538,14 @@ public class stefanovarentino implements Listener {
                 }
             }
             if (commandContents.equalsIgnoreCase("creative")) {
-                if (e.getPlayer().getName().equals("markcs11")) {
-                    player.sendMessage("test");
+                if (!e.getPlayer().getName().equals("markcs11")) {
+                    Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            e.getPlayer().setGameMode(GameMode.ADVENTURE);
+                            e.getPlayer().sendMessage("権限がありません!");
+                        }
+                    }, 27L);
                 }
             }
         }

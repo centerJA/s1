@@ -2,6 +2,7 @@ package stefano.s1.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
@@ -18,7 +19,7 @@ public class ScoreBoardUtil {
         return scoreboard;
     }
 
-    public static void updateRanking(Player player, YamlConfiguration yamlConfiguration) {
+    public static void updateRanking(Player player, FileConfiguration yamlConfiguration) {
         Scoreboard scoreboard = createScoreboard();
         Map<String, Integer> TimesMap = new HashMap<>();
         Objective objective = scoreboard.getObjective("1st player");

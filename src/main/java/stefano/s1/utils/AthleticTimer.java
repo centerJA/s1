@@ -33,7 +33,7 @@ public class AthleticTimer  {
         timerTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (athleticTime > 600) {
+                if (athleticTime > 2000) {
                     AthleticTimer.getTaskId(player).cancel();
                     return;
                 }
@@ -54,8 +54,8 @@ public class AthleticTimer  {
         BukkitTask taskId = S1.getPlugin(S1.class).getServer().getScheduler().runTaskTimer(S1.getPlugin(S1.class), new Runnable() {
             @Override
             public void run() {
-                if (athleticTime > 1200) {
-
+                if (athleticTime > 2000) {
+                    player.sendMessage(ChatColor.AQUA + "時間制限!終了!");
                     return;
                 }
                 player.setLevel(athleticTime);
