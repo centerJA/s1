@@ -45,21 +45,25 @@ public class PlayerScore {
                 PlayerTime.set(player.getName(), goalTime);
             }
         }
-        PlayerTime.save(file);
+        playerScoreFileConfig.save(file);
 
     }
 
     public static void removePlayerTime(FileConfiguration PlayerTime, Player player, File file) throws IOException {
         String playerName = player.getName();
+        Bukkit.getLogger().info("----------------notification-------------");
+        Bukkit.getLogger().info(PlayerTime.toString());
+        Bukkit.getLogger().info(file.toString());
+        Bukkit.getLogger().info("-----------------------------------------");
         if (playerName == null) return;
         if (PlayerTime.get(playerName) == null) return;
         PlayerTime.set(playerName, 100000);
-        PlayerTime.save(file);
-
+        if (PlayerTime != null) {
+            PlayerTime.save(file);
+        }
     }
 
     public static void removePlayerTimeAll(Player player) throws IOException {
-        //playerScoreFile = new File(plugin.getDataFolder().getParentFile(),"playerTime.yml");
         playerScoreFile = new File("./playerTime.yml");
         playerScoreFileConfig = YamlConfiguration.loadConfiguration(playerScoreFile);
         for (String playerTime: playerScoreFileConfig.getKeys(false)) {
@@ -68,13 +72,5 @@ public class PlayerScore {
         }
         playerScoreFileConfig.save(playerScoreFile);
         player.sendMessage("oke");
-//        InputStreamReader enemy = new InputStreamReader();
-//        playerScoreFile = YamlConfiguration.loadConfiguration(enemy);
-        //        for (String PlayerAthleticTime: PlayerTime) {
-//            if (PlayerTime.get(player.getName()) != null) {
-//                PlayerTime.set(player.getName(), 100000);
-//                PlayerTime.save(file);
-//            }
-//        }
     }
 }

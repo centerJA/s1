@@ -158,7 +158,7 @@ public class stefanovarentino implements Listener {
                         player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                     }
                 }
-                if (Objects.equals(lines[0], "2mnsppoi")) {
+                if (Objects.equals(lines[0], "2mn")) {
                     PlayerScore.removePlayerTimeAll(player);
                 }
             }
