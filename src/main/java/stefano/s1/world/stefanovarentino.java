@@ -172,8 +172,8 @@ public class stefanovarentino implements Listener {
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
                     athleticTimer.stopTimer(player);
                     player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
-                    PlayerScore.setPlayerTime(PlayerScore.playerScoreFileConfig, player, player.getLevel(), PlayerAthleticTime);
-                    ScoreBoardUtil.updateRanking(player, PlayerScore.playerScoreFileConfig);
+                    PlayerScore.setPlayerTime(player, player.getLevel(), PlayerScore.logFile);
+                    ScoreBoardUtil.updateRanking(player, PlayerScore.log);
                     player.setLevel(0);
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
