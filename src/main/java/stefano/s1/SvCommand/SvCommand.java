@@ -43,6 +43,9 @@ public class SvCommand implements CommandExecutor {
                 player.sendMessage("Stefano Varentino");
             }
             else {
+                if (args[0].equals("help")) {
+                    player.sendMessage("");
+                }
                 if (args[0].equals("tell")) {
                     if (args[1].equals("origin")) {
                         player.sendMessage("Stefano Varentinoの由来はハンカチです。");
@@ -51,6 +54,8 @@ public class SvCommand implements CommandExecutor {
                     if (args[1].equals("cooperative")) {
                         player.sendMessage("Cooperative Player List");
                         player.sendMessage("1.usikuzin");
+                        player.sendMessage("2.SleetyNote17020");
+                        player.sendMessage("3.maintya3");
                     }
                     if (args[1].equals("homePageURL")) {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1);

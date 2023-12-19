@@ -27,11 +27,11 @@ public class PlayerScore {
 
     public PlayerScore(String playerName, int time, S1 plugin) {
         this.playerName = playerName;
-        this.time = time;
         this.plugin = plugin;
         playerDataFile = plugin.getConfig();
-        logFile = new File("~/playerTime.yml");
+        logFile = new File("./playerTime.yml");
         log = YamlConfiguration.loadConfiguration(logFile);
+
 //        playerScoreFile = new File("~/playerTime.yml");
 //        playerScoreFileConfig = YamlConfiguration.loadConfiguration(playerScoreFile);
     }
@@ -44,18 +44,24 @@ public class PlayerScore {
         return time;
     }
 
-    public static void setPlayerTime(Player player, int goalTime, File file) throws IOException {
-        if (log == null) {
+    public static void setPlayerTime(Player player, int goalTime, S1 plugin) throws IOException {
+        FileConfiguration playerDataFile = plugin.getConfig();
+        File logFile = new File("./playerTime.yml");
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(logFile);
+        if (yamlConfiguration == null) {
             player.sendMessage("logはnullです");
             Bukkit.getLogger().info("logはnullです---------");
         }
-        if (log.get(player.getName()) == null) {
+        Bukkit.getLogger().info("playerNAME");
+        Bukkit.getLogger().info(player.getName());
+        if (yamlConfiguration.get(player.getName()) == null) {
             Bukkit.getLogger().info("message-message");
-            log.set(player.getName(), goalTime);
+            yamlConfiguration.set(player.getName(), goalTime);
+            yamlConfiguration.save(logFile);
             Bukkit.getLogger().info("message-message");
-        } else if(goalTime < (int) log.get(player.getName())) {
-            log.set(player.getName(), goalTime);
-            log.save(logFile);
+        } else if(goalTime < (int) yamlConfiguration.get(player.getName())) {
+            yamlConfiguration.set(player.getName(), goalTime);
+            yamlConfiguration.save(logFile);
             Bukkit.getLogger().info("message-message!?!?!?");
         }
 
@@ -71,27 +77,35 @@ public class PlayerScore {
 //    }
     }
 
-    public static void removePlayerTime(FileConfiguration PlayerTime, Player player, File file) throws IOException {
+    public static void removePlayerTime(Player player, S1 plugin) throws IOException {
+        File file = new File("./playerTime.yml");
+        YamlConfiguration log = YamlConfiguration.loadConfiguration(file);
         String playerName = player.getName();
         Bukkit.getLogger().info("-----------------------------notification----------------------------------");
-        Bukkit.getLogger().info((String) PlayerTime.get("markcs11"));
+        Bukkit.getLogger().info((String) log.get("markcs11"));
         Bukkit.getLogger().info(file.toString());
         Bukkit.getLogger().info("---------------------------------------------------------------------------");
+        if (playerName == null) {
+            player.sendMessage("nulldesu");
+        }
         if (playerName == null) return;
-        if (PlayerTime.get(playerName) == null) return;
-        PlayerTime.set(playerName, 100000);
+
+        if (log.get(playerName) == null) return;
+        log.set(playerName, 100000);
         player.sendMessage("IF(!PLAYERTIME)の前です");
         player.sendMessage("SAVE-FILE----------SAVE-FILE");
-        PlayerTime.save(file);
+        log.save(file);
         player.sendMessage("SAVE-FILE----------SAVE-FILE");
     }
 
-    public static void removePlayerTimeAll(Player player) throws IOException {
-        for (String playerTime: playerScoreFileConfig.getKeys(false)) {
-            playerScoreFileConfig.set(playerTime, 100000);
+    public static void removePlayerTimeAll(Player player, S1 plugin) throws IOException {
+        File logFile = new File("./playerTime.yml");
+        YamlConfiguration log = YamlConfiguration.loadConfiguration(logFile);
+        for (String playerTime: playerDataFile.getKeys(false)) {
+            playerDataFile.set(playerTime, 100000);
 
         }
-        playerScoreFileConfig.save(playerScoreFile);
+        playerDataFile.save(logFile);
         player.sendMessage("oke");
     }
 }

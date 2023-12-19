@@ -153,13 +153,13 @@ public class stefanovarentino implements Listener {
                 if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
                     if (Objects.equals(lines[1], "てタイムをリセット") || Objects.equals(lines[1], "remove")) {
                         player.sendMessage(ChatColor.AQUA + "タイムをリセットします。");
-                        PlayerScore.removePlayerTime(PlayerScore.playerScoreFileConfig, player, PlayerAthleticTime);
-                        ScoreBoardUtil.updateRanking(player, PlayerScore.playerScoreFileConfig);
+                        PlayerScore.removePlayerTime(player, this.plugin);
+                        ScoreBoardUtil.updateRanking(player);
                         player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                     }
                 }
                 if (Objects.equals(lines[0], "2mn")) {
-                    PlayerScore.removePlayerTimeAll(player);
+                    PlayerScore.removePlayerTimeAll(player, this.plugin);
                 }
             }
         }
@@ -172,8 +172,8 @@ public class stefanovarentino implements Listener {
                     player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
                     athleticTimer.stopTimer(player);
                     player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
-                    PlayerScore.setPlayerTime(player, player.getLevel(), PlayerScore.logFile);
-                    ScoreBoardUtil.updateRanking(player, PlayerScore.log);
+                    PlayerScore.setPlayerTime(player, player.getLevel(), this.plugin);
+                    ScoreBoardUtil.updateRanking(player);
                     player.setLevel(0);
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
@@ -480,7 +480,9 @@ public class stefanovarentino implements Listener {
             if (itemStack.getType() != null) {
                 if (itemStack.getType() == Material.PAPER && itemStack.getItemMeta().getDisplayName().equals("シンプル")) {
                     player.teleport(this.athletic1);
-                    ScoreBoardUtil.updateRanking(player, PlayerScore.playerScoreFileConfig);
+                    player.sendMessage("test20833");
+                    ScoreBoardUtil.updateRanking(player);
+                    player.sendMessage("test9292929292");
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る(athletic1)", Material.APPLE));

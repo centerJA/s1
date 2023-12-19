@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
+import java.io.File;
 import java.util.*;
 
 public class ScoreBoardUtil {
@@ -19,10 +20,15 @@ public class ScoreBoardUtil {
         return scoreboard;
     }
 
-    public static void updateRanking(Player player, FileConfiguration yamlConfiguration) {
+    public static void updateRanking(Player player) {
+        File logFile = new File("./playerTime.yml");
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(logFile);
         Scoreboard scoreboard = createScoreboard();
         Map<String, Integer> TimesMap = new HashMap<>();
         Objective objective = scoreboard.getObjective("1st player");
+        if (yamlConfiguration == null) {
+            player.sendMessage("yamlConfigration is null,");
+        }
 
         for (String playerName : yamlConfiguration.getKeys(false)) {
             Bukkit.getLogger().info("test");
