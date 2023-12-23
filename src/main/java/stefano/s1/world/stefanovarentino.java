@@ -116,7 +116,7 @@ public class stefanovarentino implements Listener {
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
         player.getInventory().addItem(ItemUtil.setItemMeta("PVP", Material.EMERALD));
         player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
-
+        player.getInventory().addItem(ItemUtil.setItemMeta("Bedwars", Material.BED));
 
 
 
@@ -194,6 +194,14 @@ public class stefanovarentino implements Listener {
             if (e.getItem() != null) {
                 ItemStack itemStack = e.getItem();
                 String playerName = player.getName();
+                if (itemStack.getType() == Material.BED) {
+//                    player.sendMessage("現在開発中です!");
+//                    player.sendMessage("まだアクセスすることができません!");
+//                    return;
+                    player.teleport(taikijyo);
+                    this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
+
+                }
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
                     if (athleticTimer != null) {
                         athleticTimer.stopTimer(player);
