@@ -52,39 +52,21 @@ public class PlayerScore {
             player.sendMessage("logはnullです");
             Bukkit.getLogger().info("logはnullです---------");
         }
-        Bukkit.getLogger().info("playerNAME");
         Bukkit.getLogger().info(player.getName());
         if (yamlConfiguration.get(player.getName()) == null) {
-            Bukkit.getLogger().info("message-message");
             yamlConfiguration.set(player.getName(), goalTime);
             yamlConfiguration.save(logFile);
-            Bukkit.getLogger().info("message-message");
         } else if(goalTime < (int) yamlConfiguration.get(player.getName())) {
             yamlConfiguration.set(player.getName(), goalTime);
             yamlConfiguration.save(logFile);
-            Bukkit.getLogger().info("message-message!?!?!?");
         }
 
-//        if (PlayerTime.get(player.getName()) == null) {
-//            PlayerTime.set(player.getName(), goalTime);
-//        } else {
-//            if (goalTime < (int) PlayerTime.get(player.getName())) {
-//                PlayerTime.set(player.getName(), goalTime);
-//            }
-//        }
-//        PlayerTime.save(file);
-//
-//    }
     }
 
     public static void removePlayerTime(Player player, S1 plugin) throws IOException {
         File file = new File("./playerTime.yml");
         YamlConfiguration log = YamlConfiguration.loadConfiguration(file);
         String playerName = player.getName();
-        Bukkit.getLogger().info("-----------------------------notification----------------------------------");
-        Bukkit.getLogger().info((String) log.get("markcs11"));
-        Bukkit.getLogger().info(file.toString());
-        Bukkit.getLogger().info("---------------------------------------------------------------------------");
         if (playerName == null) {
             player.sendMessage("nulldesu");
         }
@@ -92,20 +74,16 @@ public class PlayerScore {
 
         if (log.get(playerName) == null) return;
         log.set(playerName, 100000);
-        player.sendMessage("IF(!PLAYERTIME)の前です");
-        player.sendMessage("SAVE-FILE----------SAVE-FILE");
         log.save(file);
-        player.sendMessage("SAVE-FILE----------SAVE-FILE");
     }
 
     public static void removePlayerTimeAll(Player player, S1 plugin) throws IOException {
-        File logFile = new File("./playerTime.yml");
-        YamlConfiguration log = YamlConfiguration.loadConfiguration(logFile);
-        for (String playerTime: playerDataFile.getKeys(false)) {
-            playerDataFile.set(playerTime, 100000);
-
+        File file = new File("./playerTime.yml");
+        YamlConfiguration log = YamlConfiguration.loadConfiguration(file);
+        String playerName = player.getName();
+        for (String playerTime: log.getKeys(false)) {
+            log.set(playerName, 100000);
         }
-        playerDataFile.save(logFile);
-        player.sendMessage("oke");
+        log.save(file);
     }
 }

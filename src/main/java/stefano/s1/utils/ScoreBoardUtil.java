@@ -31,10 +31,8 @@ public class ScoreBoardUtil {
         }
 
         for (String playerName : yamlConfiguration.getKeys(false)) {
-            Bukkit.getLogger().info("test");
             int time = yamlConfiguration.getInt(playerName);
             TimesMap.put(playerName, time);
-            Bukkit.getLogger().info("test11111");
         }
         int count = 0;
         for (Map.Entry<String, Integer> entry : getSortedEntries(TimesMap)) {

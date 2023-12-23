@@ -1,5 +1,8 @@
 package stefano.s1.SvCommand;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -44,11 +47,18 @@ public class SvCommand implements CommandExecutor {
             }
             else {
                 if (args[0].equals("help")) {
-                    player.sendMessage("");
+                    ComponentBuilder msg1 = new ComponentBuilder("・コマンドの一覧を表示するには、ここをクリックします");
+                    ComponentBuilder msg2 = new ComponentBuilder("・ホームページにアクセスするには、ここをクリックします");
+                    BaseComponent[] message1 = msg1.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sv tell command list")).create();
+                    BaseComponent[] message2 = msg2.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/215")).create();
+                    player.sendMessage("ヘルプが必要ですか?");
+                    player.spigot().sendMessage(message1);
+                    player.spigot().sendMessage(message2);
+                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITCH_DEATH, 2, 10);
                 }
                 if (args[0].equals("tell")) {
                     if (args[1].equals("origin")) {
-                        player.sendMessage("Stefano Varentinoの由来はハンカチです。");
+                        player.sendMessage(ChatColor.WHITE + "Stefano Varentinoの由来は" + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "です。");
                         player.sendMessage("ハンカチの名前から来てるとは思いませんね…");
                     }
                     if (args[1].equals("cooperative")) {
@@ -64,15 +74,17 @@ public class SvCommand implements CommandExecutor {
                     if (args[1].equals("command")) {
                         if (args[2].equals("list")) {
                             player.sendMessage(ChatColor.AQUA + "----------Stefano Varentino command list----------");
-                            player.sendMessage(ChatColor.RED + "Color:RED" + ChatColor.WHITE + "は開発中のコマンド");
+                            player.sendMessage(ChatColor.RED + "Color:RED" + ChatColor.WHITE + "は開発中のコマンドです");
+                            player.sendMessage("開発中のコマンドは使えない場合があります");
                             player.sendMessage("/sv tell command list       コマンドの一覧を表示します");
-                            player.sendMessage("/sv tell origin        名前の由来を表示します");
-                            player.sendMessage("/sv tell cooperative   このワールドの共同製作者を表示します");
-                            player.sendMessage("/sv tell homePageURL   ホームページのURLを表示します");
-                            player.sendMessage("/sv tp lobby           ロビーにテレポートします");
-                            player.sendMessage("/sv tp athletic        アスレチックにテレポートします");
-                            player.sendMessage("/sv tp pvpMap          pvpの時に使用するマップにテレポートします");
-                            player.sendMessage("/sv tp svinfo          情報センターにテレポートします");
+                            player.sendMessage("/sv tell origin       名前の由来を表示します");
+                            player.sendMessage("/sv tell cooperative       このワールドの共同製作者を表示します");
+                            player.sendMessage(ChatColor.RED + "/sv tell homePageURL       ホームページのURLを表示します");
+                            player.sendMessage("/sv tp lobby       ロビーにテレポートします");
+                            player.sendMessage("/sv tp athletic       アスレチックにテレポートします");
+                            player.sendMessage("/sv tp pvpMap       pvpの時に使用するマップにテレポートします");
+                            player.sendMessage("/sv tp svinfo       情報センターにテレポートします");
+                            player.sendMessage(ChatColor.RED + "/sv help       ヘルプを表示します");
                             player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                         }
                     }

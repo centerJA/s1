@@ -152,20 +152,26 @@ public class stefanovarentino implements Listener {
                 }
                 if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
                     if (Objects.equals(lines[1], "てタイムをリセット") || Objects.equals(lines[1], "remove")) {
-                        player.sendMessage(ChatColor.AQUA + "タイムをリセットします。");
+                        player.sendMessage(ChatColor.AQUA + "自分のタイムをリセットします。");
                         PlayerScore.removePlayerTime(player, this.plugin);
                         ScoreBoardUtil.updateRanking(player);
-                        player.sendMessage(ChatColor.DARK_RED + "Action success(0)");
                     }
                 }
-                if (Objects.equals(lines[0], "2mn")) {
+                if (Objects.equals(lines[0], "9832h39n")) {
+                    player.sendMessage(ChatColor.AQUA + "全員のタイムをリセットします。");
                     PlayerScore.removePlayerTimeAll(player, this.plugin);
+                    ScoreBoardUtil.updateRanking(player);
                 }
             }
         }
         if (e.getAction().equals(Action.PHYSICAL)) {
             if (e.getClickedBlock().getType() == Material.STONE_PLATE) {
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticClear.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticClear.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticClear.getY())) {
+                    if (player.getLevel() == 0) {
+                        player.sendMessage(ChatColor.AQUA + "あなたのタイムは現在0です!");
+                        player.sendMessage(ChatColor.AQUA + "もう一度アスレチックに挑戦してみましょう!");
+                        return;
+                    }
                     player.sendMessage(ChatColor.YELLOW + "ゴールにつきました！おめでとうございます！");
                     athleticClear.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
                     athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
@@ -480,9 +486,7 @@ public class stefanovarentino implements Listener {
             if (itemStack.getType() != null) {
                 if (itemStack.getType() == Material.PAPER && itemStack.getItemMeta().getDisplayName().equals("シンプル")) {
                     player.teleport(this.athletic1);
-                    player.sendMessage("test20833");
                     ScoreBoardUtil.updateRanking(player);
-                    player.sendMessage("test9292929292");
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る(athletic1)", Material.APPLE));
