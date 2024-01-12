@@ -23,6 +23,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
@@ -42,15 +43,17 @@ public class stefanovarentino implements Listener {
 
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
+    public static ArrayList<String> bedwarsPlayerList;
+
     String stetasu = "taiki";
 
     private int tof;
 
-    public int flag;
+    public int flag, bedwarsFlag, bedwarsFlagWhichCan;
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
     File PlayerAthleticTime;
-    BukkitTask Timer;
+    BukkitTask Timer, BedwarsTimer;
     AthleticTimer athleticTimer;
 
 
@@ -74,6 +77,9 @@ public class stefanovarentino implements Listener {
         this.athleticTimer = new AthleticTimer();
         this.tof = 0;
         this.flag = 0;
+        this.bedwarsFlag = 0;
+        this.bedwarsPlayerList = new ArrayList<>();
+        this.bedwarsFlagWhichCan = 0;
     }
 
     public static void removePlayerList(Player player, ArrayList playerList) {
@@ -157,7 +163,7 @@ public class stefanovarentino implements Listener {
                         ScoreBoardUtil.updateRanking(player);
                     }
                 }
-                if (Objects.equals(lines[0], "9832h39n")) {
+                if (Objects.equals(lines[0], "全員のタイムを") || Objects.equals(lines[0], "All time")) {
                     player.sendMessage(ChatColor.AQUA + "全員のタイムをリセットします。");
                     PlayerScore.removePlayerTimeAll(player, this.plugin);
                     ScoreBoardUtil.updateRanking(player);
@@ -197,9 +203,33 @@ public class stefanovarentino implements Listener {
                 if (itemStack.getType() == Material.BED) {
                     player.sendMessage("現在開発中です!");
                     player.sendMessage("まだアクセスすることができません!");
-                    return;
-//                    player.teleport(taikijyo);
-//                    this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
+                    if (bedwarsFlagWhichCan == 1) {
+                        player.sendMessage("2人しかできないので今プレイしている人が終わるまでお待ちください!");
+                        return;
+                    }
+                    player.teleport(taikijyo);
+                    if (bedwarsFlag == 0) {
+                        bedwarsFlag = 1;
+                        player.getInventory().clear();
+                        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                        if (!bedwarsPlayerList.contains(player.getName())) {
+                            bedwarsPlayerList.add(player.getName());
+                        }
+                        player.sendMessage(ChatColor.YELLOW + bedwarsPlayerList.toString());
+                        if (bedwarsPlayerList.size() == 1) {
+                            bedwarsFlagWhichCan = 1;
+                            player.sendMessage("すでに1人が参加しているので、開始します。");
+                            this.BedwarsTimer = new BedwarsTimerUtil(bedwarsPlayerList).runTaskTimer(this.plugin, 0L, 20L);
+                            BedwarsUtil.startBedwars(this.plugin, player);
+                        }
+                    }
+
+
+
+
+
+
+
 
                 }
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
@@ -215,6 +245,16 @@ public class stefanovarentino implements Listener {
                         if (playerList.size() > 0) {
                             for (String PlayerName: playerList) {
                                 Bukkit.getPlayer(PlayerName).sendMessage("pvpがキャンセルされました。");
+                            }
+                        }
+                    }
+
+                    if (bedwarsPlayerList.contains(player.getName())) {
+                        bedwarsPlayerList.remove(player.getName());
+                        e.getPlayer().sendMessage("bedwarsをキャンセルしました。");
+                        if (bedwarsPlayerList.size() > 0) {
+                            for (String PlayerName: bedwarsPlayerList) {
+                                Bukkit.getPlayer(PlayerName).sendMessage("bedwarsがキャンセルされました。");
                             }
                         }
                     }

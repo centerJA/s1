@@ -22,4 +22,4 @@ commands:
   sv tp pvpMap:
     description: teleport pvpMap(restriction.!Playing_Game)
   sv help:
-    description: help
+    description: sendMessage help

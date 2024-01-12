@@ -2,6 +2,8 @@ package stefano.s1.utils;
 
 import com.sun.org.apache.bcel.internal.generic.IOR;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -78,12 +80,19 @@ public class PlayerScore {
     }
 
     public static void removePlayerTimeAll(Player player, S1 plugin) throws IOException {
-        File file = new File("./playerTime.yml");
-        YamlConfiguration log = YamlConfiguration.loadConfiguration(file);
-        String playerName = player.getName();
-        for (String playerTime: log.getKeys(false)) {
-            log.set(playerName, 100000);
+        if (player.getName().equals("InfInc") || player.getName().equals("markcs11")) {
+            player.sendMessage(ChatColor.RED + "権限が必要です");
+            File file = new File("./playerTime.yml");
+            YamlConfiguration log = YamlConfiguration.loadConfiguration(file);
+            String playerName = player.getName();
+            for (String playerTimeSS: log.getKeys(false)) {
+                if (log.get(playerName) == null) return;
+                log.set(playerTimeSS, 100000);
+            }
+            log.save(file);
+            player.sendMessage("完了しました");
+        } else {
+            player.sendMessage(ChatColor.RED + "権限がありません");
         }
-        log.save(file);
     }
 }
