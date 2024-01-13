@@ -49,7 +49,7 @@ public class stefanovarentino implements Listener {
 
     private int tof;
 
-    public int flag, bedwarsFlag, bedwarsFlagWhichCan;
+    public int flag, bedwarsFlag, bedwarsFlagWhichCan, bedwarsBlockPlaceWhichCan;
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
     File PlayerAthleticTime;
@@ -80,6 +80,7 @@ public class stefanovarentino implements Listener {
         this.bedwarsFlag = 0;
         this.bedwarsPlayerList = new ArrayList<>();
         this.bedwarsFlagWhichCan = 0;
+        this.bedwarsBlockPlaceWhichCan = 0;
     }
 
     public static void removePlayerList(Player player, ArrayList playerList) {
@@ -208,8 +209,6 @@ public class stefanovarentino implements Listener {
                         return;
                     }
                     player.teleport(taikijyo);
-                    if (bedwarsFlag == 0) {
-                        bedwarsFlag = 1;
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                         if (!bedwarsPlayerList.contains(player.getName())) {
@@ -217,12 +216,22 @@ public class stefanovarentino implements Listener {
                         }
                         player.sendMessage(ChatColor.YELLOW + bedwarsPlayerList.toString());
                         if (bedwarsPlayerList.size() == 1) {
+                            player.sendMessage(ChatColor.AQUA + "人数が足りません。2人が必要です。");
+                            player.sendMessage(ChatColor.AQUA + "現在1人です。");
+                        }
+                        if (bedwarsPlayerList.size() == 2) {
                             bedwarsFlagWhichCan = 1;
                             player.sendMessage("すでに1人が参加しているので、開始します。");
+                            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    bedwarsBlockPlaceWhichCan = 1;
+                                }
+                            }, 410L);
                             this.BedwarsTimer = new BedwarsTimerUtil(bedwarsPlayerList).runTaskTimer(this.plugin, 0L, 20L);
-                            BedwarsUtil.startBedwars(this.plugin, player);
+                            BedwarsUtil.startBedwars(this.plugin, player, bedwarsPlayerList);
                         }
-                    }
+
 
 
 
@@ -251,11 +260,13 @@ public class stefanovarentino implements Listener {
 
                     if (bedwarsPlayerList.contains(player.getName())) {
                         bedwarsPlayerList.remove(player.getName());
+                        BedwarsTimerUtil.stopBedwarsCountDownTimer();
                         e.getPlayer().sendMessage("bedwarsをキャンセルしました。");
-                        if (bedwarsPlayerList.size() > 0) {
-                            for (String PlayerName: bedwarsPlayerList) {
-                                Bukkit.getPlayer(PlayerName).sendMessage("bedwarsがキャンセルされました。");
-                            }
+                    }
+                    if (bedwarsPlayerList.size() == 1) {
+                        bedwarsFlagWhichCan = 0;
+                        for (String PlayerName: bedwarsPlayerList) {
+                            Bukkit.getPlayer(PlayerName).sendMessage("bedwarsがキャンセルされました。");
                         }
                     }
                     player.teleport(this.lobby);
@@ -268,6 +279,7 @@ public class stefanovarentino implements Listener {
                     player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
                     player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
+                    player.getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.BED));
                     playerList.remove(player.getName());
                 }
                 if (itemStack.getType() == Material.APPLE) {
@@ -406,6 +418,7 @@ public class stefanovarentino implements Listener {
         e.setCancelled(true);
 
     }
+
     @EventHandler
     public void onPlayerMoveEvent(PlayerMoveEvent e){
         for (String PlayerName: playerList){
@@ -504,8 +517,12 @@ public class stefanovarentino implements Listener {
         player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
         player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
+        player.getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.BED));
         if (this.playerList.size() != 0) {
             playerList.remove(player.getName());
+        }
+        if (bedwarsPlayerList.contains(player)) {
+            bedwarsPlayerList.remove(player);
         }
     }
 
@@ -624,6 +641,9 @@ public class stefanovarentino implements Listener {
             Location location = e.getBlock().getLocation();
             pvpUtil.blockLocation(location);
             player.sendMessage("iwuhuialksmdlsajdjssjdajdjwad");
+        }
+        if (bedwarsBlockPlaceWhichCan == 0) {
+            e.setCancelled(true);
         }
 
         else {

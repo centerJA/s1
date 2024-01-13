@@ -27,4 +27,8 @@ public class BedwarsTimerUtil extends BukkitRunnable {
         }
         nowBedwarsTime--;
     }
+
+    public static void stopBedwarsCountDownTimer() {
+        nowBedwarsTime = -100;
+    }
 }
