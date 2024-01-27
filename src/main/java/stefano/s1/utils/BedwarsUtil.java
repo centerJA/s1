@@ -15,7 +15,7 @@ public class BedwarsUtil {
     public static void startBedwars(S1 plugin, Player player, ArrayList<String> bedwarsPlayerList) {
         World world = Bukkit.getWorld("stefanovarentino");
         bedwarsPlayerLocation1BLUE = new Location(world, -12.500, 229, 82.500, 180, 0);
-        bedwarsPlayerLocation2RED = new Location(world,-11.500, 229, 42.500, 0, 0);
+        bedwarsPlayerLocation2RED = new Location(world,-10.500, 229, 42.500, 0, 0);
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
@@ -25,6 +25,7 @@ public class BedwarsUtil {
                 ItemStack sciccors = new ItemStack(Material.SHEARS);
                 ItemStack blockBlue = new ItemStack(Material.WOOL, 64, (byte)11);
                 ItemStack blockRed = new ItemStack(Material.WOOL, 64, (byte)14);
+                ItemStack lobby = new ItemStack(Material.RED_MUSHROOM);
 
 
                 for (String PlayerName: bedwarsPlayerList) {
@@ -39,11 +40,8 @@ public class BedwarsUtil {
                         playerABLUE.getInventory().setItem(1, woodPickaxe);
                         playerABLUE.getInventory().setItem(2, woodAxe);
                         playerABLUE.getInventory().setItem(3, sciccors);
-                        playerABLUE.getInventory().setItem(2, blockBlue);
-                        playerABLUE.getInventory().setItem(5, blockRed);
-
-
-
+                        playerABLUE.getInventory().setItem(4, blockBlue);
+                        playerABLUE.getInventory().setItem(9, lobby);
                     }
                     if (PlayerName.equals(bedwarsPlayerList.get(1))) {
                         Player playerBRED = Bukkit.getPlayer(PlayerName);
@@ -55,8 +53,8 @@ public class BedwarsUtil {
                         playerBRED.getInventory().setItem(1, woodPickaxe);
                         playerBRED.getInventory().setItem(2, woodAxe);
                         playerBRED.getInventory().setItem(3, sciccors);
-                        playerBRED.getInventory().setItem(2, blockBlue);
-                        playerBRED.getInventory().setItem(5, blockRed);
+                        playerBRED.getInventory().setItem(4, blockRed);
+                        playerBRED.getInventory().setItem(9, lobby);
                     }
                 }
             }

@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,6 +34,7 @@ import stefano.s1.utils.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
@@ -43,7 +46,7 @@ public class stefanovarentino implements Listener {
 
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
-    public static ArrayList<String> bedwarsPlayerList;
+    public static ArrayList<String> bedwarsPlayerList, cannnotDamageList;
 
     String stetasu = "taiki";
 
@@ -73,6 +76,7 @@ public class stefanovarentino implements Listener {
         this.playerList = new ArrayList<>();
         this.deathPlayerList = new ArrayList<>();
         this.athleticPlayerList = new ArrayList<>();
+        this.cannnotDamageList = new ArrayList<>();
         this.checkpointList = plugin.getConfig();
         this.athleticTimer = new AthleticTimer();
         this.tof = 0;
@@ -208,29 +212,36 @@ public class stefanovarentino implements Listener {
                         player.sendMessage("2人しかできないので今プレイしている人が終わるまでお待ちください!");
                         return;
                     }
+                    cannnotDamageList.add(player.getName());
                     player.teleport(taikijyo);
-                        player.getInventory().clear();
-                        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                        if (!bedwarsPlayerList.contains(player.getName())) {
-                            bedwarsPlayerList.add(player.getName());
-                        }
-                        player.sendMessage(ChatColor.YELLOW + bedwarsPlayerList.toString());
-                        if (bedwarsPlayerList.size() == 1) {
-                            player.sendMessage(ChatColor.AQUA + "人数が足りません。2人が必要です。");
-                            player.sendMessage(ChatColor.AQUA + "現在1人です。");
-                        }
-                        if (bedwarsPlayerList.size() == 2) {
-                            bedwarsFlagWhichCan = 1;
-                            player.sendMessage("すでに1人が参加しているので、開始します。");
-                            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                                @Override
-                                public void run() {
+                    player.getInventory().clear();
+                    player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                    if (!bedwarsPlayerList.contains(player.getName())) {
+                        bedwarsPlayerList.add(player.getName());
+                    }
+                    player.sendMessage(ChatColor.YELLOW + bedwarsPlayerList.toString());
+                    if (bedwarsPlayerList.size() == 1) {
+                        player.sendMessage(ChatColor.AQUA + "人数が足りません。2人が必要です。");
+                        player.sendMessage(ChatColor.AQUA + "現在1人です。");
+                    }
+                    if (bedwarsPlayerList.size() == 2) {
+                        bedwarsFlagWhichCan = 1;
+                        player.sendMessage("すでに1人が参加しているので、開始します。");
+                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                            @Override
+                            public void run() {
                                     bedwarsBlockPlaceWhichCan = 1;
+                                    for (String PlayerName: bedwarsPlayerList) {
+                                        cannnotDamageList.remove(PlayerName);
+                                    }
                                 }
                             }, 410L);
-                            this.BedwarsTimer = new BedwarsTimerUtil(bedwarsPlayerList).runTaskTimer(this.plugin, 0L, 20L);
-                            BedwarsUtil.startBedwars(this.plugin, player, bedwarsPlayerList);
-                        }
+                        this.BedwarsTimer = new BedwarsTimerUtil(bedwarsPlayerList).runTaskTimer(this.plugin, 0L, 20L);
+                        BedwarsUtil.startBedwars(this.plugin, player, bedwarsPlayerList);
+                    }
+
+
+
 
 
 
@@ -267,6 +278,8 @@ public class stefanovarentino implements Listener {
                         bedwarsFlagWhichCan = 0;
                         for (String PlayerName: bedwarsPlayerList) {
                             Bukkit.getPlayer(PlayerName).sendMessage("bedwarsがキャンセルされました。");
+                            Bukkit.getPlayer(PlayerName).teleport(lobby);
+                            bedwarsPlayerList.remove(Bukkit.getPlayer(PlayerName).getName());
                         }
                     }
                     player.teleport(this.lobby);
@@ -308,6 +321,7 @@ public class stefanovarentino implements Listener {
                     if (flag == 0) {
                         this.flag = 1;
                         player.teleport(this.taikijyo);
+                        cannnotDamageList.add(player.getName());
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                         if (!playerList.contains(player.getName())) {
@@ -328,6 +342,7 @@ public class stefanovarentino implements Listener {
                                             LimitTimer.stopTimer();
                                             break;
                                         }
+                                        cannnotDamageList.remove(PlayerName);
                                         Bukkit.getPlayer(PlayerName).teleport(pvpStart);
                                         Bukkit.getPlayer(PlayerName).setGameMode(GameMode.SURVIVAL);
                                         Bukkit.getPlayer(PlayerName).setFoodLevel(6);
@@ -655,27 +670,67 @@ public class stefanovarentino implements Listener {
     public void onBlockBreakEvent(BlockBreakEvent e) {
         Player player = e.getPlayer();
         World world = player.getWorld();
+        Material material = e.getBlock().getType();
+        Collection<ItemStack> itemStack = e.getBlock().getDrops();
         if (this.world != world) return;
+        if (material == null) return;
         if (bedwarsBlockPlaceWhichCan == 1) {
             player.sendMessage("ifの中");
-            if (e.getBlock().getType().equals(Material.GRASS)) {
-                player.sendMessage(e.getBlock().getType().name());
+            if (material.equals(Material.GRASS) || material.equals(Material.DIRT)) {
+                player.sendMessage(String.valueOf(material));
+                player.sendMessage(String.valueOf(e.getPlayer()));
+                player.sendMessage(e.getPlayer().getName());
+                player.sendMessage(itemStack.toString());
                 e.setCancelled(true);
+                player.sendMessage("地形の破壊は許可されてません!");
+                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.GRASS);
+                player.sendMessage("test");
             }
-            if (e.getBlock().getType().equals(Material.LEAVES)) {
-                player.sendMessage("葉っぱ");
+            if (material.equals(Material.LEAVES) || material.equals(Material.LEAVES_2)) {
+                player.sendMessage(String.valueOf(material));
+                player.sendMessage(String.valueOf(e.getPlayer()));
+                player.sendMessage(e.getPlayer().getName());
+                player.sendMessage(itemStack.toString());
                 e.setCancelled(true);
+                player.sendMessage("地形の破壊は許可されてません!");
+                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.LEAVES);
+                player.sendMessage("test");
+
             }
-            if (e.getBlock().getType().equals(Material.LOG)) {
-                player.sendMessage("原木");
+            if (material.equals(Material.LOG) || material.equals(Material.LOG_2)) {
+                player.sendMessage(String.valueOf(material));
+                player.sendMessage(String.valueOf(e.getPlayer()));
+                player.sendMessage(e.getPlayer().getName());
+                player.sendMessage(itemStack.toString());
                 e.setCancelled(true);
+                player.sendMessage("地形の破壊は許可されてません!");
+                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.LOG);
+                player.sendMessage("test");
             }
-            if (e.getBlock().getType().equals(Material.GOLD_BLOCK)) {
-                player.sendMessage("金ブロック");
+            if (material.equals(Material.GOLD_BLOCK)) {
+                player.sendMessage(String.valueOf(material));
+                player.sendMessage(String.valueOf(e.getPlayer()));
+                player.sendMessage(e.getPlayer().getName());
+                player.sendMessage(itemStack.toString());
                 e.setCancelled(true);
+                player.sendMessage("地形の破壊は許可されてません!");
+                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.GOLD_BLOCK);
+                player.sendMessage("test");
             }
         } else {
             player.sendMessage("ifの外");
+        }
+    }
+    @EventHandler
+    public void onEntityDamageEvent(EntityDamageEvent e) {
+        Entity entity = e.getEntity();
+        World world = entity.getWorld();
+        if (this.world != world) return;
+        if (bedwarsBlockPlaceWhichCan == 1) return;
+        for (String PlayerName: cannnotDamageList) {
+            if (PlayerName.equals(entity)) {
+                e.setCancelled(true);
+            }
         }
     }
 }
