@@ -4,13 +4,13 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -648,6 +648,34 @@ public class stefanovarentino implements Listener {
 
         else {
             player.sendMessage("プレイイングじゃありません");
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreakEvent(BlockBreakEvent e) {
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        if (this.world != world) return;
+        if (bedwarsBlockPlaceWhichCan == 1) {
+            player.sendMessage("ifの中");
+            if (e.getBlock().getType().equals(Material.GRASS)) {
+                player.sendMessage(e.getBlock().getType().name());
+                e.setCancelled(true);
+            }
+            if (e.getBlock().getType().equals(Material.LEAVES)) {
+                player.sendMessage("葉っぱ");
+                e.setCancelled(true);
+            }
+            if (e.getBlock().getType().equals(Material.LOG)) {
+                player.sendMessage("原木");
+                e.setCancelled(true);
+            }
+            if (e.getBlock().getType().equals(Material.GOLD_BLOCK)) {
+                player.sendMessage("金ブロック");
+                e.setCancelled(true);
+            }
+        } else {
+            player.sendMessage("ifの外");
         }
     }
 }

@@ -67,7 +67,7 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage("2.SleetyNote17020");
                         player.sendMessage("3.maintya3");
                     }
-                    if (args[1].equals("homePageURL")) {
+                    if (args[1].equals("homePageURL") || args[1].equals("homepageurl") || args[1].equals("homepageURL")) {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1);
                         player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/215");
                     }
