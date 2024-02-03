@@ -23,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -90,6 +91,8 @@ public class stefanovarentino implements Listener {
     public static void removePlayerList(Player player, ArrayList playerList) {
         playerList.remove(player.getName());
     }
+
+
 
     @EventHandler
     public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e) {
@@ -203,6 +206,9 @@ public class stefanovarentino implements Listener {
         }
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
             if (e.getItem() != null) {
+                if (CoolDownUtil.cooldown(e.getPlayer(), plugin) == 1) {
+                    return;
+                }
                 ItemStack itemStack = e.getItem();
                 String playerName = player.getName();
                 if (itemStack.getType() == Material.BED) {
@@ -261,6 +267,7 @@ public class stefanovarentino implements Listener {
                         stefano.s1.utils.Timer.stopCountDownTimer();
                         if (tof == 0) {
                          e.getPlayer().sendMessage("pvpをキャンセルしました。");
+                         Timer.cancel();
                         }
                         if (playerList.size() > 0) {
                             for (String PlayerName: playerList) {
@@ -273,13 +280,29 @@ public class stefanovarentino implements Listener {
                         bedwarsPlayerList.remove(player.getName());
                         BedwarsTimerUtil.stopBedwarsCountDownTimer();
                         e.getPlayer().sendMessage("bedwarsをキャンセルしました。");
+                        e.getPlayer().teleport(lobby);
+                        e.getPlayer().getInventory().clear();
+                        e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
+                        e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
+                        e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
+                        e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.BED));
                     }
                     if (bedwarsPlayerList.size() == 1) {
                         bedwarsFlagWhichCan = 0;
                         for (String PlayerName: bedwarsPlayerList) {
-                            Bukkit.getPlayer(PlayerName).sendMessage("bedwarsがキャンセルされました。");
-                            Bukkit.getPlayer(PlayerName).teleport(lobby);
-                            bedwarsPlayerList.remove(Bukkit.getPlayer(PlayerName).getName());
+                            if (bedwarsBlockPlaceWhichCan == 0) {
+                                Bukkit.getPlayer(PlayerName).sendMessage("bedwarsがキャンセルされました。");
+                            }
+                            if (bedwarsBlockPlaceWhichCan == 1) {
+                                Bukkit.getPlayer(PlayerName).sendMessage("bedwarsがキャンセルされました。");
+                                Bukkit.getPlayer(PlayerName).teleport(lobby);
+                                Bukkit.getPlayer(PlayerName).getInventory().clear();
+                                Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
+                                Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
+                                Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
+                                Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.BED));
+                                bedwarsPlayerList.remove(Bukkit.getPlayer(PlayerName).getName());
+                            }
                         }
                     }
                     player.teleport(this.lobby);
@@ -316,7 +339,7 @@ public class stefanovarentino implements Listener {
                         public void run() {
                             flag = 0;
                         }
-                    }, 40L);
+                    }, 80L);
 
                     if (flag == 0) {
                         this.flag = 1;
@@ -366,6 +389,7 @@ public class stefanovarentino implements Listener {
                                 public void run() {
                                     for (String PlayerName : playerList) {
                                         if (playerList.size() < 2) {
+                                            LimitTimer.stopTimer();
                                             break;
                                         }
                                         Bukkit.getPlayer(PlayerName).setFoodLevel(20);
@@ -397,7 +421,8 @@ public class stefanovarentino implements Listener {
                             player.sendMessage(ChatColor.AQUA + "現在1人です。");
                         }
                     } else {
-                        player.sendMessage("少しお待ちください!");
+//                        player.sendMessage("少しお待ちください!");
+//                        return;
                     }
                 }
 
@@ -731,6 +756,16 @@ public class stefanovarentino implements Listener {
             if (PlayerName.equals(entity)) {
                 e.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerItemDamageEvent(PlayerItemDamageEvent e) {
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        if (this.world != world) return;
+        if (bedwarsBlockPlaceWhichCan == 1) {
+                e.setCancelled(true);
         }
     }
 }
