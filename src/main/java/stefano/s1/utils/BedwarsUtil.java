@@ -19,12 +19,12 @@ public class BedwarsUtil {
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
-                ItemStack woodSword = new ItemStack(Material.WOOD_SWORD);
-                ItemStack woodPickaxe = new ItemStack(Material.WOOD_PICKAXE);
-                ItemStack woodAxe = new ItemStack(Material.WOOD_AXE);
+                ItemStack woodSword = new ItemStack(Material.WOODEN_SWORD);
+                ItemStack woodPickaxe = new ItemStack(Material.WOODEN_PICKAXE);
+                ItemStack woodAxe = new ItemStack(Material.WOODEN_AXE);
                 ItemStack sciccors = new ItemStack(Material.SHEARS);
-                ItemStack blockBlue = new ItemStack(Material.WOOL, 64, (byte)11);
-                ItemStack blockRed = new ItemStack(Material.WOOL, 64, (byte)14);
+                ItemStack blockBlue = new ItemStack(Material.BLUE_WOOL, 64);
+                ItemStack blockRed = new ItemStack(Material.RED_WOOL, 64);
                 ItemStack lobby = new ItemStack(Material.RED_MUSHROOM);
 
 

@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 
 public class stefanovarentino implements Listener {
@@ -62,6 +63,7 @@ public class stefanovarentino implements Listener {
 
 
     public stefanovarentino(S1 plugin) {
+        Bukkit.getLogger().info("stefanovarentino");
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.world = Bukkit.getWorld("stefanovarentino");
@@ -86,6 +88,7 @@ public class stefanovarentino implements Listener {
         this.bedwarsPlayerList = new ArrayList<>();
         this.bedwarsFlagWhichCan = 0;
         this.bedwarsBlockPlaceWhichCan = 0;
+        Bukkit.getLogger().info("finishStefanovarentino");
     }
 
     public static void removePlayerList(Player player, ArrayList playerList) {
@@ -97,13 +100,14 @@ public class stefanovarentino implements Listener {
     @EventHandler
     public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e) {
         Player player = e.getPlayer();
+        Bukkit.getLogger().info((player.getName()));
         World world = player.getWorld();
+        Bukkit.getLogger().info(world.getName());
         if (this.world != world) {
             ScoreBoardUtil.removeScoreboard(player);
             AthleticTimer.stopTimer(player);
             e.getPlayer().setLevel(0);
             player.getInventory().clear();
-
             return;
         }
         if (playerList.contains(player.getName())) {
@@ -130,7 +134,7 @@ public class stefanovarentino implements Listener {
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
         player.getInventory().addItem(ItemUtil.setItemMeta("PVP", Material.EMERALD));
         player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
-        player.getInventory().addItem(ItemUtil.setItemMeta("Bedwars", Material.BED));
+        player.getInventory().addItem(ItemUtil.setItemMeta("Bedwars", Material.WHITE_BED));
 
 
 
@@ -147,7 +151,7 @@ public class stefanovarentino implements Listener {
         if (this.world != world) return;
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = e.getClickedBlock();
-            if (block != null && block.getType() == Material.WALL_SIGN) {
+            if (block != null && block.getType() == Material.OAK_WALL_SIGN) {
                 Sign sign = (Sign) block.getState();
                 String[] lines = sign.getLines();
                 if (Objects.equals(lines[0], "tyekkupoinnto") || Objects.equals(lines[0], "チェックポイント")) {
@@ -179,7 +183,7 @@ public class stefanovarentino implements Listener {
             }
         }
         if (e.getAction().equals(Action.PHYSICAL)) {
-            if (e.getClickedBlock().getType() == Material.STONE_PLATE) {
+            if (Objects.requireNonNull(e.getClickedBlock()).getType() == Material.STONE_PRESSURE_PLATE) {
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticClear.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticClear.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticClear.getY())) {
                     if (player.getLevel() == 0) {
                         player.sendMessage(ChatColor.AQUA + "あなたのタイムは現在0です!");
@@ -211,7 +215,7 @@ public class stefanovarentino implements Listener {
                 }
                 ItemStack itemStack = e.getItem();
                 String playerName = player.getName();
-                if (itemStack.getType() == Material.BED) {
+                if (itemStack.getType() == Material.WHITE_BED) {
                     player.sendMessage("現在開発中です!");
                     player.sendMessage("まだアクセスすることができません!");
                     if (bedwarsFlagWhichCan == 1) {
@@ -285,7 +289,7 @@ public class stefanovarentino implements Listener {
                         e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
                         e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
                         e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-                        e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.BED));
+                        e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.WHITE_BED));
                     }
                     if (bedwarsPlayerList.size() == 1) {
                         bedwarsFlagWhichCan = 0;
@@ -300,7 +304,7 @@ public class stefanovarentino implements Listener {
                                 Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
                                 Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
                                 Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-                                Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.BED));
+                                Bukkit.getPlayer(PlayerName).getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.WHITE_BED));
                                 bedwarsPlayerList.remove(Bukkit.getPlayer(PlayerName).getName());
                             }
                         }
@@ -315,7 +319,7 @@ public class stefanovarentino implements Listener {
                     player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
                     player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-                    player.getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.BED));
+                    player.getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.WHITE_BED));
                     playerList.remove(player.getName());
                 }
                 if (itemStack.getType() == Material.APPLE) {
@@ -399,7 +403,7 @@ public class stefanovarentino implements Listener {
                                         ItemStack pvpfood = new ItemStack(Material.COOKED_BEEF, 64);
                                         Bukkit.getPlayer(PlayerName).getInventory().setItem(1, pvpfood);
                                         Bukkit.getPlayer(PlayerName).getInventory().setItem(2, ItemUtil.setCustomPotionMeta(PotionEffectType.INVISIBILITY, Material.SPLASH_POTION, "透明化"));
-                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(3, ItemUtil.setCustomPotionMeta(PotionEffectType.REGENERATION, Material.SPLASH_POTION, "再生する"));
+                                        Bukkit.getPlayer(PlayerName).getInventory().setItem(3, ItemUtil.setCustomPotionMeta(PotionEffectType.REGENERATION, Material.SPLASH_POTION, "再生"));
                                         Bukkit.getPlayer(PlayerName).getInventory().setItem(4, ItemUtil.setCustomPotionMeta(PotionEffectType.POISON, Material.LINGERING_POTION, "毒"));
                                         ItemStack pvpbow = new ItemStack(Material.BOW, 1);
                                         Bukkit.getPlayer(PlayerName).getInventory().setItem(5, pvpbow);
@@ -557,7 +561,7 @@ public class stefanovarentino implements Listener {
         player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
         player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-        player.getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.BED));
+        player.getInventory().addItem(ItemUtil.setItemMeta("bedwars", Material.WHITE_BED));
         if (this.playerList.size() != 0) {
             playerList.remove(player.getName());
         }
@@ -573,7 +577,7 @@ public class stefanovarentino implements Listener {
         String msg = e.getMessage();
         if (this.world != world) return;
         if (msg.equals("SV")) {
-            player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_SHOOT, 1, 4);
+            player.playSound(player.getLocation(), Sound.ENTITY_WITCH_DEATH, 1, 4);
         }
 
     }
@@ -609,6 +613,7 @@ public class stefanovarentino implements Listener {
     public void onInventoryCloseEvent(InventoryCloseEvent e) {
         HumanEntity human = e.getPlayer();
         Player player = Bukkit.getPlayer(human.getName());
+        if (player == null) return;
         World world = player.getWorld();
         Inventory inventory = e.getInventory();
         ItemStack[] contents = inventory.getContents();
@@ -664,6 +669,7 @@ public class stefanovarentino implements Listener {
 
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent e) {
+        Bukkit.getLogger().info("BlockPlace");
         Player player = e.getPlayer();
         World world = player.getWorld();
         if (this.world != world) return;
@@ -711,25 +717,25 @@ public class stefanovarentino implements Listener {
                 Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.GRASS);
                 player.sendMessage("test");
             }
-            if (material.equals(Material.LEAVES) || material.equals(Material.LEAVES_2)) {
+            if (material.equals(Material.OAK_LEAVES)) {
                 player.sendMessage(String.valueOf(material));
                 player.sendMessage(String.valueOf(e.getPlayer()));
                 player.sendMessage(e.getPlayer().getName());
                 player.sendMessage(itemStack.toString());
                 e.setCancelled(true);
                 player.sendMessage("地形の破壊は許可されてません!");
-                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.LEAVES);
+                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.OAK_LEAVES);
                 player.sendMessage("test");
 
             }
-            if (material.equals(Material.LOG) || material.equals(Material.LOG_2)) {
+            if (material.equals(Material.OAK_LOG)) {
                 player.sendMessage(String.valueOf(material));
                 player.sendMessage(String.valueOf(e.getPlayer()));
                 player.sendMessage(e.getPlayer().getName());
                 player.sendMessage(itemStack.toString());
                 e.setCancelled(true);
                 player.sendMessage("地形の破壊は許可されてません!");
-                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.LOG);
+                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.OAK_LOG);
                 player.sendMessage("test");
             }
             if (material.equals(Material.GOLD_BLOCK)) {

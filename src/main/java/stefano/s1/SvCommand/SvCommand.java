@@ -42,15 +42,31 @@ public class SvCommand implements CommandExecutor {
         World world = player.getWorld();
         if (command.getName().equalsIgnoreCase("sv")) {
             if (args.length == 0) {
-                player.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
-                player.sendMessage("Stefano Varentino");
+                player.sendMessage(ChatColor.AQUA + "----------Stefano Varentino command list----------");
+                player.sendMessage(ChatColor.RED + "Color:RED" + ChatColor.WHITE + "は開発中のコマンドです");
+                player.sendMessage("開発中のコマンドは使えない場合があります");
+                player.sendMessage("/sv       コマンドの一覧を表示します");
+                player.sendMessage("/sv tell origin       名前の由来を表示します");
+                player.sendMessage("/sv tell cooperative       このワールドの共同製作者を表示します");
+                player.sendMessage(ChatColor.RED + "/sv tell homePageURL       ホームページのURLを表示します");
+                player.sendMessage("/sv tp lobby       ロビーにテレポートします");
+                player.sendMessage("/sv tp athletic       アスレチックにテレポートします");
+                player.sendMessage("/sv tp pvpMap       pvpの時に使用するマップにテレポートします");
+                player.sendMessage("/sv tp svinfo       情報センターにテレポートします");
+                player.sendMessage(ChatColor.RED + "/sv help       ヘルプを表示します");
+                player.sendMessage("/sv effects       エフェクトを出します");
+                player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
             }
             else {
+                if (args[0].equals("effects")) {
+                    player.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
+                    player.sendMessage("Stefano Varentino");
+                }
                 if (args[0].equals("help")) {
                     ComponentBuilder msg1 = new ComponentBuilder("・コマンドの一覧を表示するには、ここをクリックします");
                     ComponentBuilder msg2 = new ComponentBuilder("・ホームページにアクセスするには、ここをクリックします");
-                    BaseComponent[] message1 = msg1.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sv tell command list")).create();
-                    BaseComponent[] message2 = msg2.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/215")).create();
+                    BaseComponent[] message1 = msg1.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sv")).create();
+                    BaseComponent[] message2 = msg2.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/283")).create();
                     player.sendMessage("ヘルプが必要ですか?");
                     player.spigot().sendMessage(message1);
                     player.spigot().sendMessage(message2);
@@ -69,24 +85,7 @@ public class SvCommand implements CommandExecutor {
                     }
                     if (args[1].equals("homePageURL") || args[1].equals("homepageurl") || args[1].equals("homepageURL")) {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1);
-                        player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/215");
-                    }
-                    if (args[1].equals("command")) {
-                        if (args[2].equals("list")) {
-                            player.sendMessage(ChatColor.AQUA + "----------Stefano Varentino command list----------");
-                            player.sendMessage(ChatColor.RED + "Color:RED" + ChatColor.WHITE + "は開発中のコマンドです");
-                            player.sendMessage("開発中のコマンドは使えない場合があります");
-                            player.sendMessage("/sv tell command list       コマンドの一覧を表示します");
-                            player.sendMessage("/sv tell origin       名前の由来を表示します");
-                            player.sendMessage("/sv tell cooperative       このワールドの共同製作者を表示します");
-                            player.sendMessage(ChatColor.RED + "/sv tell homePageURL       ホームページのURLを表示します");
-                            player.sendMessage("/sv tp lobby       ロビーにテレポートします");
-                            player.sendMessage("/sv tp athletic       アスレチックにテレポートします");
-                            player.sendMessage("/sv tp pvpMap       pvpの時に使用するマップにテレポートします");
-                            player.sendMessage("/sv tp svinfo       情報センターにテレポートします");
-                            player.sendMessage(ChatColor.RED + "/sv help       ヘルプを表示します");
-                            player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
-                        }
+                        player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/283");
                     }
                 }
                 if (args[0].equals("tp")) {

@@ -1,25 +1,25 @@
 name: S1
 version: '${project.version}'
 main: stefano.s1.S1
-api-version: 1.19
+api-version: 1.16
 commands:
   sv:
-    description: effect DRAGON_BREATH
-  sv tell command list:
-    description: sendMessage command list
+    description: type(sendMessage)command list
+  sv effects:
+    description: type(playEffects)dragon breath
   sv tell origin:
-    description: sendMessage tell origin
+    description: tyoe(sendMessage)tell origin
   sv tell cooperative:
-    description: sendMessage cooperative player
+    description: type(sendMessage)cooperative player
   sv tell homePageURL:
-    description: sendMessage SV homePage URL
+    description: type(sendMessage)SV homePage URL
   sv tp lobby:
-    description: teleport lobby
+    description: type(teleport)lobby
   sv tp athletic:
-    description: teleport athletic
+    description: type(teleport)athletic
   sv tp svinfo:
-    description: teleport sv information center
+    description: type(teleport)sv information center
   sv tp pvpMap:
-    description: teleport pvpMap(restriction.!Playing_Game)
+    description: type(teleport) restriction(!Playing_Game)pvpMap
   sv help:
-    description: sendMessage help
+    description: type(sendMessage help)

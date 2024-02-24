@@ -11,6 +11,7 @@ public final class S1 extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         new stefanovarentino(this);
+        getLogger().info("pluginS1");
         AthleticTimer athleticTimer = new AthleticTimer();
         getCommand("sv").setExecutor(new SvCommand(athleticTimer));
     }
