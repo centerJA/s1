@@ -127,7 +127,7 @@ public class stefanovarentino implements Listener {
         player.sendMessage(ChatColor.GREEN + "レッドストーンブロック…アスレチックがプレイできます。");
         player.sendMessage(ChatColor.GREEN + "エメラルド…PVPがプレイできます。");
         player.sendMessage(ChatColor.GREEN + "赤いきのこ…ロビーの中心に戻ります。");
-        player.sendMessage(ChatColor.GREEN + "/sv tell command list…コマンド一覧を表示します。");
+        player.sendMessage(ChatColor.GREEN + "/sv…コマンド一覧を表示します。");
         player.sendMessage(ChatColor.AQUA + "------------------------------");
         player.teleport(this.lobby);
         player.getInventory().clear();
