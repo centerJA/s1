@@ -2,6 +2,7 @@ package stefano.s1.utils;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -26,5 +27,15 @@ public class ItemUtil {
         itemStack.setItemMeta(potionMeta);
         return itemStack;
 
+    }
+
+    public static int canBlockPlace(Player player) {
+        int answer = 0;
+        if (player.getName().equals("markcs11") || player.getName().equals("InfInc")) {
+            return answer;
+        } else {
+            answer = 1;
+            return answer;
+        }
     }
 }
