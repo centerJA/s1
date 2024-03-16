@@ -22,4 +22,10 @@ commands:
   sv tp pvpMap:
     description: type(teleport) restriction(!Playing_Game)pvpMap
   sv help:
-    description: type(sendMessage help)
+    description: type(sendMessage) help
+  sv title:
+    description: type(title) title
+  sv op c:
+    description: type(op action) set gamemode creative
+  sv op s:
+    description: type(op action) set gamemode survival

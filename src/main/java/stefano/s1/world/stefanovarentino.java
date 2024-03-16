@@ -698,25 +698,30 @@ public class stefanovarentino implements Listener {
         if (material == null) return;
         if (bedwarsBlockPlaceWhichCan == 1) {
             if (material.equals(Material.GRASS) || material.equals(Material.DIRT)) {
-                e.setCancelled(true);
-                player.sendMessage("地形の破壊は許可されてません!");
-                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.GRASS);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    e.setCancelled(true);
+                    player.sendMessage("地形の破壊は許可されてません!");
+                    player.sendMessage(String.valueOf(bedwarsBlockPlaceWhichCan));
+                });
             }
             if (material.equals(Material.OAK_LEAVES)) {
-                e.setCancelled(true);
-                player.sendMessage("地形の破壊は許可されてません!");
-                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.OAK_LEAVES);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    e.setCancelled(true);
+                    player.sendMessage("地形の破壊は許可されてません!");
+                });
 
             }
             if (material.equals(Material.OAK_LOG)) {
-                e.setCancelled(true);
-                player.sendMessage("地形の破壊は許可されてません!");
-                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.OAK_LOG);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    e.setCancelled(true);
+                    player.sendMessage("地形の破壊は許可されてません!");
+                });
             }
             if (material.equals(Material.GOLD_BLOCK)) {
-                e.setCancelled(true);
-                player.sendMessage("地形の破壊は許可されてません!");
-                Bukkit.getWorld("stefanovarentino").getBlockAt(e.getBlock().getLocation()).setType(Material.GOLD_BLOCK);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    e.setCancelled(true);
+                    player.sendMessage("地形の破壊は許可されてません!");
+                });
             }
         }
     }

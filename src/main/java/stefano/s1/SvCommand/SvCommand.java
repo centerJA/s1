@@ -56,9 +56,28 @@ public class SvCommand implements CommandExecutor {
                 player.sendMessage("/sv help       ヘルプを表示します");
                 player.sendMessage("/sv effects       エフェクトを出します");
                 player.sendMessage(ChatColor.RED + "/sv report       このコマンドを打って表示されるリンクをクリックしてバグや誤字を報告してください");
+                player.sendMessage("/sv title       タイトルを表示します");
                 player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
             }
             else {
+                if (args[0].equals("op")) {
+                    if (player.getName().equals("markcs11") || player.getName().equals("InfInc")) {
+                        if (args[1].equals("c")) {
+                            player.sendMessage(ChatColor.DARK_RED + "OP ACTION");
+                            player.setGameMode(GameMode.CREATIVE);
+                        }
+                        if (args[1].equals("s")) {
+                            player.sendMessage(ChatColor.DARK_RED + "OP ACTION");
+                            player.setGameMode(GameMode.SURVIVAL);
+                        }
+                        else {
+                            return false;
+                        }
+                    } else {
+                        player.sendMessage("OP権限が必要です");
+                        return false;
+                    }
+                }
                 if (args[0].equals("report")) {
                     ComponentBuilder report = new ComponentBuilder("バグや誤字を見つけた際には" + ChatColor.AQUA + "ここをクリック" + ChatColor.WHITE + "して報告をお願いします!");
                     BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/283")).create();
@@ -97,6 +116,9 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/283");
                     }
                 }
+                if (args[0].equals("title")) {
+                    player.sendTitle("SV", "This is Stefano Varentino", 5, 40, 20);
+                }
                 if (args[0].equals("tp")) {
                     if (args[1].equals("lobby")) {
                         player.sendMessage("lobbyにテレポートします");
@@ -105,8 +127,6 @@ public class SvCommand implements CommandExecutor {
                         athleticTimer.stopTimer(player);
                         player.setLevel(0);
                         player.getInventory().clear();
-                        player.getInventory().addItem(ItemUtil.setItemMeta("pvp", Material.EMERALD));
-                        player.getInventory().addItem(ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
                         Config.playerList.remove(player.getName());
                     }
