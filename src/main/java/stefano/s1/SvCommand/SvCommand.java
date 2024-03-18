@@ -57,17 +57,18 @@ public class SvCommand implements CommandExecutor {
                 player.sendMessage("/sv effects       エフェクトを出します");
                 player.sendMessage(ChatColor.RED + "/sv report       このコマンドを打って表示されるリンクをクリックしてバグや誤字を報告してください");
                 player.sendMessage("/sv title       タイトルを表示します");
+                player.sendMessage("/sv hello       ワールド紹介文を表示します");
                 player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
             }
             else {
                 if (args[0].equals("op")) {
                     if (player.getName().equals("markcs11") || player.getName().equals("InfInc")) {
                         if (args[1].equals("c")) {
-                            player.sendMessage(ChatColor.DARK_RED + "OP ACTION");
+                            player.sendMessage(ChatColor.DARK_RED + "(OP ACTION)type:set gamemode gamemode:creative user:" + ChatColor.DARK_RED + player.getName());
                             player.setGameMode(GameMode.CREATIVE);
                         }
                         if (args[1].equals("s")) {
-                            player.sendMessage(ChatColor.DARK_RED + "OP ACTION");
+                            player.sendMessage(ChatColor.DARK_RED + "(OP ACTION)type:set gamemode gamemode:survival user:" + ChatColor.DARK_RED + player.getName());
                             player.setGameMode(GameMode.SURVIVAL);
                         }
                         else {
@@ -80,7 +81,12 @@ public class SvCommand implements CommandExecutor {
                 }
                 if (args[0].equals("report")) {
                     ComponentBuilder report = new ComponentBuilder("バグや誤字を見つけた際には" + ChatColor.AQUA + "ここをクリック" + ChatColor.WHITE + "して報告をお願いします!");
-                    BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/283")).create();
+                    BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://google.com")).create();
+                    player.spigot().sendMessage(reportURL);
+                }
+                if (args[0].equals("hello")) {
+                    ComponentBuilder report = new ComponentBuilder(ChatColor.AQUA + "ここをクリック");
+                    BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "どうもこんにちは！StefanoVarentinoを制作しているInfIncです！このワールドにはいろいろなギミックがあります。1つ目は'/sv'という独自のコマンドがあるところです。'/sv'と打って、コマンドの一覧を出します。2つ目は機能が多いところです。看板をクリックすると何か出てきたり、コマンドを打つと何か出てきたりします。これらのことを頭にいれながらStefanoVarentinoをプレイしてみてください！きっと何か見つかります！")).create();
                     player.spigot().sendMessage(reportURL);
                 }
                 if (args[0].equals("effects")) {
@@ -107,7 +113,7 @@ public class SvCommand implements CommandExecutor {
                     }
                     if (args[1].equals("cooperative")) {
                         player.sendMessage("ワールド作成協力者紹介");
-                        player.sendMessage("1.usikuzin");
+                        player.sendMessage("1.usikujin");
                         player.sendMessage("2.SleetyNote17020");
                         player.sendMessage("3.maintya3");
                     }
@@ -117,7 +123,7 @@ public class SvCommand implements CommandExecutor {
                     }
                 }
                 if (args[0].equals("title")) {
-                    player.sendTitle("SV", "This is Stefano Varentino", 5, 40, 20);
+                    player.sendTitle("SV", "This is Stefano Varentino", 5, 50, 35);
                 }
                 if (args[0].equals("tp")) {
                     if (args[1].equals("lobby")) {

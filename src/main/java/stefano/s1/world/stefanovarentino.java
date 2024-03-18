@@ -683,9 +683,9 @@ public class stefanovarentino implements Listener {
             Location location = e.getBlock().getLocation();
             pvpUtil.blockLocation(location);
         }
-        if (ItemUtil.canBlockPlace(player) == 1) {
-            e.setCancelled(true);
-        }
+//        if (ItemUtil.canBlockPlace(player) == 1) {
+//            e.setCancelled(true);
+//        }
     }
 
     @EventHandler
@@ -693,35 +693,13 @@ public class stefanovarentino implements Listener {
         Player player = e.getPlayer();
         World world = player.getWorld();
         Material material = e.getBlock().getType();
-        Collection<ItemStack> itemStack = e.getBlock().getDrops();
+        Location location = e.getBlock().getLocation();
         if (this.world != world) return;
         if (material == null) return;
         if (bedwarsBlockPlaceWhichCan == 1) {
-            if (material.equals(Material.GRASS) || material.equals(Material.DIRT)) {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                    e.setCancelled(true);
-                    player.sendMessage("地形の破壊は許可されてません!");
-                    player.sendMessage(String.valueOf(bedwarsBlockPlaceWhichCan));
-                });
-            }
-            if (material.equals(Material.OAK_LEAVES)) {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                    e.setCancelled(true);
-                    player.sendMessage("地形の破壊は許可されてません!");
-                });
-
-            }
-            if (material.equals(Material.OAK_LOG)) {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                    e.setCancelled(true);
-                    player.sendMessage("地形の破壊は許可されてません!");
-                });
-            }
-            if (material.equals(Material.GOLD_BLOCK)) {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                    e.setCancelled(true);
-                    player.sendMessage("地形の破壊は許可されてません!");
-                });
+            if (material.equals(Material.GRASS_BLOCK) || material.equals(Material.DIRT) || material.equals(Material.OAK_LEAVES) || material.equals(Material.OAK_LOG) || material.equals(Material.GOLD_BLOCK)) {
+                player.sendMessage("地形の破壊は許可されてません!");
+                world.getBlockAt(location).setType(material);
             }
         }
     }
