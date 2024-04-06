@@ -453,7 +453,6 @@ public class stefanovarentino implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent e) {
-//        HumanEntity human = e.getWhoClicked();
         Player player = (Player) e.getWhoClicked();
         World world = player.getWorld();
         ItemStack itemStack = e.getCurrentItem();
@@ -461,6 +460,10 @@ public class stefanovarentino implements Listener {
         if (this.world != world) return;
         if (itemStack == null || itemStack.getItemMeta() == null) return;
         if (userTag.contains("game")) {
+            if (flag == 1) {
+                player.sendMessage("クールダウン中です！お待ちください！");
+                e.setCancelled(true);
+            }
             //athletic--------------------------------------------------------------------------------------------
             if (itemStack.getType() == Material.REDSTONE_BLOCK && itemStack.getItemMeta().getDisplayName().equals("アスレチック")) {
                 player.setHealth(20);
@@ -475,12 +478,13 @@ public class stefanovarentino implements Listener {
                 player.addScoreboardTag("athletic");
             }
             //bedwars--------------------------------------------------------------------------------------------
-            if (itemStack.getType() == Material.WHITE_BED && itemStack.getItemMeta().getDisplayName().equals("bedwars")) {
+            else if (itemStack.getType() == Material.WHITE_BED && itemStack.getItemMeta().getDisplayName().equals("bedwars")) {
                 player.setHealth(20);
                 player.sendMessage("現在開発中です!");
                 player.sendMessage("まだアクセスすることができません!");
                 if (bedwarsFlagWhichCan == 1) {
                     player.sendMessage("2人しかできないので今プレイしている人が終わるまでお待ちください!");
+                    e.setCancelled(true);
                     return;
                 }
                 cannnotDamageList.add(player.getName());
@@ -495,7 +499,7 @@ public class stefanovarentino implements Listener {
                     player.sendMessage(ChatColor.AQUA + "人数が足りません。2人が必要です。");
                     player.sendMessage(ChatColor.AQUA + "現在1人です。");
                 }
-                if (bedwarsPlayerList.size() == 2) {
+                else if (bedwarsPlayerList.size() == 2) {
                     bedwarsFlagWhichCan = 1;
                     player.sendMessage("すでに1人が参加しているので、開始します。");
                     Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
@@ -512,7 +516,7 @@ public class stefanovarentino implements Listener {
                 }
             }
             //pvp------------------------------------------------------------------------------------------
-            if (itemStack.getType() == Material.EMERALD && itemStack.getItemMeta().getDisplayName().equals("pvp")) {
+            else if (itemStack.getType() == Material.EMERALD && itemStack.getItemMeta().getDisplayName().equals("pvp")) {
                 player.setHealth(20);
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
@@ -571,13 +575,12 @@ public class stefanovarentino implements Listener {
                             @Override
                             public void run() {
                                 for (String PlayerName : playerList) {
-                                    Bukkit.getServer().broadcastMessage(PlayerName);
                                     if (playerList.size() < 2) {
-                                        Player player = Bukkit.getPlayer(PlayerName);
-                                        if (player == null) return;
                                         LimitTimer.stopTimer();
                                         break;
                                     }
+                                    Player player = Bukkit.getPlayer(PlayerName);
+                                    if (player == null) return;
                                     ItemStack ironHelmet = new ItemStack(Material.IRON_HELMET);
                                     ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS);
                                     ItemStack ironLeggings = new ItemStack(Material.IRON_LEGGINGS);
@@ -610,10 +613,7 @@ public class stefanovarentino implements Listener {
                         player.sendMessage(ChatColor.AQUA + "人数が足りません。最低2人が必要です。");
                         player.sendMessage(ChatColor.AQUA + "現在1人です。");
                     }
-                } //else {
-//                        player.sendMessage("少しお待ちください!");
-//                        return;
-//                }
+                }
             }
         }
         if (userTag.contains("athletic")) {
@@ -641,7 +641,6 @@ public class stefanovarentino implements Listener {
         World world = player.getWorld();
         Inventory inventory = e.getInventory();
         ItemStack[] contents = inventory.getContents();
-        PlayerInventory playerInventory = player.getInventory();
         boolean isEmpty = true;
         Set<String> userTag = e.getPlayer().getScoreboardTags();
         if (this.world != world) return;
@@ -717,7 +716,6 @@ public class stefanovarentino implements Listener {
         Player player = e.getPlayer();
         World world = player.getWorld();
         Material material = e.getBlock().getType();
-        Location location = e.getBlock().getLocation();
         if (this.world != world) return;
         if (material == null) return;
         if (bedwarsBlockPlaceWhichCan == 1) {
@@ -777,7 +775,6 @@ public class stefanovarentino implements Listener {
             World world = player.getWorld();
             if (this.world != world) return;
             e.setCancelled(true);
-            player.sendMessage("テスト");
         }
     }
 }
