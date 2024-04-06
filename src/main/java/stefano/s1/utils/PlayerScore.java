@@ -51,8 +51,7 @@ public class PlayerScore {
         File logFile = new File("./playerTime.yml");
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(logFile);
         if (yamlConfiguration == null) {
-            player.sendMessage("logはnullです");
-            Bukkit.getLogger().info("logはnullです---------");
+            return;
         }
         Bukkit.getLogger().info(player.getName());
         if (yamlConfiguration.get(player.getName()) == null) {
@@ -71,8 +70,8 @@ public class PlayerScore {
         String playerName = player.getName();
         if (playerName == null) {
             player.sendMessage("nulldesu");
+            return;
         }
-        if (playerName == null) return;
 
         if (log.get(playerName) == null) return;
         log.set(playerName, 100000);
@@ -90,7 +89,6 @@ public class PlayerScore {
                 log.set(playerTimeSS, 100000);
             }
             log.save(file);
-            player.sendMessage("完了しました");
         } else {
             player.sendMessage(ChatColor.RED + "権限がありません");
         }

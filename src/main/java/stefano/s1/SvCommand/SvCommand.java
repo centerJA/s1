@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
@@ -71,6 +72,11 @@ public class SvCommand implements CommandExecutor {
                             player.sendMessage(ChatColor.DARK_RED + "(OP ACTION)type:set gamemode gamemode:survival user:" + ChatColor.DARK_RED + player.getName());
                             player.setGameMode(GameMode.SURVIVAL);
                         }
+                        if (args[1].equals("m")) {
+                            player.sendMessage(ChatColor.DARK_RED + "(OP ACTION)type:give item item:material.RED_MUSHROOM user:"+ ChatColor.DARK_RED + player.getName());
+                            ItemStack material = new ItemStack(Material.RED_MUSHROOM);
+                            player.getInventory().addItem(material);
+                        }
                         else {
                             return false;
                         }
@@ -85,9 +91,15 @@ public class SvCommand implements CommandExecutor {
                     player.spigot().sendMessage(reportURL);
                 }
                 if (args[0].equals("hello")) {
-                    ComponentBuilder report = new ComponentBuilder(ChatColor.AQUA + "ここをクリック");
-                    BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "どうもこんにちは！StefanoVarentinoを制作しているInfIncです！このワールドにはいろいろなギミックがあります。1つ目は'/sv'という独自のコマンドがあるところです。'/sv'と打って、コマンドの一覧を出します。2つ目は機能が多いところです。看板をクリックすると何か出てきたり、コマンドを打つと何か出てきたりします。これらのことを頭にいれながらStefanoVarentinoをプレイしてみてください！きっと何か見つかります！")).create();
-                    player.spigot().sendMessage(reportURL);
+                    player.sendMessage("どうもこんにちは！StefanoVarentinoを制作しているInfIncです！");
+                    player.sendMessage("このワールドにはいろいろなギミックがあります。");
+                    player.sendMessage("'/sv'という独自のコマンドが存在します。");
+                    player.sendMessage("'/sv'と打って、コマンドの一覧を出します。");
+                    player.sendMessage("又機能が多いところも特徴です。");
+                    player.sendMessage("看板をクリックすると何か出てきたり、コマンドを打つと何か出てきたりします。");
+                    player.sendMessage("svinfoでは、StefanoVarentinoの情報を見ることができます。");
+                    player.sendMessage("これらのことを頭にいれながらStefanoVarentinoをプレイしてみてください！");
+                    player.sendMessage(ChatColor.AQUA + "きっと何か見つかるはずです...");
                 }
                 if (args[0].equals("effects")) {
                     player.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
@@ -139,7 +151,7 @@ public class SvCommand implements CommandExecutor {
                     if (args[1].equals("athletic")) {
                         Inventory athleticInventory = Bukkit.createInventory(null, 54, "アスレチック一覧");
                         athleticInventory.setItem(0, ItemUtil.setItemMeta("シンプル", Material.PAPER));
-                        player.getPlayer().openInventory(athleticInventory);
+                        player.openInventory(athleticInventory);
                         player.addScoreboardTag("athletic");
                     }
                     if (args[1].equals("pvpMap")) {

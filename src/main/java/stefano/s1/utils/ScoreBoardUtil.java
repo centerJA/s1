@@ -13,10 +13,10 @@ import java.util.*;
 public class ScoreBoardUtil {
     public static Scoreboard createScoreboard() {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
+        if (manager == null) return null;
         Scoreboard scoreboard = manager.getNewScoreboard();
-
-        Objective objective = scoreboard.registerNewObjective("1st player", "dummy");
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Objective objective2 = scoreboard.registerNewObjective("1st player", "dummy", "ranking");
+        objective2.setDisplaySlot(DisplaySlot.SIDEBAR);
         return scoreboard;
     }
 
@@ -46,6 +46,7 @@ public class ScoreBoardUtil {
                 team = scoreboard.registerNewTeam("Rank" + count);
             }
             team.addEntry(PlayerName);
+            if (objective == null) return;
             objective.getScore(PlayerName).setScore(time);
         }
         player.setScoreboard(scoreboard);
@@ -56,6 +57,7 @@ public class ScoreBoardUtil {
     public static void showScoreboard(Player player) {
         Scoreboard scoreboard = createScoreboard();
         String ObjectiveName = "1st player";
+        if (scoreboard == null) return;
         Objective objective = scoreboard.getObjective(ObjectiveName);
         if (objective == null) {
             player.sendMessage(ChatColor.DARK_RED + "オブジェクトが見つかりませんでした(REASON)CANNOT FIND OBJECT(0)");
@@ -67,6 +69,7 @@ public class ScoreBoardUtil {
 
     public static void removeScoreboard(Player player) {
         ScoreboardManager manager = player.getServer().getScoreboardManager();
+        if (manager == null) return;
         Scoreboard scoreboard = manager.getMainScoreboard();
         player.setScoreboard(scoreboard);
     }
