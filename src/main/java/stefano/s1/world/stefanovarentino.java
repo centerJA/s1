@@ -15,7 +15,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExhaustionEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,12 +22,9 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
@@ -37,10 +33,8 @@ import stefano.s1.utils.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
 
 
 public class stefanovarentino implements Listener {
@@ -50,16 +44,13 @@ public class stefanovarentino implements Listener {
 
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
-    public static ArrayList<String> bedwarsPlayerList, cannnotDamageList;
+    public static ArrayList<String> knockBackPlayerList, cannnotDamageList;
 
-    String stetasu = "taiki";
+    String knockBackWhichCan = "true";
 
-    private int tof;
-
-    public int flag, bedwarsFlag, bedwarsFlagWhichCan, bedwarsBlockPlaceWhichCan;
+    public int flag, bedwarsFlag;
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
-    File PlayerAthleticTime;
     BukkitTask Timer, BedwarsTimer;
     AthleticTimer athleticTimer;
 
@@ -85,12 +76,9 @@ public class stefanovarentino implements Listener {
         //this.checkpointList = plugin.getConfig();
         this.checkpointList = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getParent(), "checkpoint.yml"));
         this.athleticTimer = new AthleticTimer();
-        this.tof = 0;
         this.flag = 0;
         this.bedwarsFlag = 0;
-        this.bedwarsPlayerList = new ArrayList<>();
-        this.bedwarsFlagWhichCan = 0;
-        this.bedwarsBlockPlaceWhichCan = 0;
+        this.knockBackPlayerList = new ArrayList<>();
         Bukkit.getLogger().info("finishStefanovarentino");
     }
 
@@ -145,10 +133,6 @@ public class stefanovarentino implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) throws IOException {
         Player player = e.getPlayer();
         World world = player.getWorld();
-        ItemStack ironHelmet = new ItemStack(Material.IRON_HELMET);
-        ItemStack ironChestPlate = new ItemStack(Material.IRON_CHESTPLATE);
-        ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS);
-        ItemStack ironLeggings = new ItemStack(Material.IRON_LEGGINGS);
         if (this.world != world) return;
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = e.getClickedBlock();
@@ -186,7 +170,7 @@ public class stefanovarentino implements Listener {
                 player.setHealth(20);
                 Inventory gameListInventory = Bukkit.createInventory(null, 9, "ゲーム一覧");
                 gameListInventory.setItem(0, ItemUtil.setItemMeta("pvp", Material.EMERALD));
-                gameListInventory.setItem(1, ItemUtil.setItemMeta("bedwars", Material.WHITE_BED));
+                gameListInventory.setItem(1, ItemUtil.setItemMeta("knockback", Material.WHITE_BED));
                 gameListInventory.setItem(2, ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
@@ -233,8 +217,8 @@ public class stefanovarentino implements Listener {
 //                    return;
 //                }
                 ItemStack itemStack = e.getItem();
-                String playerName = player.getName();
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
+                    knockBackWhichCan = "true";
                     player.setHealth(20);
                     if (athleticTimer != null) {
                         AthleticTimer.stopTimer(player);
@@ -242,11 +226,9 @@ public class stefanovarentino implements Listener {
                     if (playerList.contains(player.getName())) {
                         playerList.remove(player.getName());
                         stefano.s1.utils.Timer.stopCountDownTimer();
-                        if (tof == 0) {
-                           e.getPlayer().sendMessage("pvpをキャンセルしました。");
-                           if (!(Timer == null)) {
-                               Timer.cancel();
-                           }
+                        e.getPlayer().sendMessage("pvpをキャンセルしました。");
+                        if (!(Timer == null)) {
+                            Timer.cancel();
                         }
                         if (playerList.size() > 0) {
                             for (String PlayerName: playerList) {
@@ -257,30 +239,20 @@ public class stefanovarentino implements Listener {
                         }
                     }
 
-                    if (bedwarsPlayerList.contains(player.getName())) {
-                        bedwarsPlayerList.remove(player.getName());
-                        BedwarsTimerUtil.stopBedwarsCountDownTimer();
+                    if (knockBackPlayerList.contains(player.getName())) {
+                        knockBackPlayerList.remove(player.getName());
+                        knockBackTimerUtil.stopBedwarsCountDownTimer();
                         e.getPlayer().sendMessage("bedwarsをキャンセルしました。");
                         e.getPlayer().teleport(lobby);
                         e.getPlayer().getInventory().clear();
                         e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-                        bedwarsBlockPlaceWhichCan = 0;
+                        knockBackWhichCan = "true";
                     }
-                    if (bedwarsPlayerList.size() == 1) {
-                        bedwarsFlagWhichCan = 0;
-                        for (String PlayerName: bedwarsPlayerList) {
+                    if (knockBackPlayerList.size() == 1) {
+                        knockBackWhichCan = "true";
+                        for (String PlayerName: knockBackPlayerList) {
                             Player player2 = Bukkit.getPlayer(PlayerName);
                             if (player2 == null) return;
-                            if (bedwarsBlockPlaceWhichCan == 0) {
-                                player2.sendMessage("bedwarsがキャンセルされました。");
-                            }
-                            if (bedwarsBlockPlaceWhichCan == 1) {
-                                player2.sendMessage("bedwarsがキャンセルされました。");
-                                player2.teleport(lobby);
-                                player2.getInventory().clear();
-                                player2.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-                                bedwarsPlayerList.remove(player2.getName());
-                            }
                         }
                     }
                     player.teleport(this.lobby);
@@ -293,8 +265,11 @@ public class stefanovarentino implements Listener {
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
                     playerList.remove(player.getName());
                 }
+
+
+
                 if (itemStack.getType() == Material.APPLE) {
-                    if (itemStack.getItemMeta() == null) return;;
+                    if (itemStack.getItemMeta() == null) return;
                     if (itemStack.getItemMeta().getDisplayName().equals("最初に戻る(athletic1)")) {
                         player.teleport(this.athletic1);
                     }
@@ -336,55 +311,80 @@ public class stefanovarentino implements Listener {
 
     @EventHandler
     public void onPlayerMoveEvent(PlayerMoveEvent e){
+        Player player = e.getPlayer();
         for (String PlayerName: playerList){
-            Player player = Bukkit.getPlayer(PlayerName);
-            if (player == null) return;
-            World world = player.getWorld();
+            Player playerPvp = Bukkit.getPlayer(PlayerName);
+            if (playerPvp == null) return;
+            World world = playerPvp.getWorld();
             if (this.world != world) return;
-            if (player.getLocation().getX() > Config.Range){
-                double xx1 = player.getLocation().getX();
-                double yy1 = player.getLocation().getY();
-                double zz1 = player.getLocation().getZ();
+            if (playerPvp.getLocation().getX() > Config.Range){
+                double xx1 = playerPvp.getLocation().getX();
+                double yy1 = playerPvp.getLocation().getY();
+                double zz1 = playerPvp.getLocation().getZ();
                 double gap = xx1 - Config.Range;
                 double xxx1 = xx1 - gap;
                 Location playerLocation = new Location(world, xxx1, yy1, zz1, 90, 0);
-                player.teleport(playerLocation);
+                playerPvp.teleport(playerLocation);
+                return;
             }
-            if (player.getLocation().getZ() > Config.Range){
-                double xx1 = player.getLocation().getX();
-                double yy1 = player.getLocation().getY();
-                double zz1 = player.getLocation().getZ();
+            else if (playerPvp.getLocation().getZ() > Config.Range){
+                double xx1 = playerPvp.getLocation().getX();
+                double yy1 = playerPvp.getLocation().getY();
+                double zz1 = playerPvp.getLocation().getZ();
                 double gap = zz1 - Config.Range;
                 double zzz1 = zz1 - gap;
                 Location playerLocation = new Location(world, xx1, yy1, zzz1, -180, 0);
-                player.teleport(playerLocation);
+                playerPvp.teleport(playerLocation);
+                return;
             }
 
 
 
 
 
-            if (player.getLocation().getX() < -Config.Range){
-                double xx1 = player.getLocation().getX();
-                double yy1 = player.getLocation().getY();
-                double zz1 = player.getLocation().getZ();
+            else if (playerPvp.getLocation().getX() < -Config.Range){
+                double xx1 = playerPvp.getLocation().getX();
+                double yy1 = playerPvp.getLocation().getY();
+                double zz1 = playerPvp.getLocation().getZ();
                 double gap = -Config.Range - xx1;
                 gap = -gap;
                 double xxx1 = xx1 - gap;
                 Location playerLocation = new Location(world, xxx1, yy1, zz1, -90, 0);
-                player.teleport(playerLocation);
+                playerPvp.teleport(playerLocation);
+                return;
             }
-            if (player.getLocation().getZ() < -Config.Range){
-                double xx1 = player.getLocation().getX();
-                double yy1 = player.getLocation().getY();
-                double zz1 = player.getLocation().getZ();
+            else if (playerPvp.getLocation().getZ() < -Config.Range){
+                double xx1 = playerPvp.getLocation().getX();
+                double yy1 = playerPvp.getLocation().getY();
+                double zz1 = playerPvp.getLocation().getZ();
                 double gap = -Config.Range - zz1;
                 gap = -gap;
                 double zzz1 = zz1 - gap;
                 Location playerLocation = new Location(world, xx1, yy1, zzz1, 0, 0);
-                player.teleport(playerLocation);
+                playerPvp.teleport(playerLocation);
+                return;
             }
         }
+
+        for (String PlayerName: knockBackPlayerList) {
+            if (!PlayerName.equals(player.getName())) return;
+            if (player.getLocation().getY() < Config.knockBackRange) {
+                Player playerDie = player.getPlayer();
+                if (playerDie == null) return;
+                playerDie.teleport(taikijyo);
+                playerDie.sendTitle("敗北", "", 20, 40 ,20);
+                knockBackPlayerList.remove(playerDie.getName());
+                for (String PlayerNameKnockBackWin: knockBackPlayerList) {
+                    Player knockBackWinner = Bukkit.getPlayer(PlayerNameKnockBackWin);
+                    if (knockBackWinner == null) return;
+                    knockBackWinner.sendTitle("勝利", "", 20, 40, 20);
+                    knockBackWinner.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                    knockBackPlayerList.remove(knockBackWinner.getName());
+                }
+
+            }
+        }
+
     }
 
     @EventHandler
@@ -397,7 +397,6 @@ public class stefanovarentino implements Listener {
             if (playerList.size() == 1) {
                 pvpUtil.blockBreak();
                 LimitTimer.stopTimer();
-                tof = 1;
                 for (String PlayerName : playerList) {
                     Player player2 = Bukkit.getPlayer(PlayerName);
                     if (player2 == null) return;
@@ -434,8 +433,8 @@ public class stefanovarentino implements Listener {
         if (this.playerList.size() != 0) {
             playerList.remove(player.getName());
         }
-        if (bedwarsPlayerList.contains(player)) {
-            bedwarsPlayerList.remove(player);
+        if (knockBackPlayerList.contains(player.getName())) {
+            knockBackPlayerList.remove(player.getName());
         }
     }
 
@@ -478,11 +477,12 @@ public class stefanovarentino implements Listener {
                 player.addScoreboardTag("athletic");
             }
             //bedwars--------------------------------------------------------------------------------------------
-            else if (itemStack.getType() == Material.WHITE_BED && itemStack.getItemMeta().getDisplayName().equals("bedwars")) {
+            else if (itemStack.getType() == Material.WHITE_BED && itemStack.getItemMeta().getDisplayName().equals("knockback")) {
                 player.setHealth(20);
                 player.sendMessage("現在開発中です!");
                 player.sendMessage("まだアクセスすることができません!");
-                if (bedwarsFlagWhichCan == 1) {
+
+                if (knockBackWhichCan.equals("false")) {
                     player.sendMessage("2人しかできないので今プレイしている人が終わるまでお待ちください!");
                     e.setCancelled(true);
                     return;
@@ -491,28 +491,27 @@ public class stefanovarentino implements Listener {
                 player.teleport(taikijyo);
                 player.getInventory().clear();
                 player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                if (!bedwarsPlayerList.contains(player.getName())) {
-                    bedwarsPlayerList.add(player.getName());
+                if (!knockBackPlayerList.contains(player.getName())) {
+                    knockBackPlayerList.add(player.getName());
                 }
-                player.sendMessage(ChatColor.YELLOW + bedwarsPlayerList.toString());
-                if (bedwarsPlayerList.size() == 1) {
+                player.sendMessage(ChatColor.YELLOW + knockBackPlayerList.toString());
+                if (knockBackPlayerList.size() == 1) {
                     player.sendMessage(ChatColor.AQUA + "人数が足りません。2人が必要です。");
                     player.sendMessage(ChatColor.AQUA + "現在1人です。");
                 }
-                else if (bedwarsPlayerList.size() == 2) {
-                    bedwarsFlagWhichCan = 1;
+                else if (knockBackPlayerList.size() == 2) {
+                    knockBackWhichCan = "false";
                     player.sendMessage("すでに1人が参加しているので、開始します。");
                     Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                         @Override
                         public void run() {
-                            bedwarsBlockPlaceWhichCan = 1;
-                            for (String PlayerName: bedwarsPlayerList) {
+                            for (String PlayerName: knockBackPlayerList) {
                                 cannnotDamageList.remove(PlayerName);
                             }
                         }
                     }, 410L);
-                    this.BedwarsTimer = new BedwarsTimerUtil(bedwarsPlayerList).runTaskTimer(this.plugin, 0L, 20L);
-                    BedwarsUtil.startBedwars(this.plugin, player, bedwarsPlayerList);
+                    this.Timer = new knockBackTimerUtil(knockBackPlayerList).runTaskTimer(this.plugin, 0L, 20L);
+                    knockBackUtil.startknockBack(this.plugin, player, knockBackPlayerList);
                 }
             }
             //pvp------------------------------------------------------------------------------------------
@@ -538,7 +537,6 @@ public class stefanovarentino implements Listener {
                     pvpUtil.blockLocationAllRemove();
                     if (this.playerList.size() == 2) {
                         player.sendMessage("すでに1人が参加しているので、開始します。");
-                        tof = 0;
                         this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
                         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                             @Override
@@ -718,7 +716,7 @@ public class stefanovarentino implements Listener {
         Material material = e.getBlock().getType();
         if (this.world != world) return;
         if (material == null) return;
-        if (bedwarsBlockPlaceWhichCan == 1) {
+        if (knockBackWhichCan.equals("false")) {
             if (material.equals(Material.GRASS_BLOCK)) {
                 player.sendMessage("地形の破壊は許可されてません!");
                 e.setCancelled(true);
@@ -751,7 +749,6 @@ public class stefanovarentino implements Listener {
         Entity entity = e.getEntity();
         World world = entity.getWorld();
         if (this.world != world) return;
-        if (bedwarsBlockPlaceWhichCan == 1) return;
         for (String PlayerName: cannnotDamageList) {
             e.setCancelled(true);
         }
@@ -762,19 +759,8 @@ public class stefanovarentino implements Listener {
         Player player = e.getPlayer();
         World world = player.getWorld();
         if (this.world != world) return;
-        if (bedwarsBlockPlaceWhichCan == 1) {
+        if (knockBackWhichCan.equals("false")) {
                 e.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onEntityExhaustionEvent(EntityExhaustionEvent e) {
-        HumanEntity human = e.getEntity();
-        Player player = human.getKiller();
-        if (player instanceof Player) {
-            World world = player.getWorld();
-            if (this.world != world) return;
-            e.setCancelled(true);
         }
     }
 }

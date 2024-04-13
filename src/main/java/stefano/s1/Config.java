@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Config{
-    public static int Range = 125;
+    public static int Range = 125, knockBackRange = 180;
 
     public static int CoolDownWitch = 0;
     public static Location lobby = new Location(Bukkit.getWorld("stefanovarentino"), 25.500, 223, 25.500, -90, 0)
