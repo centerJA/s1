@@ -13,6 +13,7 @@ public class ItemUtil {
     public static ItemStack setItemMeta(String displayName, Material material){
         ItemStack itemStack = new ItemStack(material, 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) return null;
         itemMeta.setDisplayName(displayName);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
@@ -21,6 +22,7 @@ public class ItemUtil {
     public static ItemStack setCustomPotionMeta(PotionEffectType potionEffectType, Material material, String potionName){
         ItemStack itemStack = new ItemStack(material, 1);
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
+        if (potionMeta == null) return null;
         potionMeta.setColor(Color.WHITE);
         potionMeta.addCustomEffect(new PotionEffect(potionEffectType, 200, 0), true);
         potionMeta.setDisplayName(potionName);

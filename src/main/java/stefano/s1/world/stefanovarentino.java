@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -170,7 +171,10 @@ public class stefanovarentino implements Listener {
                 player.setHealth(20);
                 Inventory gameListInventory = Bukkit.createInventory(null, 9, "ゲーム一覧");
                 gameListInventory.setItem(0, ItemUtil.setItemMeta("pvp", Material.EMERALD));
-                gameListInventory.setItem(1, ItemUtil.setItemMeta("knockback", Material.WHITE_BED));
+                ItemStack knockBackStick = ItemUtil.setItemMeta("knockback", Material.STICK);
+                if (knockBackStick == null) return;
+                knockBackStick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
+                gameListInventory.setItem(1, knockBackStick);
                 gameListInventory.setItem(2, ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
@@ -365,26 +369,6 @@ public class stefanovarentino implements Listener {
                 return;
             }
         }
-
-        for (String PlayerName: knockBackPlayerList) {
-            if (!PlayerName.equals(player.getName())) return;
-            if (player.getLocation().getY() < Config.knockBackRange) {
-                Player playerDie = player.getPlayer();
-                if (playerDie == null) return;
-                playerDie.teleport(taikijyo);
-                playerDie.sendTitle("敗北", "", 20, 40 ,20);
-                knockBackPlayerList.remove(playerDie.getName());
-                for (String PlayerNameKnockBackWin: knockBackPlayerList) {
-                    Player knockBackWinner = Bukkit.getPlayer(PlayerNameKnockBackWin);
-                    if (knockBackWinner == null) return;
-                    knockBackWinner.sendTitle("勝利", "", 20, 40, 20);
-                    knockBackWinner.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                    knockBackPlayerList.remove(knockBackWinner.getName());
-                }
-
-            }
-        }
-
     }
 
     @EventHandler
@@ -409,9 +393,19 @@ public class stefanovarentino implements Listener {
                     player2.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
                 }
             }
+        } else {
+            if (knockBackPlayerList.contains(player.getName())) {
+            player.sendTitle(ChatColor.RED + "敗北...", "", 20, 40 , 20);
+            player.sendMessage("赤いキノコをクリックしてロビーに戻る");
+            player.getInventory().clear();
+            player.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+            knockBackPlayerList.remove(player.getName());
+            String winner = knockBackPlayerList.get(0);
+            knockBackUtil.sendWinMsg(winner, knockBackPlayerList);
+            knockBackPlayerList.clear();
+            knockBackUtil.knockBackBlockCrear();
+            }
         }
-
-
     }
 
 
@@ -476,8 +470,8 @@ public class stefanovarentino implements Listener {
                 player.openInventory(athleticInventory);
                 player.addScoreboardTag("athletic");
             }
-            //bedwars--------------------------------------------------------------------------------------------
-            else if (itemStack.getType() == Material.WHITE_BED && itemStack.getItemMeta().getDisplayName().equals("knockback")) {
+            //knockBack--------------------------------------------------------------------------------------------
+            else if (itemStack.getType() == Material.STICK && itemStack.getItemMeta().getDisplayName().equals("knockback")) {
                 player.setHealth(20);
                 player.sendMessage("現在開発中です!");
                 player.sendMessage("まだアクセスすることができません!");
@@ -694,6 +688,7 @@ public class stefanovarentino implements Listener {
     public void onBlockPlaceEvent(BlockPlaceEvent e) {
         Player player = e.getPlayer();
         World world = player.getWorld();
+        Location location = e.getBlock().getLocation();
         if (this.world != world) return;
         if (Playing_Game) {
             for (String PlayerName: playerList) {
@@ -701,8 +696,11 @@ public class stefanovarentino implements Listener {
                     return;
                 }
             }
-            Location location = e.getBlock().getLocation();
             pvpUtil.blockLocation(location);
+        } else {
+            player.sendMessage("BlockPlace?");
+            knockBackUtil.knockBackWhoBlockPlaceCheck(knockBackPlayerList, player, location);
+            player.sendMessage("finish");
         }
 //        if (ItemUtil.canBlockPlace(player) == 1) {
 //            e.setCancelled(true);

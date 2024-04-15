@@ -154,7 +154,7 @@ public class SvCommand implements CommandExecutor {
                         player.openInventory(athleticInventory);
                         player.addScoreboardTag("athletic");
                     }
-                    if (args[1].equals("pvpMap")) {
+                    if (args[1].equals("pvpMap") || args[1].equals("pvpmap")) {
                         player.sendMessage("pvpMapにテレポートします");
                         player.teleport(Config.pvpStart);
                         player.getInventory().clear();
