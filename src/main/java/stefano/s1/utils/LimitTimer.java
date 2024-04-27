@@ -53,8 +53,10 @@ public class LimitTimer extends BukkitRunnable {
             this.randomLocation = new Location(world, randomX, 70, randomZ);
             ChestUtil.setChest(randomLocation, Config.itemList1);
             for(String PlayerName: playerList) {
-                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.AQUA + "チェストがスポーンしました！");
-                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.AQUA + "通常よりも強い装備をもらうことができます！");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage(ChatColor.AQUA + "チェストがスポーンしました！");
+                sendPlayer.sendMessage(ChatColor.AQUA + "通常よりも強い装備をもらうことができます！");
             }
         }
         if (limitTime == randomTime1) {
@@ -64,66 +66,86 @@ public class LimitTimer extends BukkitRunnable {
             this.randomLocation = new Location(world, randomX, 70, randomZ);
             ChestUtil.setChest(randomLocation, Config.itemList1);
             for(String PlayerName: playerList) {
-                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.AQUA + "チェストがスポーンしました！");
-                Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.AQUA + "通常よりも強い装備をもらうことができます！");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage(ChatColor.AQUA + "チェストがスポーンしました！");
+                sendPlayer.sendMessage(ChatColor.AQUA + "通常よりも強い装備をもらうことができます！");
             }
         }
         if (limitTime == 1330) {
             Config.Range = 125;
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("wave1終了まで残り500秒！");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("wave1終了まで残り500秒！");
             }
         }
         if (limitTime == 930) {
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("wave1終了まで残り100秒！");
-                Bukkit.getPlayer(PlayerName).sendMessage("0秒になったら範囲をx=-100~100、z=-100~100にします。");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("wave1終了まで残り100秒！");
+                sendPlayer.sendMessage("0秒になったら範囲をx=-100~100、z=-100~100にします。");
             }
         }
         if (limitTime == 830) {
             Config.Range = 100;
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("wave1終了！");
-                Bukkit.getPlayer(PlayerName).sendMessage("wave2開始！");
-                Bukkit.getPlayer(PlayerName).sendMessage("範囲を、x=-100~100、z=-100~100にしました。");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("wave1終了！");
+                sendPlayer.sendMessage("wave2開始！");
+                sendPlayer.sendMessage("範囲を、x=-100~100、z=-100~100にしました。");
             }
         }
         if(limitTime == 530) {
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("wave2終了まで残り100秒！");
-                Bukkit.getPlayer(PlayerName).sendMessage("0秒になったら範囲をx=-60~60、z=-60~60にします。");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("wave2終了まで残り100秒！");
+                sendPlayer.sendMessage("0秒になったら範囲をx=-60~60、z=-60~60にします。");
             }
         }
         if (limitTime == 430) {
             Config.Range = 60;
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("wave2終了！");
-                Bukkit.getPlayer(PlayerName).sendMessage("wave3開始！");
-                Bukkit.getPlayer(PlayerName).sendMessage("範囲を、x=-60~60、z=-60~60にしました。");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("wave2終了！");
+                sendPlayer.sendMessage("wave3開始！");
+                sendPlayer.sendMessage("範囲を、x=-60~60、z=-60~60にしました。");
             }
         }
         if (limitTime == 130) {
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("wave3終了まで残り100秒！");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("wave3終了まで残り100秒！");
             }
         }
         if (limitTime == 33) {
             Config.Range = 125;
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("3");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("3");
             }
         }
         if (limitTime == 32) {
             Config.Range = 125;
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("2");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("2");
 
             }
         }
         if (limitTime == 31) {
             Config.Range = 125;
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("1");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("1");
 
             }
         }
@@ -131,34 +153,42 @@ public class LimitTimer extends BukkitRunnable {
         if (limitTime == 30) {
             Config.Range = 125;
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("wave3終了！");
-                Bukkit.getPlayer(PlayerName).teleport(pvpFinal);
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("wave3終了！");
+                sendPlayer.teleport(pvpFinal);
             }
         }
 
         if (limitTime == 15) {
             Config.Range = 125;
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("引き分けまで残り15秒!");
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("引き分けまで残り15秒!");
             }
         }
 
         if (limitTime == 5) {
             Config.Range = 125;
-            for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("引き分けまで残り5秒!");
+            for (String PlayerName: playerList) {
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("引き分けまで残り5秒!");
             }
         }
         if (limitTime == 0) {
             for (String PlayerName: playerList){
-                Bukkit.getPlayer(PlayerName).sendMessage("引き分け!");
-                Bukkit.getPlayer(PlayerName).sendTitle("引き分け", "", 20, 400, 20);
-                Bukkit.getPlayer(PlayerName).setHealth(20);
-                Bukkit.getPlayer(PlayerName).setFoodLevel(20);
+                Player sendPlayer = Bukkit.getPlayer(PlayerName);
+                if (sendPlayer == null) return;
+                sendPlayer.sendMessage("引き分け!");
+                sendPlayer.sendTitle("引き分け", "", 20, 400, 20);
+                sendPlayer.setHealth(20);
+                sendPlayer.setFoodLevel(20);
                 for (String playerName: playerList) {
                     playerList.remove(playerName);
                 }
-                Bukkit.getPlayer(PlayerName).teleport(Config.lobby);
+                sendPlayer.teleport(Config.lobby);
             }
             pvpUtil.blockBreak();
         }

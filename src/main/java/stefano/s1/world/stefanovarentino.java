@@ -56,6 +56,7 @@ public class stefanovarentino implements Listener {
     AthleticTimer athleticTimer;
 
 
+
     public stefanovarentino(S1 plugin) {
         Bukkit.getLogger().info("stefanovarentino");
         this.plugin = plugin;
@@ -698,9 +699,7 @@ public class stefanovarentino implements Listener {
             }
             pvpUtil.blockLocation(location);
         } else {
-            player.sendMessage("BlockPlace?");
             knockBackUtil.knockBackWhoBlockPlaceCheck(knockBackPlayerList, player, location);
-            player.sendMessage("finish");
         }
 //        if (ItemUtil.canBlockPlace(player) == 1) {
 //            e.setCancelled(true);

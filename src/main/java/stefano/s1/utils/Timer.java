@@ -24,7 +24,9 @@ public class Timer extends BukkitRunnable {
             return;
         }
         for (String PlayerName: playerList) {
-            Bukkit.getPlayer(PlayerName).sendMessage(ChatColor.YELLOW + "<pvp>" + nowTime + "秒");
+            Player pvpPlayer = Bukkit.getPlayer(PlayerName);
+            if (pvpPlayer == null) return;
+            pvpPlayer.sendMessage(ChatColor.YELLOW + "<pvp>" + nowTime + "秒");
         }
         nowTime--;
     }

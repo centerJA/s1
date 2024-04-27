@@ -25,6 +25,7 @@ public class ScoreBoardUtil {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(logFile);
         Scoreboard scoreboard = createScoreboard();
         Map<String, Integer> TimesMap = new HashMap<>();
+        if (scoreboard == null) return;
         Objective objective = scoreboard.getObjective("1st player");
         if (yamlConfiguration == null) {
             player.sendMessage("yamlConfigration is null,");
