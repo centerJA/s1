@@ -44,7 +44,7 @@ public class knockBackUtil {
                         playerABLUE.getInventory().setItem(2, knockBackStick);
                         playerABLUE.getInventory().setItem(9, lobby);
                     }
-                    if (PlayerName.equals(knockBackPlayerList.get(1))) {
+                    else if (PlayerName.equals(knockBackPlayerList.get(1))) {
                         Player playerBRED = Bukkit.getPlayer(PlayerName);
                         if (playerBRED == null) return;
                         playerBRED.teleport(knockBackPlayerLocation2RED);

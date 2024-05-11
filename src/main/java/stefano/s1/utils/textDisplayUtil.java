@@ -7,9 +7,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class textDisplayUtil {
-    public static void showText(Location loc, String text, boolean visible) {
-        if (loc.getWorld() == null) return;
-        ArmorStand armorStand = loc.getWorld().spawn(loc, ArmorStand.class);
+    public static void showText(Location location, String text, boolean visible) {
+        if (location.getWorld() == null) return;
+        ArmorStand armorStand = location.getWorld().spawn(location, ArmorStand.class);
         armorStand.setBasePlate(false);
         armorStand.setCustomNameVisible(true);
         armorStand.setCustomName(text);

@@ -25,10 +25,14 @@ public class ScoreBoardUtil {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(logFile);
         Scoreboard scoreboard = createScoreboard();
         Map<String, Integer> TimesMap = new HashMap<>();
+        if (scoreboard == null) {
+            player.sendMessage("スコアボードが見つかりませんでした。At ScoreBoardUtil.java:29");
+        }
         if (scoreboard == null) return;
         Objective objective = scoreboard.getObjective("1st player");
         if (yamlConfiguration == null) {
-            player.sendMessage("yamlConfigration is null,");
+            player.sendMessage("yamlConfigurationが見つかりませんでした。At ScoreBoardUtil.java:31");
+            return;
         }
 
         for (String playerName : yamlConfiguration.getKeys(false)) {
@@ -58,10 +62,12 @@ public class ScoreBoardUtil {
     public static void showScoreboard(Player player) {
         Scoreboard scoreboard = createScoreboard();
         String ObjectiveName = "1st player";
-        if (scoreboard == null) return;
+        if (scoreboard == null) {
+            player.sendMessage("スコアボードが見つかりませんでした。At ScoreBoardUtil.java:62");
+        }
         Objective objective = scoreboard.getObjective(ObjectiveName);
         if (objective == null) {
-            player.sendMessage(ChatColor.DARK_RED + "オブジェクトが見つかりませんでした(REASON)CANNOT FIND OBJECT(0)");
+            player.sendMessage(ChatColor.DARK_RED + "オブジェクトが見つかりませんでした。At ScoreBoardUtil.java:66");
             return;
         }
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -70,7 +76,9 @@ public class ScoreBoardUtil {
 
     public static void removeScoreboard(Player player) {
         ScoreboardManager manager = player.getServer().getScoreboardManager();
-        if (manager == null) return;
+        if (manager == null) {
+            player.sendMessage(ChatColor.DARK_RED + "マネージャーが見つかりませんでした。At ScoreBoardUtil.java:74");
+        }
         Scoreboard scoreboard = manager.getMainScoreboard();
         player.setScoreboard(scoreboard);
     }

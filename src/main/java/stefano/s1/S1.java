@@ -21,7 +21,7 @@ public final class S1 extends JavaPlugin {
         if (world == null) return;
         boolean visible = false;
         textDisplayUtil.removeText(world);
-        textDisplayUtil.showText(Config.textLocation, Config.text, visible);
+        textDisplayUtil.showText(Config.textLocationAnvil, Config.text, visible);
     }
 
     @Override

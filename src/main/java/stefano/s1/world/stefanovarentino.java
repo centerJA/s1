@@ -90,7 +90,7 @@ public class stefanovarentino implements Listener {
 
 
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e) {
         Player player = e.getPlayer();
         Bukkit.getLogger().info((player.getName()));
@@ -103,6 +103,7 @@ public class stefanovarentino implements Listener {
             player.getInventory().clear();
             return;
         }
+        System.out.println("STEFANOVARENTINO--------");
         if (playerList.contains(player.getName())) {
             removePlayerList(player, playerList);
         }
@@ -146,24 +147,24 @@ public class stefanovarentino implements Listener {
                     checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
                     player.getInventory().setHeldItemSlot(3);
                 }
-                if (Objects.equals(lines[0], "アスレの王者")) {
+                else if (Objects.equals(lines[0], "アスレの王者")) {
                     player.getWorld().playEffect(player.getLocation(), Effect.WITHER_SHOOT, 0, 1);
                 }
-                if (Objects.equals(lines[0], "stefanovarentino")) {
+                else if (Objects.equals(lines[0], "stefanovarentino")) {
                     if (athleticClear.getWorld() == null) return;
                     athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 1);
                 }
-                if (Objects.equals(lines[0], "この世界の名前は")) {
+                else if (Objects.equals(lines[0], "この世界の名前は")) {
                     player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "!");
                 }
-                if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
+                else if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
                     if (Objects.equals(lines[1], "てタイムをリセット") || Objects.equals(lines[1], "remove")) {
                         player.sendMessage(ChatColor.AQUA + "自分のタイムをリセットします。");
                         PlayerScore.removePlayerTime(player, this.plugin);
                         ScoreBoardUtil.updateRanking(player);
                     }
                 }
-                if (Objects.equals(lines[0], "全員のタイムを") || Objects.equals(lines[0], "All time")) {
+                else if (Objects.equals(lines[0], "全員のタイムを") || Objects.equals(lines[0], "All time")) {
                     player.sendMessage(ChatColor.AQUA + "全員のタイムをリセットします。");
                     PlayerScore.removePlayerTimeAll(player, this.plugin);
                     ScoreBoardUtil.updateRanking(player);

@@ -25,20 +25,24 @@ public class AthleticTimer  {
 
     public static HashMap<Player, BukkitTask> tasks = new HashMap<>();
 
+    public static HashMap<Player, Integer> playerTimes = new HashMap<>();
+
 
     public void startTimer(Player player) {
-        if (timerTask != null) {
-            timerTask.cancel();
+        if (playerTimes.containsKey(player)) {
+            AthleticTimer.stopTimer(player);
         }
+        playerTimes.put(player, 0);
         timerTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (athleticTime > 2000) {
+                int elapsedSeconds = playerTimes.get(player) + 1;
+                if (elapsedSeconds > 2000) {
                     AthleticTimer.getTaskId(player).cancel();
                     return;
                 }
-                player.setLevel(athleticTime);
-                athleticTime++;
+                playerTimes.put(player, elapsedSeconds);
+                player.setLevel(elapsedSeconds);
             }
         };
         tasks.put(player, timerTask.runTaskTimer(S1.getPlugin(S1.class), 0, 20));
