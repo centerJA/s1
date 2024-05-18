@@ -20,8 +20,12 @@ public final class S1 extends JavaPlugin {
         World world = Bukkit.getWorld("stefanovarentino");
         if (world == null) return;
         boolean visible = false;
-        textDisplayUtil.removeText(world);
-        textDisplayUtil.showText(Config.textLocationAnvil, Config.text, visible);
+        textDisplayUtil.removeMainText(world);
+        textDisplayUtil.showMainArmorStand();
+        textDisplayUtil.removeKnockBackColumnText(world);
+        textDisplayUtil.removePvpColumnText(world);
+        textDisplayUtil.showPvpIsStopping(Config.textLocationPvpColumn, Config.pvpIsStopping, visible);
+        textDisplayUtil.showKnockBackIsStopping(Config.textLocationKnockBackColumn, Config.knockBackIsStopping, visible);
     }
 
     @Override

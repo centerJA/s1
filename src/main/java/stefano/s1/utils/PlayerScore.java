@@ -57,7 +57,7 @@ public class PlayerScore {
         if (yamlConfiguration.get(player.getName()) == null) {
             yamlConfiguration.set(player.getName(), goalTime);
             yamlConfiguration.save(logFile);
-        } else if(goalTime < (int) yamlConfiguration.get(player.getName())) {
+    } else if(goalTime < (int) yamlConfiguration.get(player.getName())) {
             yamlConfiguration.set(player.getName(), goalTime);
             yamlConfiguration.save(logFile);
         }

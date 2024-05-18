@@ -96,13 +96,6 @@ public class stefanovarentino implements Listener {
         Bukkit.getLogger().info((player.getName()));
         World world = player.getWorld();
         Bukkit.getLogger().info(world.getName());
-        if (this.world != world) {
-            ScoreBoardUtil.removeScoreboard(player);
-            AthleticTimer.stopTimer(player);
-            e.getPlayer().setLevel(0);
-            player.getInventory().clear();
-            return;
-        }
         System.out.println("STEFANOVARENTINO--------");
         if (playerList.contains(player.getName())) {
             removePlayerList(player, playerList);
@@ -233,6 +226,10 @@ public class stefanovarentino implements Listener {
                         playerList.remove(player.getName());
                         stefano.s1.utils.Timer.stopCountDownTimer();
                         e.getPlayer().sendMessage("pvpをキャンセルしました。");
+                        textDisplayUtil.removePvpColumnText(world);
+                        boolean visible = false;
+                        textDisplayUtil.removePvpColumnText(world);
+                        textDisplayUtil.showPvpIsStopping(Config.textLocationPvpColumn, Config.pvpIsStopping, visible);
                         if (!(Timer == null)) {
                             Timer.cancel();
                         }
@@ -248,7 +245,10 @@ public class stefanovarentino implements Listener {
                     if (knockBackPlayerList.contains(player.getName())) {
                         knockBackPlayerList.remove(player.getName());
                         knockBackTimerUtil.stopBedwarsCountDownTimer();
-                        e.getPlayer().sendMessage("bedwarsをキャンセルしました。");
+                        boolean visible = false;
+                        textDisplayUtil.removeKnockBackColumnText(world);
+                        textDisplayUtil.showKnockBackIsStopping(Config.textLocationKnockBackColumn, Config.knockBackIsStopping, visible);
+                        e.getPlayer().sendMessage("knockbackをキャンセルしました。");
                         e.getPlayer().teleport(lobby);
                         e.getPlayer().getInventory().clear();
                         e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
@@ -452,6 +452,7 @@ public class stefanovarentino implements Listener {
         World world = player.getWorld();
         ItemStack itemStack = e.getCurrentItem();
         Set<String> userTag = player.getScoreboardTags();
+        boolean visible = false;
         if (this.world != world) return;
         if (itemStack == null || itemStack.getItemMeta() == null) return;
         if (userTag.contains("game")) {
@@ -485,6 +486,8 @@ public class stefanovarentino implements Listener {
                 }
                 cannnotDamageList.add(player.getName());
                 player.teleport(taikijyo);
+                textDisplayUtil.removeKnockBackColumnText(world);
+                textDisplayUtil.showKnockBackIsWaiting(Config.textLocationKnockBackColumn, Config.knockBackIsWaiting, visible);
                 player.getInventory().clear();
                 player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                 if (!knockBackPlayerList.contains(player.getName())) {
@@ -498,6 +501,8 @@ public class stefanovarentino implements Listener {
                 else if (knockBackPlayerList.size() == 2) {
                     knockBackWhichCan = "false";
                     player.sendMessage("すでに1人が参加しているので、開始します。");
+                    textDisplayUtil.removeKnockBackColumnText(world);
+                    textDisplayUtil.showKnockBackIsPlaying(Config.textLocationKnockBackColumn, Config.knockBackIsPlaying, visible);
                     Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                         @Override
                         public void run() {
@@ -523,6 +528,8 @@ public class stefanovarentino implements Listener {
                 if (flag == 0) {
                     this.flag = 1;
                     player.teleport(this.taikijyo);
+                    textDisplayUtil.removePvpColumnText(world);
+                    textDisplayUtil.showPvpIsWaiting(Config.textLocationPvpColumn, Config.pvpIsWaiting, visible);
                     cannnotDamageList.add(player.getName());
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
@@ -533,6 +540,8 @@ public class stefanovarentino implements Listener {
                     pvpUtil.blockLocationAllRemove();
                     if (this.playerList.size() == 2) {
                         player.sendMessage("すでに1人が参加しているので、開始します。");
+                        textDisplayUtil.removePvpColumnText(world);
+                        textDisplayUtil.showPvpIsPlaying(Config.textLocationPvpColumn, Config.pvpIsPlaying, visible);
                         this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
                         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                             @Override
