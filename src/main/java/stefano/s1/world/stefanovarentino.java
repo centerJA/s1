@@ -84,9 +84,6 @@ public class stefanovarentino implements Listener {
         Bukkit.getLogger().info("finishStefanovarentino");
     }
 
-    public static void removePlayerList(Player player, ArrayList playerList) {
-        playerList.remove(player.getName());
-    }
 
 
 
@@ -97,9 +94,8 @@ public class stefanovarentino implements Listener {
         World world = player.getWorld();
         Bukkit.getLogger().info(world.getName());
         System.out.println("STEFANOVARENTINO--------");
-        if (playerList.contains(player.getName())) {
-            removePlayerList(player, playerList);
-        }
+
+
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
@@ -140,6 +136,9 @@ public class stefanovarentino implements Listener {
                     checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
                     player.getInventory().setHeldItemSlot(3);
                 }
+                else if(Objects.equals(lines[0], "今日のお知らせ")) {
+                    Config.showLatestTips(player);
+                }
                 else if (Objects.equals(lines[0], "アスレの王者")) {
                     player.getWorld().playEffect(player.getLocation(), Effect.WITHER_SHOOT, 0, 1);
                 }
@@ -156,11 +155,6 @@ public class stefanovarentino implements Listener {
                         PlayerScore.removePlayerTime(player, this.plugin);
                         ScoreBoardUtil.updateRanking(player);
                     }
-                }
-                else if (Objects.equals(lines[0], "全員のタイムを") || Objects.equals(lines[0], "All time")) {
-                    player.sendMessage(ChatColor.AQUA + "全員のタイムをリセットします。");
-                    PlayerScore.removePlayerTimeAll(player, this.plugin);
-                    ScoreBoardUtil.updateRanking(player);
                 }
             } else if (e.getClickedBlock().getType().equals(Material.ANVIL)) {
                 player.setHealth(20);
@@ -530,6 +524,7 @@ public class stefanovarentino implements Listener {
                     player.teleport(this.taikijyo);
                     textDisplayUtil.removePvpColumnText(world);
                     textDisplayUtil.showPvpIsWaiting(Config.textLocationPvpColumn, Config.pvpIsWaiting, visible);
+
                     cannnotDamageList.add(player.getName());
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
@@ -555,19 +550,7 @@ public class stefanovarentino implements Listener {
                                         break;
                                     }
                                     cannnotDamageList.remove(PlayerName);
-                                    player.teleport(pvpStart);
-                                    player.setGameMode(GameMode.SURVIVAL);
-                                    player.setFoodLevel(6);
-                                    player.setSprinting(false);
-                                    player.setNoDamageTicks(600);
-                                    player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 600, 1));
-                                    player.sendMessage(ChatColor.YELLOW + "範囲は、x=-125~125、z=-125~125です");
-                                    player.getInventory().clear();
-                                    ItemStack lobby = new ItemStack(Material.RED_MUSHROOM, 1);
-                                    ItemMeta lobbyMeta = lobby.getItemMeta();
-                                    if (lobbyMeta == null) return;
-                                    lobbyMeta.setDisplayName("ロビーに戻る");
-                                    player.getInventory().setItem(9, lobby);
+                                    pvpUtil.playerSettingsBeforeGame(player);
                                 }
                             }
                         }, 400L);
@@ -584,31 +567,7 @@ public class stefanovarentino implements Listener {
                                     }
                                     Player player = Bukkit.getPlayer(PlayerName);
                                     if (player == null) return;
-                                    ItemStack ironHelmet = new ItemStack(Material.IRON_HELMET);
-                                    ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS);
-                                    ItemStack ironLeggings = new ItemStack(Material.IRON_LEGGINGS);
-                                    ItemStack ironChestPlate = new ItemStack(Material.IRON_CHESTPLATE);
-                                    player.setFoodLevel(20);
-                                    player.setSprinting(true);
-                                    ItemStack pvpsword = new ItemStack(Material.IRON_SWORD, 1);
-                                    player.getInventory().setItem(0, pvpsword);
-                                    ItemStack pvpfood = new ItemStack(Material.COOKED_BEEF, 64);
-                                    player.getInventory().setItem(1, pvpfood);
-                                    player.getInventory().setItem(2, ItemUtil.setCustomPotionMeta(PotionEffectType.INVISIBILITY, Material.SPLASH_POTION, "透明化"));
-                                    player.getInventory().setItem(3, ItemUtil.setCustomPotionMeta(PotionEffectType.REGENERATION, Material.SPLASH_POTION, "再生"));
-                                    player.getInventory().setItem(4, ItemUtil.setCustomPotionMeta(PotionEffectType.POISON, Material.LINGERING_POTION, "毒"));
-                                    ItemStack pvpbow = new ItemStack(Material.BOW, 1);
-                                    player.getInventory().setItem(5, pvpbow);
-                                    ItemStack pvparrow = new ItemStack(Material.ARROW, 64);
-                                    player.getInventory().setItem(34, pvparrow);
-                                    player.getInventory().setItem(35, pvparrow);
-                                    player.getInventory().setHelmet(ironHelmet);
-                                    player.getInventory().setChestplate(ironChestPlate);
-                                    player.getInventory().setBoots(ironBoots);
-                                    player.getInventory().setLeggings(ironLeggings);
-                                    ItemStack pvpBlock = new ItemStack(Material.STONE, 64);
-                                    player.getInventory().setItem(6, pvpBlock);
-                                    player.sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
+                                    pvpUtil.playerSettingsInGame(player);
                                 }
                             }
                         }, 900);

@@ -1,8 +1,10 @@
 package stefano.s1;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class Config{
     public static ArrayList<Material> itemList1 = new ArrayList<>();
 
 
-    public static String mainText = "金床をクリックしてゲームをしよう",
+    public static String mainText = ChatColor.AQUA + "金床をクリックしてゲームをしよう",
                          pvpIsStopping = "現在pvpで待機している人はいません",
                          pvpIsWaiting = "現在誰かがpvpで待機しています",
                          pvpIsPlaying = "現在誰かがpvpをプレイしています",
@@ -39,6 +41,16 @@ public class Config{
                          knockBackIsWaiting = "現在誰かがknockbackで待機しています",
                          knockBackIsPlaying = "現在誰かがpvpをプレイしています",
                          knockBackMainText = "KNOCKBACK GAME";
+
+    public static void showLatestTips(Player player) {
+        String date = "2024.05.25";
+        String main = "最近のお知らせを表示する機能が追加されました!";
+        String description = "/sv notice 又はロビーにある看板をクリックしてお知らせを表示します";
+        player.sendMessage(ChatColor.AQUA + "最近のお知らせ");
+        player.sendMessage(date + " : " + main);
+        player.sendMessage(description);
+
+    }
 }
 
 

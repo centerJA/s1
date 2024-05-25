@@ -59,6 +59,7 @@ public class SvCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "/sv report       このコマンドを打って表示されるリンクをクリックしてバグや誤字を報告してください");
                 player.sendMessage("/sv title       タイトルを表示します");
                 player.sendMessage("/sv hello       ワールド紹介文を表示します");
+                player.sendMessage("/sv notice       最近のお知らせを表示します");
                 player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
             }
             else {
@@ -68,11 +69,11 @@ public class SvCommand implements CommandExecutor {
                             player.sendMessage(ChatColor.DARK_RED + "(OP ACTION)type:set gamemode gamemode:creative user:" + ChatColor.DARK_RED + player.getName());
                             player.setGameMode(GameMode.CREATIVE);
                         }
-                        if (args[1].equals("s")) {
+                        else if (args[1].equals("s")) {
                             player.sendMessage(ChatColor.DARK_RED + "(OP ACTION)type:set gamemode gamemode:survival user:" + ChatColor.DARK_RED + player.getName());
                             player.setGameMode(GameMode.SURVIVAL);
                         }
-                        if (args[1].equals("m")) {
+                        else if (args[1].equals("m")) {
                             player.sendMessage(ChatColor.DARK_RED + "(OP ACTION)type:give item item:material.RED_MUSHROOM user:"+ ChatColor.DARK_RED + player.getName());
                             ItemStack material = new ItemStack(Material.RED_MUSHROOM);
                             player.getInventory().addItem(material);
@@ -85,12 +86,12 @@ public class SvCommand implements CommandExecutor {
                         return false;
                     }
                 }
-                if (args[0].equals("report")) {
+                else if (args[0].equals("report")) {
                     ComponentBuilder report = new ComponentBuilder("バグや誤字を見つけた際には" + ChatColor.AQUA + "ここをクリック" + ChatColor.WHITE + "して報告をお願いします!");
                     BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://google.com")).create();
                     player.spigot().sendMessage(reportURL);
                 }
-                if (args[0].equals("hello")) {
+                else if (args[0].equals("hello")) {
                     player.sendMessage("どうもこんにちは！StefanoVarentinoを制作しているInfIncです！");
                     player.sendMessage("このワールドにはいろいろなギミックがあります。");
                     player.sendMessage("'/sv'という独自のコマンドが存在します。");
@@ -101,11 +102,11 @@ public class SvCommand implements CommandExecutor {
                     player.sendMessage("これらのことを頭にいれながらStefanoVarentinoをプレイしてみてください！");
                     player.sendMessage(ChatColor.AQUA + "きっと何か見つかるはずです...");
                 }
-                if (args[0].equals("effects")) {
+                else if (args[0].equals("effects")) {
                     player.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
                     player.sendMessage("Stefano Varentino");
                 }
-                if (args[0].equals("help")) {
+                else if (args[0].equals("help")) {
                     ComponentBuilder msg1 = new ComponentBuilder("・コマンドの一覧を表示するには、ここをクリックします");
                     ComponentBuilder msg2 = new ComponentBuilder("・SVホームページにアクセスするには、ここをクリックします");
                     ComponentBuilder msg3 = new ComponentBuilder("・tofuホームページにアクセスするには、ここをクリックします");
@@ -118,28 +119,31 @@ public class SvCommand implements CommandExecutor {
                     player.spigot().sendMessage(message3);
                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITCH_DEATH, 2, 10);
                 }
-                if (args[0].equals("tell")) {
+                else if (args[0].equals("tell")) {
                     if (args[1].equals("origin")) {
                         player.sendMessage(ChatColor.WHITE + "Stefano Varentinoの由来は" + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "です。");
                         player.sendMessage("ハンカチの名前から来てるとは思いませんね…");
                     }
-                    if (args[1].equals("cooperative")) {
-                        player.sendMessage("ワールド作成協力者紹介");
+                    else if (args[1].equals("cooperative")) {
+                        player.sendMessage(ChatColor.AQUA + "ワールド作成協力者紹介");
                         player.sendMessage("1.usikujin");
                         player.sendMessage("2.SleetyNote17020");
                         player.sendMessage("3.maintya3");
                     }
-                    if (args[1].equals("homePageURL") || args[1].equals("homepageurl") || args[1].equals("homepageURL")) {
+                    else if (args[1].equals("homePageURL") || args[1].equals("homepageurl") || args[1].equals("homepageURL")) {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1);
                         player.sendMessage(ChatColor.GREEN + "https://pretty-work-prod-ibldvcwaka-an.a.run.app/w/283");
                     }
                 }
-                if (args[0].equals("title")) {
+                else if (args[0].equals("notice")) {
+                    Config.showLatestTips(player);
+                }
+                else if (args[0].equals("title")) {
                     player.sendTitle("SV", "This is Stefano Varentino", 5, 50, 35);
                 }
-                if (args[0].equals("tp")) {
+                else if (args[0].equals("tp")) {
                     if (args[1].equals("lobby")) {
-                        player.sendMessage("lobbyにテレポートします");
+                        player.sendMessage("lobbyにテレポートしました");
                         ScoreBoardUtil.removeScoreboard(player);
                         player.teleport(Config.lobby);
                         athleticTimer.stopTimer(player);
@@ -148,20 +152,20 @@ public class SvCommand implements CommandExecutor {
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
                         Config.playerList.remove(player.getName());
                     }
-                    if (args[1].equals("athletic")) {
+                    else if (args[1].equals("athletic")) {
                         Inventory athleticInventory = Bukkit.createInventory(null, 54, "アスレチック一覧");
                         athleticInventory.setItem(0, ItemUtil.setItemMeta("シンプル", Material.PAPER));
                         player.openInventory(athleticInventory);
                         player.addScoreboardTag("athletic");
                     }
-                    if (args[1].equals("pvpMap") || args[1].equals("pvpmap")) {
-                        player.sendMessage("pvpMapにテレポートします");
+                    else if (args[1].equals("pvpMap") || args[1].equals("pvpmap")) {
+                        player.sendMessage("pvpMapにテレポートしました");
                         player.teleport(Config.pvpStart);
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     }
-                    if (args[1].equals("svinfo")) {
-                        player.sendMessage("svInfoにテレポートします");
+                    else if (args[1].equals("svinfo")) {
+                        player.sendMessage("svInfoにテレポートしました");
                         player.teleport(Config.svinfo);
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));

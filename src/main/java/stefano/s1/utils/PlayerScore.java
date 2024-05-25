@@ -77,20 +77,4 @@ public class PlayerScore {
         log.set(playerName, 100000);
         log.save(file);
     }
-
-    public static void removePlayerTimeAll(Player player, S1 plugin) throws IOException {
-        if (player.getName().equals("InfInc") || player.getName().equals("markcs11")) {
-            player.sendMessage(ChatColor.RED + "権限が必要です");
-            File file = new File("./playerTime.yml");
-            YamlConfiguration log = YamlConfiguration.loadConfiguration(file);
-            String playerName = player.getName();
-            for (String playerTimeSS: log.getKeys(false)) {
-                if (log.get(playerName) == null) return;
-                log.set(playerTimeSS, 100000);
-            }
-            log.save(file);
-        } else {
-            player.sendMessage(ChatColor.RED + "権限がありません");
-        }
-    }
 }

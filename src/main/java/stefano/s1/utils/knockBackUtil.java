@@ -76,7 +76,7 @@ public class knockBackUtil {
 
     public static void knockBackWhoBlockPlaceCheck(ArrayList<String> knockBackPlayerList, Player player2, Location location) {
         for (String PlayerName: knockBackPlayerList) {
-            if (player2.getName().equals(PlayerName)) {
+            if (player2.getName().equals(PlayerName) && location != null) {
                 knockBackBlockLocationList.add(location);
             }
         }

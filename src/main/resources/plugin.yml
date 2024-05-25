@@ -31,3 +31,5 @@ commands:
     description: type(op action) set gamemode survival
   sv hello:
     description: type(sendMessage) world introduce
+  sv notice:
+    description: type(sendMessage) latest notice
