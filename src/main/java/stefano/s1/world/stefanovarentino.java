@@ -40,7 +40,7 @@ import java.util.Set;
 
 public class stefanovarentino implements Listener {
     S1 plugin;
-    World world;
+    private World world;
     Location lobby, taikijyo, athletic1, checkpoint1, athleticClear, athleticStart, pvpStart, pvpFinal, taikijyof;
 
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
@@ -61,16 +61,21 @@ public class stefanovarentino implements Listener {
         Bukkit.getLogger().info("stefanovarentino");
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        this.world = Bukkit.getWorld("stefanovarentino");
-        this.lobby = new Location(world, 25.500, 223, 25.500, -90, 0);
-        this.taikijyo = new Location(world, 31.500, 240, 25.500, -90, 0);
-        this.athletic1 = new Location(world, 50.500, 239, 25.500, -90, 0);
-        this.checkpoint1 = new Location(world, 76.500, 244, 80.500, 0, 0);
-        this.pvpFinal = new Location(world, 15.999, 248.500, 17.999, -90, 0);
-        this.taikijyof = new Location(world, 41.500, 247, 25.500);
-        this.athleticClear = new Location(world, 16, 239, 41);
-        this.athleticStart = new Location(world, 55, 239, 25);
-        this.pvpStart = new Location(world, 25, 70, 24, -90, 0);
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+                world = Bukkit.getWorld("stefanovarentino");
+                lobby = new Location(world, 25.500, 223, 25.500, -90, 0);
+                taikijyo = new Location(world, 31.500, 240, 25.500, -90, 0);
+                athletic1 = new Location(world, 50.500, 239, 25.500, -90, 0);
+                checkpoint1 = new Location(world, 76.500, 244, 80.500, 0, 0);
+                pvpFinal = new Location(world, 15.999, 248.500, 17.999, -90, 0);
+                taikijyof = new Location(world, 41.500, 247, 25.500);
+                athleticClear = new Location(world, 16, 239, 41);
+                athleticStart = new Location(world, 55, 239, 25);
+                pvpStart = new Location(world, 25, 70, 24, -90, 0);
+            }
+        }, 10L);
         this.playerList = new ArrayList<>();
         this.deathPlayerList = new ArrayList<>();
         this.athleticPlayerList = new ArrayList<>();
@@ -81,7 +86,6 @@ public class stefanovarentino implements Listener {
         this.flag = 0;
         this.bedwarsFlag = 0;
         this.knockBackPlayerList = new ArrayList<>();
-        Bukkit.getLogger().info("finishStefanovarentino");
     }
 
 
@@ -90,11 +94,8 @@ public class stefanovarentino implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e) {
         Player player = e.getPlayer();
-        Bukkit.getLogger().info((player.getName()));
         World world = player.getWorld();
-        Bukkit.getLogger().info(world.getName());
-        System.out.println("STEFANOVARENTINO--------");
-
+        if (this.world != world) return;
 
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
@@ -703,7 +704,7 @@ public class stefanovarentino implements Listener {
                 e.setCancelled(true);
                 return;
             }
-             else if(material.equals(Material.GOLD_BLOCK)) {
+            else if(material.equals(Material.GOLD_BLOCK)) {
                 player.sendMessage("地形の破壊は許可されてません!");
                 e.setCancelled(true);
                 return;

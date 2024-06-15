@@ -20,7 +20,6 @@ public class pvpUtil {
     }
 
     public static void blockBreak() {
-        Bukkit.getLogger().info(String.valueOf(blockLocationList));
         for (Location blockBreak: blockLocationList) {
             blockBreak.getBlock().setType(Material.AIR);
         }

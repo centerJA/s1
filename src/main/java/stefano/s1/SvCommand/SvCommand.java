@@ -3,6 +3,7 @@ package stefano.s1.SvCommand;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,25 +46,59 @@ public class SvCommand implements CommandExecutor {
             if (args.length == 0) {
                 player.sendMessage(ChatColor.AQUA + "----------Stefano Varentino command list----------");
                 player.sendMessage(ChatColor.RED + "赤色のコマンド" + ChatColor.WHITE + "は開発中のコマンドです");
-                player.sendMessage("開発中のコマンドは使えない場合があります");
-                player.sendMessage("/sv       コマンドの一覧を表示します");
-                player.sendMessage("/sv tell origin       名前の由来を表示します");
-                player.sendMessage("/sv tell cooperative       このワールドの共同製作者を表示します");
-                player.sendMessage("/sv tell homepageurl       ホームページのURLを表示します");
-                player.sendMessage("/sv tp lobby       ロビーにテレポートします");
-                player.sendMessage("/sv tp athletic       アスレチックにテレポートします");
-                player.sendMessage("/sv tp pvpMap       pvpの時に使用するマップにテレポートします");
-                player.sendMessage("/sv tp svinfo       情報センターにテレポートします");
-                player.sendMessage("/sv help       ヘルプを表示します");
-                player.sendMessage("/sv effects       エフェクトを出します");
-                player.sendMessage(ChatColor.RED + "/sv report       このコマンドを打って表示されるリンクをクリックしてバグや誤字を報告してください");
-                player.sendMessage("/sv title       タイトルを表示します");
-                player.sendMessage("/sv hello       ワールド紹介文を表示します");
-                player.sendMessage("/sv notice       最近のお知らせを表示します");
+                player.sendMessage(ChatColor.YELLOW + "開発中のコマンドは使えない場合があります");
+                player.sendMessage(ChatColor.YELLOW + "クリックしてコマンドを表示します");
+
+
+                TextComponent kindsOfTeleport = new TextComponent(ChatColor.UNDERLINE + "テレポート関係のコマンド");
+                TextComponent kindsOfTell = new TextComponent(ChatColor.UNDERLINE + "テキスト関係のコマンド");
+                TextComponent kindsOfOthers = new TextComponent(ChatColor.UNDERLINE + "他のコマンド");
+                kindsOfTeleport.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv click perform teleport"));
+                kindsOfTell.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv click perform tell"));
+                kindsOfOthers.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv click perform other"));
+
+
+
+                player.spigot().sendMessage(kindsOfTeleport);
+                player.spigot().sendMessage(kindsOfTell);
+                player.spigot().sendMessage(kindsOfOthers);
                 player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
             }
             else {
-                if (args[0].equals("op")) {
+                if (args[0].equals("click") && args[1].equals("perform")) {
+                    TextComponent back = new TextComponent(ChatColor.UNDERLINE + "前のページに戻る");
+                    back.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv"));
+                    if (args[2].equals("teleport")) {
+                        player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                        player.sendMessage("/sv tp lobby       ロビーにテレポートします");
+                        player.sendMessage("/sv tp athletic       アスレチックにテレポートします");
+                        player.sendMessage("/sv tp pvpMap       pvpの時に使用するマップにテレポートします");
+                        player.sendMessage("/sv tp svinfo       情報センターにテレポートします");
+                        player.spigot().sendMessage(back);
+                        player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    }
+                    else if (args[2].equals("tell")) {
+                        player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                        player.sendMessage("/sv tell origin       名前の由来を表示します");
+                        player.sendMessage("/sv tell cooperative       このワールドの共同製作者を表示します");
+                        player.sendMessage("/sv tell homepageurl       ホームページのURLを表示します");
+                        player.spigot().sendMessage(back);
+                        player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    }
+                    else if (args[2].equals("other")) {
+                        player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                        player.sendMessage("/sv help       ヘルプを表示します");
+                        player.sendMessage("/sv effects       エフェクトを出します");
+                        player.sendMessage(ChatColor.RED + "/sv report       このコマンドを打って表示されるリンクをクリックしてバグや誤字を報告してください");
+                        player.sendMessage("/sv title       タイトルを表示します");
+                        player.sendMessage("/sv hello       ワールド紹介文を表示します");
+                        player.sendMessage("/sv notice       最近のお知らせを表示します");
+                        player.sendMessage("/sv history       お知らせの歴史を表示します");
+                        player.spigot().sendMessage(back);
+                        player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    }
+                }
+                else if (args[0].equals("op")) {
                     if (player.getName().equals("markcs11") || player.getName().equals("InfInc")) {
                         if (args[1].equals("c")) {
                             player.sendMessage(ChatColor.DARK_RED + "(OP ACTION)type:set gamemode gamemode:creative user:" + ChatColor.DARK_RED + player.getName());
@@ -140,6 +175,9 @@ public class SvCommand implements CommandExecutor {
                 }
                 else if (args[0].equals("title")) {
                     player.sendTitle("SV", "This is Stefano Varentino", 5, 50, 35);
+                }
+                else if (args[0].equals("history")) {
+                    Config.showAllTips(player);
                 }
                 else if (args[0].equals("tp")) {
                     if (args[1].equals("lobby")) {

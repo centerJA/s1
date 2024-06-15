@@ -43,13 +43,18 @@ public class Config{
                          knockBackMainText = "KNOCKBACK GAME";
 
     public static void showLatestTips(Player player) {
-        String date = "2024.05.25";
-        String main = "最近のお知らせを表示する機能が追加されました!";
-        String description = "/sv notice 又はロビーにある看板をクリックしてお知らせを表示します";
+        String date = "2024.06.15";
+        String main = "コマンドの一覧の表示の仕方が大幅に変更されました!";
+        String description = "/sv を実行して見てみてください";
         player.sendMessage(ChatColor.AQUA + "最近のお知らせ");
         player.sendMessage(date + " : " + main);
         player.sendMessage(description);
 
+    }
+
+    public static void showAllTips(Player player) {
+        player.sendMessage("2024.06.15 - コマンド一覧表示の大幅変更");
+        player.sendMessage("2024.05.25 - お知らせの表示機能の追加");
     }
 }
 
