@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import stefano.s1.Config;
 
 import java.util.ArrayList;
 
@@ -73,5 +74,57 @@ public class pvpUtil {
         ItemStack pvpBlock = new ItemStack(Material.STONE, 64);
         player.getInventory().setItem(6, pvpBlock);
         player.sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
+    }
+
+    public static void pvpWinnerAction(Player player) {
+        player.sendMessage("pvp終了!");
+        player.sendMessage(ChatColor.GOLD + "勝ち！");
+        player.sendTitle(ChatColor.MAGIC + "", ChatColor.DARK_PURPLE + "勝ち！", 20, 40, 40);
+        player.sendMessage("赤いキノコをクリックしてロビーに戻る");
+        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+        player.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
+    }
+
+
+    public static void borderSettings1(Player playerPvp, World world) {
+        double xx1 = playerPvp.getLocation().getX();
+        double yy1 = playerPvp.getLocation().getY();
+        double zz1 = playerPvp.getLocation().getZ();
+        double gap = xx1 - Config.Range;
+        double xxx1 = xx1 - gap;
+        Location playerLocation = new Location(world, xxx1, yy1, zz1, 90, 0);
+        playerPvp.teleport(playerLocation);
+    }
+
+    public static void borderSettings2(Player playerPvp, World world) {
+        double xx1 = playerPvp.getLocation().getX();
+        double yy1 = playerPvp.getLocation().getY();
+        double zz1 = playerPvp.getLocation().getZ();
+        double gap = zz1 - Config.Range;
+        double zzz1 = zz1 - gap;
+        Location playerLocation = new Location(world, xx1, yy1, zzz1, -180, 0);
+        playerPvp.teleport(playerLocation);
+    }
+
+    public static void borderSettings3(Player playerPvp, World world) {
+        double xx1 = playerPvp.getLocation().getX();
+        double yy1 = playerPvp.getLocation().getY();
+        double zz1 = playerPvp.getLocation().getZ();
+        double gap = -Config.Range - xx1;
+        gap = -gap;
+        double xxx1 = xx1 - gap;
+        Location playerLocation = new Location(world, xxx1, yy1, zz1, -90, 0);
+        playerPvp.teleport(playerLocation);
+    }
+
+    public static void borderSettings4(Player playerPvp, World world) {
+        double xx1 = playerPvp.getLocation().getX();
+        double yy1 = playerPvp.getLocation().getY();
+        double zz1 = playerPvp.getLocation().getZ();
+        double gap = -Config.Range - zz1;
+        gap = -gap;
+        double zzz1 = zz1 - gap;
+        Location playerLocation = new Location(world, xx1, yy1, zzz1, 0, 0);
+        playerPvp.teleport(playerLocation);
     }
 }

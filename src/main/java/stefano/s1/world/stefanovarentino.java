@@ -103,23 +103,8 @@ public class stefanovarentino implements Listener {
                 player.setGameMode(GameMode.ADVENTURE);
             }
         }, 20L);
-        player.setFoodLevel(20);
-        player.setHealth(20);
-        player.sendTitle(player.getName() + ChatColor.AQUA + "さん", ChatColor.AQUA + "こんにちは！", 20, 40, 20);
-        player.sendMessage(ChatColor.AQUA + "-----Stefano Varentinoへようこそ!-----");
-        player.sendMessage(ChatColor.YELLOW + "アスレチックやPVPなど、いくつかのゲームがあります!");
-        player.sendMessage(ChatColor.YELLOW + "前にある金床をクリックしてゲームをプレイすることができます。");
-        player.sendMessage(ChatColor.GREEN + "レッドストーンブロック…アスレチックがプレイできます。");
-        player.sendMessage(ChatColor.GREEN + "エメラルド…PVPがプレイできます。");
-        player.sendMessage(ChatColor.GREEN + "赤いきのこ…ロビーの中心に戻ります。");
-        player.sendMessage(ChatColor.GREEN + "/sv…コマンド一覧を表示します。");
-        player.sendMessage(ChatColor.AQUA + "------------------------------");
-        player.teleport(this.lobby);
-        player.getInventory().clear();
-        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
 
-
-
+        worldSettings.firstSettings(player, lobby);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -132,31 +117,9 @@ public class stefanovarentino implements Listener {
             if (block != null && block.getType() == Material.OAK_WALL_SIGN) {
                 Sign sign = (Sign) block.getState();
                 String[] lines = sign.getLines();
-                if (Objects.equals(lines[0], "tyekkupoinnto") || Objects.equals(lines[0], "チェックポイント")) {
-                    player.sendMessage(ChatColor.DARK_GREEN + "無事にチェックポイントを設定しました!");
-                    checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
-                    player.getInventory().setHeldItemSlot(3);
-                }
-                else if(Objects.equals(lines[0], "今日のお知らせ")) {
-                    Config.showLatestTips(player);
-                }
-                else if (Objects.equals(lines[0], "アスレの王者")) {
-                    player.getWorld().playEffect(player.getLocation(), Effect.WITHER_SHOOT, 0, 1);
-                }
-                else if (Objects.equals(lines[0], "stefanovarentino")) {
-                    if (athleticClear.getWorld() == null) return;
-                    athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 1);
-                }
-                else if (Objects.equals(lines[0], "この世界の名前は")) {
-                    player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "!");
-                }
-                else if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
-                    if (Objects.equals(lines[1], "てタイムをリセット") || Objects.equals(lines[1], "remove")) {
-                        player.sendMessage(ChatColor.AQUA + "自分のタイムをリセットします。");
-                        PlayerScore.removePlayerTime(player, this.plugin);
-                        ScoreBoardUtil.updateRanking(player);
-                    }
-                }
+
+                worldSettings.signClick(player, lines, checkpointList, athleticClear, plugin);
+
             } else if (e.getClickedBlock().getType().equals(Material.ANVIL)) {
                 player.setHealth(20);
                 Inventory gameListInventory = Bukkit.createInventory(null, 9, "ゲーム一覧");
@@ -186,30 +149,16 @@ public class stefanovarentino implements Listener {
                         return;
                     }
                     if (athleticClear.getWorld() == null) return;
-                    player.sendMessage(ChatColor.YELLOW + "ゴールにつきました！おめでとうございます！");
-                    athleticClear.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-                    athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
-                    player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
-                    AthleticTimer.stopTimer(player);
-                    player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
-                    PlayerScore.setPlayerTime(player, player.getLevel(), this.plugin);
-                    ScoreBoardUtil.updateRanking(player);
-                    player.setLevel(0);
+                    AthleticUtil.afterAthleticAction(player, plugin, athleticClear);
                 }
                 if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
                     if (athleticStart.getWorld() == null) return;
-                    player.sendMessage("アスレチックスタート！");
-                    player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチックスタート！", 20, 40, 20);
-                    athleticStart.getWorld().playEffect(player.getLocation(), Effect.PORTAL_TRAVEL, 0, 10);
-                    athleticTimer.startTimer(player);
+                    AthleticUtil.beforeAthleticAction(player, athleticStart, athleticTimer);
                 }
             }
         }
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
             if (e.getItem() != null) {
-//                if (CoolDownUtil.cooldown(e.getPlayer(), plugin) == 1) {
-//                    return;
-//                }
                 ItemStack itemStack = e.getItem();
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
                     knockBackWhichCan = "true";
@@ -312,58 +261,47 @@ public class stefanovarentino implements Listener {
 
     @EventHandler
     public void onPlayerMoveEvent(PlayerMoveEvent e){
-        Player player = e.getPlayer();
-        for (String PlayerName: playerList){
-            Player playerPvp = Bukkit.getPlayer(PlayerName);
-            if (playerPvp == null) return;
-            World world = playerPvp.getWorld();
-            if (this.world != world) return;
-            if (playerPvp.getLocation().getX() > Config.Range){
-                double xx1 = playerPvp.getLocation().getX();
-                double yy1 = playerPvp.getLocation().getY();
-                double zz1 = playerPvp.getLocation().getZ();
-                double gap = xx1 - Config.Range;
-                double xxx1 = xx1 - gap;
-                Location playerLocation = new Location(world, xxx1, yy1, zz1, 90, 0);
-                playerPvp.teleport(playerLocation);
-                return;
+        if (Playing_Game) {
+            Player player = e.getPlayer();
+            for (String PlayerName: playerList) {
+                Player playerPvp = Bukkit.getPlayer(PlayerName);
+                if (playerPvp == null) return;
+                World world = playerPvp.getWorld();
+                if (this.world != world) return;
+
+                if (playerPvp.getLocation().getX() > Config.Range) {
+                    pvpUtil.borderSettings1(playerPvp, world);
+                    return;
+                } else if (playerPvp.getLocation().getZ() > Config.Range) {
+                    pvpUtil.borderSettings2(playerPvp, world);
+                    return;
+                } else if (playerPvp.getLocation().getX() < -Config.Range) {
+                    pvpUtil.borderSettings3(playerPvp, world);
+                    return;
+                } else if (playerPvp.getLocation().getZ() < -Config.Range) {
+                    pvpUtil.borderSettings4(playerPvp, world);
+                    return;
+                }
             }
-            else if (playerPvp.getLocation().getZ() > Config.Range){
-                double xx1 = playerPvp.getLocation().getX();
-                double yy1 = playerPvp.getLocation().getY();
-                double zz1 = playerPvp.getLocation().getZ();
-                double gap = zz1 - Config.Range;
-                double zzz1 = zz1 - gap;
-                Location playerLocation = new Location(world, xx1, yy1, zzz1, -180, 0);
-                playerPvp.teleport(playerLocation);
-                return;
-            }
-
-
-
-
-
-            else if (playerPvp.getLocation().getX() < -Config.Range){
-                double xx1 = playerPvp.getLocation().getX();
-                double yy1 = playerPvp.getLocation().getY();
-                double zz1 = playerPvp.getLocation().getZ();
-                double gap = -Config.Range - xx1;
-                gap = -gap;
-                double xxx1 = xx1 - gap;
-                Location playerLocation = new Location(world, xxx1, yy1, zz1, -90, 0);
-                playerPvp.teleport(playerLocation);
-                return;
-            }
-            else if (playerPvp.getLocation().getZ() < -Config.Range){
-                double xx1 = playerPvp.getLocation().getX();
-                double yy1 = playerPvp.getLocation().getY();
-                double zz1 = playerPvp.getLocation().getZ();
-                double gap = -Config.Range - zz1;
-                gap = -gap;
-                double zzz1 = zz1 - gap;
-                Location playerLocation = new Location(world, xx1, yy1, zzz1, 0, 0);
-                playerPvp.teleport(playerLocation);
-                return;
+//isonground isinwater
+        } else if (knockBackWhichCan.equals(false)){
+            Player player2 = e.getPlayer();
+            player2.sendMessage("aaaaaaaa");
+            Location playerLocation = player2.getLocation();
+            if (playerLocation.getY() < 200 && playerLocation.getY() > 190) {
+                for(String PlayerName: knockBackPlayerList) {
+                    Player playerName2 = Bukkit.getPlayer(PlayerName);
+                    if (player2.equals(playerName2)) {
+                        player2.sendMessage("you loser");
+                        knockBackUtil.knockBackLoserAction(player2, knockBackPlayerList);
+                    } else {
+                        String player3 = knockBackPlayerList.get(0);
+                        Player player4 = Bukkit.getPlayer(player3);
+                        player4.sendMessage("you winner");
+                        knockBackPlayerList.remove(player3);
+                        knockBackUtil.sendWinMsg(player3, knockBackPlayerList);
+                    }
+                }
             }
         }
     }
@@ -381,26 +319,12 @@ public class stefanovarentino implements Listener {
                 for (String PlayerName : playerList) {
                     Player player2 = Bukkit.getPlayer(PlayerName);
                     if (player2 == null) return;
-                    player2.sendMessage("pvp終了!");
-                    player2.sendMessage(PlayerName);
-                    player2.sendMessage(ChatColor.GOLD + "勝ち！");
-                    player2.sendTitle(ChatColor.MAGIC + "", ChatColor.DARK_PURPLE + "勝ち！", 20, 40, 40);
-                    player2.sendMessage("赤いキノコをクリックしてロビーに戻る");
-                    player2.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                    player2.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
+                    pvpUtil.pvpWinnerAction(player2);
                 }
             }
-        } else {
+        } {
             if (knockBackPlayerList.contains(player.getName())) {
-            player.sendTitle(ChatColor.RED + "敗北...", "", 20, 40 , 20);
-            player.sendMessage("赤いキノコをクリックしてロビーに戻る");
-            player.getInventory().clear();
-            player.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-            knockBackPlayerList.remove(player.getName());
-            String winner = knockBackPlayerList.get(0);
-            knockBackUtil.sendWinMsg(winner, knockBackPlayerList);
-            knockBackPlayerList.clear();
-            knockBackUtil.knockBackBlockCrear();
+                knockBackUtil.knockBackLoserAction(player, knockBackPlayerList);
             }
         }
     }
@@ -471,8 +395,6 @@ public class stefanovarentino implements Listener {
             //knockBack--------------------------------------------------------------------------------------------
             else if (itemStack.getType() == Material.STICK && itemStack.getItemMeta().getDisplayName().equals("knockback")) {
                 player.setHealth(20);
-                player.sendMessage("現在開発中です!");
-                player.sendMessage("まだアクセスすることができません!");
 
                 if (knockBackWhichCan.equals("false")) {
                     player.sendMessage("2人しかできないので今プレイしている人が終わるまでお待ちください!");
@@ -582,16 +504,7 @@ public class stefanovarentino implements Listener {
         if (userTag.contains("athletic")) {
             e.setCancelled(true);
             if (itemStack.getType() == Material.PAPER && itemStack.getItemMeta().getDisplayName().equals("シンプル")) {
-                player.teleport(this.athletic1);
-                ScoreBoardUtil.updateRanking(player);
-                player.getInventory().clear();
-                player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る(athletic1)", Material.APPLE));
-                player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
-                player.sendMessage(ChatColor.AQUA + "チェックポイントの設定は、押した時にいた場所がチェックポイントに設定されます。");
-                player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
-                player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
-                player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
+                AthleticTimer.settingsAthleticSimple(player);
             }
         }
     }
@@ -669,11 +582,9 @@ public class stefanovarentino implements Listener {
             }
             pvpUtil.blockLocation(location);
         } else {
-            knockBackUtil.knockBackWhoBlockPlaceCheck(knockBackPlayerList, player, location);
+            player.sendMessage("blockPlace");
+            knockBackUtil.knockBackWhoBlockPlaceCheck(knockBackPlayerList, player, location, e);
         }
-//        if (ItemUtil.canBlockPlace(player) == 1) {
-//            e.setCancelled(true);
-//        }
     }
 
     @EventHandler
@@ -684,31 +595,7 @@ public class stefanovarentino implements Listener {
         if (this.world != world) return;
         if (material == null) return;
         if (knockBackWhichCan.equals("false")) {
-            if (material.equals(Material.GRASS_BLOCK)) {
-                player.sendMessage("地形の破壊は許可されてません!");
-                e.setCancelled(true);
-                return;
-            }
-            else if (material.equals(Material.DIRT)) {
-                player.sendMessage("地形の破壊は許可されてません!");
-                e.setCancelled(true);
-                return;
-            }
-            else if(material.equals(Material.OAK_LEAVES)) {
-                player.sendMessage("地形の破壊は許可されてません!");
-                e.setCancelled(true);
-                return;
-            }
-            else if(material.equals(Material.OAK_LOG)) {
-                player.sendMessage("地形の破壊は許可されてません!");
-                e.setCancelled(true);
-                return;
-            }
-            else if(material.equals(Material.GOLD_BLOCK)) {
-                player.sendMessage("地形の破壊は許可されてません!");
-                e.setCancelled(true);
-                return;
-            }
+            knockBackUtil.knockBackBlockMaterialCheck(material, player, e);
         }
     }
     @EventHandler

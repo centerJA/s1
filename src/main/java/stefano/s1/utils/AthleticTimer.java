@@ -2,10 +2,12 @@ package stefano.s1.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import stefano.s1.Config;
 import stefano.s1.S1;
 
 import java.util.ArrayList;
@@ -67,6 +69,20 @@ public class AthleticTimer  {
             }
         }, 0, 10);
         return taskId;
+    }
+
+    public static void settingsAthleticSimple(Player player) {
+        player.teleport(Config.athletic1);
+        ScoreBoardUtil.updateRanking(player);
+        player.getInventory().clear();
+        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+        player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る(athletic1)", Material.APPLE));
+        player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
+        player.sendMessage(ChatColor.AQUA + "チェックポイントの設定は、押した時にいた場所がチェックポイントに設定されます。");
+        player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
+        player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
+        player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
+
     }
 
 }

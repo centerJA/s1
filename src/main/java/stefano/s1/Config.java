@@ -39,7 +39,7 @@ public class Config{
                          pvpMainText = "PVP GAME",
                          knockBackIsStopping = "現在knockbackで待機している人はいません",
                          knockBackIsWaiting = "現在誰かがknockbackで待機しています",
-                         knockBackIsPlaying = "現在誰かがpvpをプレイしています",
+                         knockBackIsPlaying = "現在誰かがknockbackをプレイしています",
                          knockBackMainText = "KNOCKBACK GAME";
 
     public static void showLatestTips(Player player) {

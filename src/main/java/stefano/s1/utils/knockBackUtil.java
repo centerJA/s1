@@ -3,6 +3,8 @@ package stefano.s1.utils;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import stefano.s1.S1;
 
@@ -74,10 +76,17 @@ public class knockBackUtil {
         }
     }
 
-    public static void knockBackWhoBlockPlaceCheck(ArrayList<String> knockBackPlayerList, Player player2, Location location) {
+    public static void knockBackWhoBlockPlaceCheck(ArrayList<String> knockBackPlayerList, Player player2, Location location, BlockPlaceEvent e) {
         for (String PlayerName: knockBackPlayerList) {
             if (player2.getName().equals(PlayerName) && location != null) {
-                knockBackBlockLocationList.add(location);
+                if (location.getY() >= 240) {
+                    System.out.println("test test");
+                    player2.sendMessage("これ以上の高さにはブロックを設置できません!");
+                    e.setCancelled(true);
+                    return;
+                } else {
+                    knockBackBlockLocationList.add(location);
+                }
             }
         }
     }
@@ -86,5 +95,40 @@ public class knockBackUtil {
         for (Location location: knockBackBlockLocationList) {
             location.getBlock().setType(Material.AIR);
         }
+    }
+
+    public static void knockBackBlockMaterialCheck(Material material, Player player, BlockBreakEvent e) {
+        if (material.equals(Material.GRASS_BLOCK)) {
+            player.sendMessage("地形の破壊は許可されてません!");
+            e.setCancelled(true);
+        }
+        else if (material.equals(Material.DIRT)) {
+            player.sendMessage("地形の破壊は許可されてません!");
+            e.setCancelled(true);
+        }
+        else if(material.equals(Material.OAK_LEAVES)) {
+            player.sendMessage("地形の破壊は許可されてません!");
+            e.setCancelled(true);
+        }
+        else if(material.equals(Material.OAK_LOG)) {
+            player.sendMessage("地形の破壊は許可されてません!");
+            e.setCancelled(true);
+        }
+        else if(material.equals(Material.GOLD_BLOCK)) {
+            player.sendMessage("地形の破壊は許可されてません!");
+            e.setCancelled(true);
+        }
+    }
+
+    public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList) {
+        player.sendTitle(ChatColor.RED + "敗北...", "", 20, 40 , 20);
+        player.sendMessage("赤いキノコをクリックしてロビーに戻る");
+        player.getInventory().clear();
+        player.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+        knockBackPlayerList.remove(player.getName());
+        String winner = knockBackPlayerList.get(0);
+        knockBackUtil.sendWinMsg(winner, knockBackPlayerList);
+        knockBackPlayerList.clear();
+        knockBackUtil.knockBackBlockCrear();
     }
 }
