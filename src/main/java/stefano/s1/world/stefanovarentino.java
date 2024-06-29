@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
@@ -260,7 +261,7 @@ public class stefanovarentino implements Listener {
     }
 
     @EventHandler
-    public void onPlayerMoveEvent(PlayerMoveEvent e){
+    public void onPlayerMoveEvent(PlayerMoveEvent e) {
         if (Playing_Game) {
             Player player = e.getPlayer();
             for (String PlayerName: playerList) {
@@ -284,22 +285,27 @@ public class stefanovarentino implements Listener {
                 }
             }
 //isonground isinwater
-        } else if (knockBackWhichCan.equals(false)){
+        } else if (knockBackWhichCan.equals("false")) {
             Player player2 = e.getPlayer();
-            player2.sendMessage("aaaaaaaa");
+            Boolean isOnGround = player2.getLocation().clone().add(0, -0.5, 0).getBlock().getType() != Material.AIR;
             Location playerLocation = player2.getLocation();
             if (playerLocation.getY() < 200 && playerLocation.getY() > 190) {
                 for(String PlayerName: knockBackPlayerList) {
                     Player playerName2 = Bukkit.getPlayer(PlayerName);
                     if (player2.equals(playerName2)) {
-                        player2.sendMessage("you loser");
-                        knockBackUtil.knockBackLoserAction(player2, knockBackPlayerList);
+                        if (!isOnGround) {
+                            player2.sendMessage("you loser");
+                            knockBackUtil.knockBackLoserAction(player2, knockBackPlayerList);
+                        }
+
                     } else {
                         String player3 = knockBackPlayerList.get(0);
                         Player player4 = Bukkit.getPlayer(player3);
+                        if (player4 == null) return;
                         player4.sendMessage("you winner");
-                        knockBackPlayerList.remove(player3);
+                        player4.sendMessage(player3);
                         knockBackUtil.sendWinMsg(player3, knockBackPlayerList);
+                        knockBackPlayerList.remove(player3);
                     }
                 }
             }
@@ -582,7 +588,6 @@ public class stefanovarentino implements Listener {
             }
             pvpUtil.blockLocation(location);
         } else {
-            player.sendMessage("blockPlace");
             knockBackUtil.knockBackWhoBlockPlaceCheck(knockBackPlayerList, player, location, e);
         }
     }

@@ -118,6 +118,14 @@ public class knockBackUtil {
             player.sendMessage("地形の破壊は許可されてません!");
             e.setCancelled(true);
         }
+        else if (material.equals(Material.RED_WALL_BANNER)) {
+            player.sendMessage("地形の破壊は許可されていません!");
+            e.setCancelled(true);
+        }
+        else if (material.equals(Material.BLUE_WALL_BANNER)) {
+            player.sendMessage("地形の破壊は許可されていません!");
+            e.setCancelled(true);
+        }
     }
 
     public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList) {

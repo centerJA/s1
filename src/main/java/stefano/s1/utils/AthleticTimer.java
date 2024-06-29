@@ -57,7 +57,7 @@ public class AthleticTimer  {
     }
 
     public static BukkitTask getTaskId(Player player) {
-        BukkitTask taskId = S1.getPlugin(S1.class).getServer().getScheduler().runTaskTimer(S1.getPlugin(S1.class), new Runnable() {
+        return S1.getPlugin(S1.class).getServer().getScheduler().runTaskTimer(S1.getPlugin(S1.class), new Runnable() {
             @Override
             public void run() {
                 if (athleticTime > 2000) {
@@ -68,7 +68,6 @@ public class AthleticTimer  {
                 athleticTime++;
             }
         }, 0, 10);
-        return taskId;
     }
 
     public static void settingsAthleticSimple(Player player) {
