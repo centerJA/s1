@@ -43,9 +43,9 @@ public class Config{
                          knockBackMainText = "KNOCKBACK GAME";
 
     public static void showLatestTips(Player player) {
-        String date = "2024.06.15";
-        String main = "コマンドの一覧の表示の仕方が大幅に変更されました!";
-        String description = "/sv を実行して見てみてください";
+        String date = "2024.07.01";
+        String main = "knockBackで、一定の高さまで落下すると負けるように変更されました!";
+        String description = "実際にやってみてください!";
         player.sendMessage(ChatColor.AQUA + "最近のお知らせ");
         player.sendMessage(date + " : " + main);
         player.sendMessage(description);
@@ -53,6 +53,7 @@ public class Config{
     }
 
     public static void showAllTips(Player player) {
+        player.sendMessage("2024.07.01 - knockBackゲームの敗北のタイミングの設定の変更");
         player.sendMessage("2024.06.15 - コマンド一覧表示の大幅変更");
         player.sendMessage("2024.05.25 - お知らせの表示機能の追加");
     }

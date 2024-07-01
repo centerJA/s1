@@ -7,8 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
-public class
-knockBackTimerUtil extends BukkitRunnable {
+public class knockBackTimerUtil extends BukkitRunnable {
 
     public static int nowknockBackTime;
 

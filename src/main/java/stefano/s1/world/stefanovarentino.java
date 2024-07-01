@@ -46,11 +46,11 @@ public class stefanovarentino implements Listener {
 
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
-    public static ArrayList<String> knockBackPlayerList, cannnotDamageList;
+    public static ArrayList<String> knockBackPlayerList, cannotDamageList;
 
     String knockBackWhichCan = "true";
 
-    public int flag, bedwarsFlag;
+    public static int flag, bedwarsFlag, knockBackPlayerCounter;
     public Boolean Playing_Game = false;
     public FileConfiguration checkpointList;
     BukkitTask Timer, BedwarsTimer;
@@ -80,13 +80,14 @@ public class stefanovarentino implements Listener {
         this.playerList = new ArrayList<>();
         this.deathPlayerList = new ArrayList<>();
         this.athleticPlayerList = new ArrayList<>();
-        this.cannnotDamageList = new ArrayList<>();
+        this.cannotDamageList = new ArrayList<>();
         //this.checkpointList = plugin.getConfig();
         this.checkpointList = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getParent(), "checkpoint.yml"));
         this.athleticTimer = new AthleticTimer();
         this.flag = 0;
         this.bedwarsFlag = 0;
         this.knockBackPlayerList = new ArrayList<>();
+        knockBackPlayerCounter = 0;
     }
 
 
@@ -162,7 +163,6 @@ public class stefanovarentino implements Listener {
             if (e.getItem() != null) {
                 ItemStack itemStack = e.getItem();
                 if (itemStack.getType() == Material.RED_MUSHROOM) {
-                    knockBackWhichCan = "true";
                     player.setHealth(20);
                     if (athleticTimer != null) {
                         AthleticTimer.stopTimer(player);
@@ -198,9 +198,12 @@ public class stefanovarentino implements Listener {
                         e.getPlayer().getInventory().clear();
                         e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
                         knockBackWhichCan = "true";
+                        knockBackPlayerCounter = knockBackPlayerCounter - 1;
+
                     }
                     if (knockBackPlayerList.size() == 1) {
                         knockBackWhichCan = "true";
+                        knockBackPlayerCounter = knockBackPlayerCounter - 1;
                         for (String PlayerName: knockBackPlayerList) {
                             Player player2 = Bukkit.getPlayer(PlayerName);
                             if (player2 == null) return;
@@ -284,29 +287,22 @@ public class stefanovarentino implements Listener {
                     return;
                 }
             }
-//isonground isinwater
+
         } else if (knockBackWhichCan.equals("false")) {
             Player player2 = e.getPlayer();
-            Boolean isOnGround = player2.getLocation().clone().add(0, -0.5, 0).getBlock().getType() != Material.AIR;
             Location playerLocation = player2.getLocation();
-            if (playerLocation.getY() < 200 && playerLocation.getY() > 190) {
-                for(String PlayerName: knockBackPlayerList) {
-                    Player playerName2 = Bukkit.getPlayer(PlayerName);
-                    if (player2.equals(playerName2)) {
-                        if (!isOnGround) {
-                            player2.sendMessage("you loser");
+//            Boolean isOnGround = player2.getLocation().clone().add(0, -0.5, 0).getBlock().getType() != Material.AIR;
+//            checkOnGroundTask.checkOnGround(player2, isOnGround).equals(false) ||
+            if (playerLocation.getY() < 200 && playerLocation.getY()  > 180) {
+                for (String PlayerName: knockBackPlayerList) {
+                    Player playerName = Bukkit.getPlayer(PlayerName);
+                    if (playerName != null) {
+                        if (playerName != player2) {
                             knockBackUtil.knockBackLoserAction(player2, knockBackPlayerList);
+                            knockBackUtil.knockBackBlockCrear();
+                            knockBackWhichCan = "true";
                         }
-
-                    } else {
-                        String player3 = knockBackPlayerList.get(0);
-                        Player player4 = Bukkit.getPlayer(player3);
-                        if (player4 == null) return;
-                        player4.sendMessage("you winner");
-                        player4.sendMessage(player3);
-                        knockBackUtil.sendWinMsg(player3, knockBackPlayerList);
-                        knockBackPlayerList.remove(player3);
-                    }
+                    } else return;
                 }
             }
         }
@@ -331,6 +327,9 @@ public class stefanovarentino implements Listener {
         } {
             if (knockBackPlayerList.contains(player.getName())) {
                 knockBackUtil.knockBackLoserAction(player, knockBackPlayerList);
+                knockBackWhichCan = "true";
+                knockBackPlayerList.remove(player.getName());
+                knockBackUtil.knockBackBlockCrear();
             }
         }
     }
@@ -400,43 +399,18 @@ public class stefanovarentino implements Listener {
             }
             //knockBack--------------------------------------------------------------------------------------------
             else if (itemStack.getType() == Material.STICK && itemStack.getItemMeta().getDisplayName().equals("knockback")) {
-                player.setHealth(20);
-
                 if (knockBackWhichCan.equals("false")) {
                     player.sendMessage("2人しかできないので今プレイしている人が終わるまでお待ちください!");
                     e.setCancelled(true);
                     return;
+                } else if (knockBackWhichCan.equals("true")) {
+                    knockBackPlayerCounter = knockBackPlayerCounter + 1;
+                    if (knockBackPlayerCounter == 2) {
+                        knockBackWhichCan = "false";
+                    }
+                    knockBackUtil.knockBackSetUp(player, taikijyo, knockBackPlayerList, visible, cannotDamageList, e, world, plugin);
                 }
-                cannnotDamageList.add(player.getName());
-                player.teleport(taikijyo);
-                textDisplayUtil.removeKnockBackColumnText(world);
-                textDisplayUtil.showKnockBackIsWaiting(Config.textLocationKnockBackColumn, Config.knockBackIsWaiting, visible);
-                player.getInventory().clear();
-                player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                if (!knockBackPlayerList.contains(player.getName())) {
-                    knockBackPlayerList.add(player.getName());
-                }
-                player.sendMessage(ChatColor.YELLOW + knockBackPlayerList.toString());
-                if (knockBackPlayerList.size() == 1) {
-                    player.sendMessage(ChatColor.AQUA + "人数が足りません。2人が必要です。");
-                    player.sendMessage(ChatColor.AQUA + "現在1人です。");
-                }
-                else if (knockBackPlayerList.size() == 2) {
-                    knockBackWhichCan = "false";
-                    player.sendMessage("すでに1人が参加しているので、開始します。");
-                    textDisplayUtil.removeKnockBackColumnText(world);
-                    textDisplayUtil.showKnockBackIsPlaying(Config.textLocationKnockBackColumn, Config.knockBackIsPlaying, visible);
-                    Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            for (String PlayerName: knockBackPlayerList) {
-                                cannnotDamageList.remove(PlayerName);
-                            }
-                        }
-                    }, 410L);
-                    this.Timer = new knockBackTimerUtil(knockBackPlayerList).runTaskTimer(this.plugin, 0L, 20L);
-                    knockBackUtil.startknockBack(this.plugin, player, knockBackPlayerList);
-                }
+
             }
             //pvp------------------------------------------------------------------------------------------
             else if (itemStack.getType() == Material.EMERALD && itemStack.getItemMeta().getDisplayName().equals("pvp")) {
@@ -454,7 +428,7 @@ public class stefanovarentino implements Listener {
                     textDisplayUtil.removePvpColumnText(world);
                     textDisplayUtil.showPvpIsWaiting(Config.textLocationPvpColumn, Config.pvpIsWaiting, visible);
 
-                    cannnotDamageList.add(player.getName());
+                    cannotDamageList.add(player.getName());
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     if (!playerList.contains(player.getName())) {
@@ -478,7 +452,7 @@ public class stefanovarentino implements Listener {
                                         LimitTimer.stopTimer();
                                         break;
                                     }
-                                    cannnotDamageList.remove(PlayerName);
+                                    cannotDamageList.remove(PlayerName);
                                     pvpUtil.playerSettingsBeforeGame(player);
                                 }
                             }
@@ -608,7 +582,7 @@ public class stefanovarentino implements Listener {
         Entity entity = e.getEntity();
         World world = entity.getWorld();
         if (this.world != world) return;
-        for (String PlayerName: cannnotDamageList) {
+        for (String PlayerName: cannotDamageList) {
             e.setCancelled(true);
         }
     }

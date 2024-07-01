@@ -125,6 +125,7 @@ public class SvCommand implements CommandExecutor {
                     ComponentBuilder report = new ComponentBuilder("バグや誤字を見つけた際には" + ChatColor.AQUA + "ここをクリック" + ChatColor.WHITE + "して報告をお願いします!");
                     BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://google.com")).create();
                     player.spigot().sendMessage(reportURL);
+                    player.sendMessage("必要のない報告やスパムはしないでください!");
                 }
                 else if (args[0].equals("hello")) {
                     player.sendMessage("どうもこんにちは！StefanoVarentinoを制作しているInfIncです！");
@@ -161,9 +162,10 @@ public class SvCommand implements CommandExecutor {
                     }
                     else if (args[1].equals("cooperative")) {
                         player.sendMessage(ChatColor.AQUA + "ワールド作成協力者紹介");
-                        player.sendMessage("1.usikujin");
+                        player.sendMessage("1.ushikujin");
                         player.sendMessage("2.SleetyNote17020");
                         player.sendMessage("3.maintya3");
+                        player.sendMessage("4. m1n_tya3");
                     }
                     else if (args[1].equals("homePageURL") || args[1].equals("homepageurl") || args[1].equals("homepageURL")) {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1);

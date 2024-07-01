@@ -5,7 +5,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import stefano.s1.Config;
 import stefano.s1.S1;
 
 import java.util.ArrayList;
@@ -80,7 +82,6 @@ public class knockBackUtil {
         for (String PlayerName: knockBackPlayerList) {
             if (player2.getName().equals(PlayerName) && location != null) {
                 if (location.getY() >= 240) {
-                    System.out.println("test test");
                     player2.sendMessage("これ以上の高さにはブロックを設置できません!");
                     e.setCancelled(true);
                     return;
@@ -136,7 +137,39 @@ public class knockBackUtil {
         knockBackPlayerList.remove(player.getName());
         String winner = knockBackPlayerList.get(0);
         knockBackUtil.sendWinMsg(winner, knockBackPlayerList);
-        knockBackPlayerList.clear();
-        knockBackUtil.knockBackBlockCrear();
+    }
+
+    public static void knockBackSetUp(Player player, Location taikijyo, ArrayList<String> knockBackPlayerList, boolean visible, ArrayList<String> cannotDamageList, InventoryClickEvent e, World world, S1 plugin) {
+        player.setHealth(20);
+
+        cannotDamageList.add(player.getName());
+        player.teleport(taikijyo);
+        textDisplayUtil.removeKnockBackColumnText(world);
+        textDisplayUtil.showKnockBackIsWaiting(Config.textLocationKnockBackColumn, Config.knockBackIsWaiting, visible);
+        player.getInventory().clear();
+        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+        if (!knockBackPlayerList.contains(player.getName())) {
+            knockBackPlayerList.add(player.getName());
+        }
+        player.sendMessage(ChatColor.YELLOW + knockBackPlayerList.toString());
+        if (knockBackPlayerList.size() == 1) {
+            player.sendMessage(ChatColor.AQUA + "人数が足りません。2人が必要です。");
+            player.sendMessage(ChatColor.AQUA + "現在1人です。");
+        }
+        else if (knockBackPlayerList.size() == 2) {
+            player.sendMessage(ChatColor.AQUA + "すでに1人が参加しているので、開始します。");
+            textDisplayUtil.removeKnockBackColumnText(world);
+            textDisplayUtil.showKnockBackIsPlaying(Config.textLocationKnockBackColumn, Config.knockBackIsPlaying, visible);
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    for (String PlayerName: knockBackPlayerList) {
+                        cannotDamageList.remove(PlayerName);
+                    }
+                }
+            }, 410L);
+            new knockBackTimerUtil(knockBackPlayerList).runTaskTimer(plugin, 0L, 20L);
+            knockBackUtil.startknockBack(plugin, player, knockBackPlayerList);
+        }
     }
 }

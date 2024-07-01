@@ -14,20 +14,16 @@ public class checkOnGroundTask {
 
     public static Boolean checkOnGround(Player player, Boolean isOnGround) {
         if (!isOnGround) {
-            player.sendMessage("空中！");
             if (!playerOnGroundStatus.getOrDefault(player, true)) {
-                player.sendMessage("noelsenoelse");
                 long currentTime = System.currentTimeMillis();
                 long offGroundTime = playerOffGroundTime.getOrDefault(player, currentTime);
                 if (currentTime - offGroundTime > 3000) {
-                    player.sendMessage("空中判定");
                     return false;
                 } else {
                     playerOffGroundTime.put(player, System.currentTimeMillis());
                     return true;
                 }
             } else {
-                player.sendMessage("elseelse");
                 playerOnGroundStatus.put(player, true);
                 playerOffGroundTime.put(player, System.currentTimeMillis());
                 return true;
