@@ -19,10 +19,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
-import stefano.s1.utils.AthleticTimer;
-import stefano.s1.utils.ItemUtil;
-import stefano.s1.utils.PlayerScore;
-import stefano.s1.utils.ScoreBoardUtil;
+import stefano.s1.utils.*;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 import static stefano.s1.utils.AthleticTimer.tasks;
 
@@ -68,7 +68,20 @@ public class SvCommand implements CommandExecutor {
                 if (args[0].equals("click") && args[1].equals("perform")) {
                     TextComponent back = new TextComponent(ChatColor.UNDERLINE + "前のページに戻る");
                     back.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv"));
-                    if (args[2].equals("teleport")) {
+                    if (args[2].equals("userCommentYes")) {
+                        try {
+                            worldSettings.athleticTimeReset(player, plugin);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        player.sendMessage("操作が完了しました。");
+                    }
+
+                    else if (args[2].equals("userCommentNo")) {
+                        player.sendMessage("操作をキャンセルしました。");
+                    }
+
+                    else if (args[2].equals("teleport")) {
                         player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                         player.sendMessage("/sv tp lobby       ロビーにテレポートします");
                         player.sendMessage("/sv tp athletic       アスレチックにテレポートします");

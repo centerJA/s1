@@ -1,12 +1,16 @@
 package stefano.s1.utils;
 
 import jdk.tools.jlink.plugin.Plugin;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.io.BukkitObjectInputStream;
 import stefano.s1.Config;
 import stefano.s1.S1;
 
@@ -52,10 +56,73 @@ public class worldSettings {
         }
         else if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
             if (Objects.equals(lines[1], "てタイムをリセット") || Objects.equals(lines[1], "remove")) {
-                player.sendMessage(ChatColor.AQUA + "自分のタイムをリセットします。");
-                PlayerScore.removePlayerTime(player, plugin);
-                ScoreBoardUtil.updateRanking(player);
+                askToUserYesOrNo(player);
             }
         }
+        else if (Objects.equals(lines[0], "この先は暗室です")) {
+            player.sendMessage(ChatColor.AQUA + "い、今、、不気味な" + ChatColor.DARK_RED + "声" + ChatColor.AQUA + "、しなかった、？");
+            World world = Bukkit.getWorld("stefanovarentino");
+            if (world == null) return;
+            world.getBlockAt(Config.darkRoomLocationUnder).setType(Material.AIR);
+            world.getBlockAt(Config.darkRoomLocationUp).setType(Material.AIR);
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    player.teleport(Config.darkRoomPlayerTeleport1);
+                }
+            }, 20L);
+
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    player.teleport(Config.darkRoomPlayerTeleport);
+                    world.getBlockAt(Config.darkRoomLocationUnder).setType(Material.STONE);
+                    world.getBlockAt(Config.darkRoomLocationUp).setType(Material.STONE);
+                }
+            }, 10L);
+
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    player.sendMessage(ChatColor.AQUA + "開放されたみたいだ...");
+                    world.getBlockAt(Config.darkRoomLocationUnder).setType(Material.AIR);
+                    world.getBlockAt(Config.darkRoomLocationUp).setType(Material.AIR);
+                }
+            }, 600L);
+        }
+    }
+
+    public static void athleticTimeReset(Player player, S1 plugin) throws IOException {
+        PlayerScore.removePlayerTime(player, plugin);
+        ScoreBoardUtil.updateRanking(player);
+    }
+
+    public static void anvilClickAction(Player player, S1 plugin, PlayerInteractEvent e) {
+        Inventory gameListInventory = Bukkit.createInventory(null, 9, "ゲーム一覧");
+        gameListInventory.setItem(0, ItemUtil.setItemMeta("pvp", Material.EMERALD));
+        ItemStack knockBackStick = ItemUtil.setItemMeta("knockback", Material.STICK);
+        if (knockBackStick == null) return;
+        knockBackStick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
+        gameListInventory.setItem(1, knockBackStick);
+        gameListInventory.setItem(2, ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+                if (player.getPlayer() == null) return;
+                player.getPlayer().openInventory(gameListInventory);
+                player.addScoreboardTag("game");
+            }
+        }, 3L);
+        e.setCancelled(true);
+    }
+
+    public static void askToUserYesOrNo(Player player) {
+        player.sendMessage("本当に操作を続けますか?");
+        TextComponent userCommentYes = new TextComponent(ChatColor.GREEN + "[YES]");
+        userCommentYes.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv click perform userCommentYes"));
+        TextComponent userCommentNo = new TextComponent(ChatColor.RED + "[NO]");
+        userCommentNo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv click perform userCommentNo"));
+        player.spigot().sendMessage(userCommentYes);
+        player.spigot().sendMessage(userCommentNo);
     }
 }

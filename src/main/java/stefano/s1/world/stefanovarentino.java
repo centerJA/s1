@@ -124,22 +124,7 @@ public class stefanovarentino implements Listener {
 
             } else if (e.getClickedBlock().getType().equals(Material.ANVIL)) {
                 player.setHealth(20);
-                Inventory gameListInventory = Bukkit.createInventory(null, 9, "ゲーム一覧");
-                gameListInventory.setItem(0, ItemUtil.setItemMeta("pvp", Material.EMERALD));
-                ItemStack knockBackStick = ItemUtil.setItemMeta("knockback", Material.STICK);
-                if (knockBackStick == null) return;
-                knockBackStick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
-                gameListInventory.setItem(1, knockBackStick);
-                gameListInventory.setItem(2, ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
-                Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        if (player.getPlayer() == null) return;
-                        player.getPlayer().openInventory(gameListInventory);
-                        player.addScoreboardTag("game");
-                    }
-                }, 3L);
-                e.setCancelled(true);
+                worldSettings.anvilClickAction(player, plugin, e);
             }
         }
         if (e.getAction().equals(Action.PHYSICAL)) {
@@ -190,8 +175,8 @@ public class stefanovarentino implements Listener {
                     if (knockBackPlayerList.contains(player.getName())) {
                         knockBackPlayerList.remove(player.getName());
                         knockBackTimerUtil.stopBedwarsCountDownTimer();
-                        boolean visible = false;
                         textDisplayUtil.removeKnockBackColumnText(world);
+                        boolean visible = false;
                         textDisplayUtil.showKnockBackIsStopping(Config.textLocationKnockBackColumn, Config.knockBackIsStopping, visible);
                         e.getPlayer().sendMessage("knockbackをキャンセルしました。");
                         e.getPlayer().teleport(lobby);
@@ -228,9 +213,7 @@ public class stefanovarentino implements Listener {
                         player.teleport(this.athletic1);
                     }
                     player.getInventory().clear();
-                    player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
-                    player.getInventory().addItem(ItemUtil.setItemMeta("最初に戻る(athletic1)", Material.APPLE));
-                    player.getInventory().addItem(ItemUtil.setItemMeta("チェックポイントに戻る", Material.BOOK));
+                    AthleticUtil.athletic1UtilityItem(player);
                     if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
                         checkpointList.set(String.valueOf(player.getUniqueId()), null);
                     }
@@ -291,14 +274,13 @@ public class stefanovarentino implements Listener {
         } else if (knockBackWhichCan.equals("false")) {
             Player player2 = e.getPlayer();
             Location playerLocation = player2.getLocation();
-//            Boolean isOnGround = player2.getLocation().clone().add(0, -0.5, 0).getBlock().getType() != Material.AIR;
-//            checkOnGroundTask.checkOnGround(player2, isOnGround).equals(false) ||
             if (playerLocation.getY() < 200 && playerLocation.getY()  > 180) {
                 for (String PlayerName: knockBackPlayerList) {
                     Player playerName = Bukkit.getPlayer(PlayerName);
                     if (playerName != null) {
                         if (playerName != player2) {
-                            knockBackUtil.knockBackLoserAction(player2, knockBackPlayerList);
+                            boolean visible = false;
+                            knockBackUtil.knockBackLoserAction(player2, knockBackPlayerList, world, visible);
                             knockBackUtil.knockBackBlockCrear();
                             knockBackWhichCan = "true";
                         }
@@ -326,7 +308,8 @@ public class stefanovarentino implements Listener {
             }
         } {
             if (knockBackPlayerList.contains(player.getName())) {
-                knockBackUtil.knockBackLoserAction(player, knockBackPlayerList);
+                boolean visible = false;
+                knockBackUtil.knockBackLoserAction(player, knockBackPlayerList, world, visible);
                 knockBackWhichCan = "true";
                 knockBackPlayerList.remove(player.getName());
                 knockBackUtil.knockBackBlockCrear();

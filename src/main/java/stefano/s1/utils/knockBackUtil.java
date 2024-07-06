@@ -65,7 +65,7 @@ public class knockBackUtil {
         }, 410L);
     }
 
-    public static void sendWinMsg(String winner, ArrayList<String> knockBackPlayerList) {
+    public static void sendWinMsg(String winner, ArrayList<String> knockBackPlayerList, World world, boolean visible) {
         for (String knockBackWinner: knockBackPlayerList) {
             if (winner.equals(knockBackWinner)) {
                 Player trueWinner = Bukkit.getPlayer(winner);
@@ -74,6 +74,8 @@ public class knockBackUtil {
                 trueWinner.sendMessage("赤いキノコをクリックしてロビーに戻る");
                 trueWinner.getInventory().clear();
                 trueWinner.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+                textDisplayUtil.removeKnockBackColumnText(world);
+                textDisplayUtil.showKnockBackIsStopping(Config.textLocationKnockBackColumn, Config.knockBackIsStopping, visible);
             } else return;
         }
     }
@@ -85,7 +87,16 @@ public class knockBackUtil {
                     player2.sendMessage("これ以上の高さにはブロックを設置できません!");
                     e.setCancelled(true);
                     return;
-                } else {
+                }
+                else if (location.getX() >= 0 || location.getX() <= -22) {
+                    player2.sendMessage("これ以上外にブロックを設置できません!");
+                    e.setCancelled(true);
+                }
+                else if (location.getZ() >= 89 || location.getZ() <= 35) {
+                    player2.sendMessage("これ以上外にブロックを設置できません!");
+                    e.setCancelled(true);
+                }
+                else {
                     knockBackBlockLocationList.add(location);
                 }
             }
@@ -129,14 +140,14 @@ public class knockBackUtil {
         }
     }
 
-    public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList) {
+    public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList, World world, boolean visible) {
         player.sendTitle(ChatColor.RED + "敗北...", "", 20, 40 , 20);
         player.sendMessage("赤いキノコをクリックしてロビーに戻る");
         player.getInventory().clear();
         player.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
         knockBackPlayerList.remove(player.getName());
         String winner = knockBackPlayerList.get(0);
-        knockBackUtil.sendWinMsg(winner, knockBackPlayerList);
+        knockBackUtil.sendWinMsg(winner, knockBackPlayerList, world, visible);
     }
 
     public static void knockBackSetUp(Player player, Location taikijyo, ArrayList<String> knockBackPlayerList, boolean visible, ArrayList<String> cannotDamageList, InventoryClickEvent e, World world, S1 plugin) {

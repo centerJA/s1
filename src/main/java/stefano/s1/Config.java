@@ -22,7 +22,11 @@ public class Config{
                           ,textLocationPvpMainText = new Location(Bukkit.getWorld("stefanovarentino"), 23.500, 225, 11.500)
                           ,textLocationPvpColumn = new Location(Bukkit.getWorld("stefanovarentino"), 23.500, 224, 11.500)
                           ,textLocationKnockBackMainText = new Location(Bukkit.getWorld("stefanovarentino"), 23.500, 225, 39.500)
-                          ,textLocationKnockBackColumn = new Location(Bukkit.getWorld("stefanovarentino"), 23.500, 224, 39.500);
+                          ,textLocationKnockBackColumn = new Location(Bukkit.getWorld("stefanovarentino"), 23.500, 224, 39.500)
+                          ,darkRoomLocationUnder = new Location(Bukkit.getWorld("stefanovarentino"), -6, 228, 25)
+                          ,darkRoomLocationUp = new Location(Bukkit.getWorld("stefanovarentino"), -6, 229, 25)
+                          ,darkRoomPlayerTeleport = new Location(Bukkit.getWorld("stefanovarentino"), -5.500, 228, 25.500)
+                          ,darkRoomPlayerTeleport1 = new Location(Bukkit.getWorld("stefanovarentino"), -6.500, 228, 25.500);
 
 
 
