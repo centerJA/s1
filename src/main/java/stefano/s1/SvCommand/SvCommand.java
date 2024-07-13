@@ -139,6 +139,8 @@ public class SvCommand implements CommandExecutor {
                     BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://google.com")).create();
                     player.spigot().sendMessage(reportURL);
                     player.sendMessage("必要のない報告やスパムはしないでください!");
+                    player.sendMessage(ChatColor.RED + "まだ開発中の機能です!");
+                    player.sendMessage(ChatColor.RED + "現在報告用のサイトにはアクセスすることはできません!");
                 }
                 else if (args[0].equals("hello")) {
                     player.sendMessage("どうもこんにちは！StefanoVarentinoを制作しているInfIncです！");

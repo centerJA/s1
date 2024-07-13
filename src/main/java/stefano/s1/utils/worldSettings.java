@@ -15,6 +15,7 @@ import stefano.s1.Config;
 import stefano.s1.S1;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class worldSettings {
@@ -35,31 +36,25 @@ public class worldSettings {
         player.getInventory().clear();
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
     }
-    public static void signClick(Player player, String[] lines, FileConfiguration checkpointList, Location athleticClear, S1 plugin) throws IOException {
+    public static void signClick(Player player, String[] lines, FileConfiguration checkpointList, Location athleticClear, S1 plugin, ArrayList<String> knockBackPlayerList, ArrayList<String> playerList) throws IOException {
         if (Objects.equals(lines[0], "tyekkupoinnto") || Objects.equals(lines[0], "チェックポイント")) {
             player.sendMessage(ChatColor.DARK_GREEN + "無事にチェックポイントを設定しました!");
             checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
             player.getInventory().setHeldItemSlot(3);
-        }
-        else if(Objects.equals(lines[0], "今日のお知らせ")) {
+        } else if (Objects.equals(lines[0], "今日のお知らせ")) {
             Config.showLatestTips(player);
-        }
-        else if (Objects.equals(lines[0], "アスレの王者")) {
+        } else if (Objects.equals(lines[0], "アスレの王者")) {
             player.getWorld().playEffect(player.getLocation(), Effect.WITHER_SHOOT, 0, 1);
-        }
-        else if (Objects.equals(lines[0], "stefanovarentino")) {
+        } else if (Objects.equals(lines[0], "stefanovarentino")) {
             if (athleticClear.getWorld() == null) return;
             athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 1);
-        }
-        else if (Objects.equals(lines[0], "この世界の名前は")) {
+        } else if (Objects.equals(lines[0], "この世界の名前は")) {
             player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "!");
-        }
-        else if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
+        } else if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
             if (Objects.equals(lines[1], "てタイムをリセット") || Objects.equals(lines[1], "remove")) {
                 askToUserYesOrNo(player);
             }
-        }
-        else if (Objects.equals(lines[0], "この先は暗室です")) {
+        } else if (Objects.equals(lines[0], "この先は暗室です")) {
             player.sendMessage(ChatColor.AQUA + "い、今、、不気味な" + ChatColor.DARK_RED + "声" + ChatColor.AQUA + "、しなかった、？");
             World world = Bukkit.getWorld("stefanovarentino");
             if (world == null) return;
@@ -89,6 +84,19 @@ public class worldSettings {
                     world.getBlockAt(Config.darkRoomLocationUp).setType(Material.AIR);
                 }
             }, 600L);
+        } else if (Objects.equals(lines[0], "ここをクリックして") && Objects.equals(lines[1], "ルールを確認する")) {
+            String PlayerStringName = player.getName();
+            for (String PlayerName : knockBackPlayerList) {
+                if (PlayerName.equals(PlayerStringName)) {
+                    returnKnockBackRules(player);
+                }
+            }
+
+            for (String PlayerName2 : playerList) {
+                if (PlayerName2.equals(PlayerStringName)) {
+                    returnPvpRules(player);
+                }
+            }
         }
     }
 
@@ -124,5 +132,29 @@ public class worldSettings {
         userCommentNo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv click perform userCommentNo"));
         player.spigot().sendMessage(userCommentYes);
         player.spigot().sendMessage(userCommentNo);
+    }
+
+    public static void returnKnockBackRules(Player player) {
+        player.sendMessage("-----Knockackのルール説明-----");
+        player.sendMessage("20秒のタイマーが終わると、自動的にマップにテレポートします");
+        player.sendMessage("テレポートすると、ノックバック棒と羊毛1スタック、はさみが渡されます");
+        player.sendMessage("マップは敵と向かい合わせになるような状態になっています");
+        player.sendMessage(ChatColor.GREEN + "羊毛を使って相手の陣地まで行き、ノックバック棒で落とすと勝ちになります");
+        player.sendMessage("「落ちる」の判断基準は、y座標が200以下になったときです");
+        player.sendMessage(ChatColor.YELLOW + "外に行き過ぎると見えない壁があり、ブロックを置けません");
+        player.sendMessage("すぐに相手の陣地に行き、相手を落としましょう!");
+        player.sendMessage("------------------------------");
+    }
+
+    public static void returnPvpRules(Player player) {
+        player.sendMessage("-----PVPのルール説明-----");
+        player.sendMessage("20秒のタイマーが終わると、自動的にマップにテレポートします");
+        player.sendMessage("テレポートすると、防具や剣、ブロック、弓矢、ポーションなどが渡されます");
+        player.sendMessage("30秒間のクールダウンの時間の後、pvpが可能になります");
+        player.sendMessage("スポーン地点の右側にはチェストがスポーンするところがあります");
+        player.sendMessage(ChatColor.GREEN + "チェストにはダイヤ剣や金リンゴなどの強いアイテムが入手できます");
+        player.sendMessage(ChatColor.YELLOW + "外に行き過ぎると見えない壁があり、出ることができません");
+        player.sendMessage("時間制限の前に全ての敵を倒しましょう!");
+        player.sendMessage("------------------------------");
     }
 }

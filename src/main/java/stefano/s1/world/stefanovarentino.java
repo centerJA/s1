@@ -81,7 +81,6 @@ public class stefanovarentino implements Listener {
         this.deathPlayerList = new ArrayList<>();
         this.athleticPlayerList = new ArrayList<>();
         this.cannotDamageList = new ArrayList<>();
-        //this.checkpointList = plugin.getConfig();
         this.checkpointList = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getParent(), "checkpoint.yml"));
         this.athleticTimer = new AthleticTimer();
         this.flag = 0;
@@ -120,7 +119,7 @@ public class stefanovarentino implements Listener {
                 Sign sign = (Sign) block.getState();
                 String[] lines = sign.getLines();
 
-                worldSettings.signClick(player, lines, checkpointList, athleticClear, plugin);
+                worldSettings.signClick(player, lines, checkpointList, athleticClear, plugin, knockBackPlayerList, playerList);
 
             } else if (e.getClickedBlock().getType().equals(Material.ANVIL)) {
                 player.setHealth(20);
@@ -416,6 +415,7 @@ public class stefanovarentino implements Listener {
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     if (!playerList.contains(player.getName())) {
                         playerList.add(player.getName());
+                        player.sendMessage(String.valueOf(playerList));
                     }
                     player.sendMessage(ChatColor.YELLOW + playerList.toString());
                     pvpUtil.blockLocationAllRemove();
