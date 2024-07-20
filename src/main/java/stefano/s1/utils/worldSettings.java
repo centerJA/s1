@@ -20,7 +20,9 @@ import java.util.Objects;
 
 public class worldSettings {
 
-    public static void firstSettings(Player player, Location lobby) {
+    public static void firstSettings(Player player, Location lobby, ArrayList<String> cannotDamageList) {
+        cannotDamageList.add(player.getName());
+        player.sendMessage(String.valueOf(cannotDamageList));
         player.setFoodLevel(20);
         player.setHealth(20);
         player.sendTitle(player.getName() + ChatColor.AQUA + "さん", ChatColor.AQUA + "こんにちは！", 20, 40, 20);

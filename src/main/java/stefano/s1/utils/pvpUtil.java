@@ -76,13 +76,14 @@ public class pvpUtil {
         player.sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
     }
 
-    public static void pvpWinnerAction(Player player) {
+    public static void pvpWinnerAction(Player player, ArrayList<String> cannotDamageList) {
         player.sendMessage("pvp終了!");
         player.sendMessage(ChatColor.GOLD + "勝ち！");
         player.sendTitle(ChatColor.MAGIC + "", ChatColor.DARK_PURPLE + "勝ち！", 20, 40, 40);
         player.sendMessage("赤いキノコをクリックしてロビーに戻る");
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
         player.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
+        cannotDamageList.add(player.getName());
     }
 
 

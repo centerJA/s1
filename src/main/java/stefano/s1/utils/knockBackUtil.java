@@ -140,20 +140,21 @@ public class knockBackUtil {
         }
     }
 
-    public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList, World world, boolean visible) {
+    public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList, World world, boolean visible, ArrayList<String> cannotDamageList) {
         player.sendTitle(ChatColor.RED + "敗北...", "", 20, 40 , 20);
         player.sendMessage("赤いキノコをクリックしてロビーに戻る");
         player.getInventory().clear();
         player.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+        cannotDamageList.add(player.getName());
         knockBackPlayerList.remove(player.getName());
         String winner = knockBackPlayerList.get(0);
+        cannotDamageList.add(winner);
         knockBackUtil.sendWinMsg(winner, knockBackPlayerList, world, visible);
     }
 
     public static void knockBackSetUp(Player player, Location taikijyo, ArrayList<String> knockBackPlayerList, boolean visible, ArrayList<String> cannotDamageList, InventoryClickEvent e, World world, S1 plugin) {
         player.setHealth(20);
 
-        cannotDamageList.add(player.getName());
         player.teleport(taikijyo);
         textDisplayUtil.removeKnockBackColumnText(world);
         textDisplayUtil.showKnockBackIsWaiting(Config.textLocationKnockBackColumn, Config.knockBackIsWaiting, visible);
