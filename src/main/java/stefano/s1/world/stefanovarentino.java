@@ -147,7 +147,7 @@ public class stefanovarentino implements Listener {
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
                     if (athleticStart.getWorld() == null) {
                         player.sendMessage("問題が発生しました");
-                        player.sendMessage("Error: stefanovarentino.java:145 location null ErrorCode(145) ");
+                        player.sendMessage("Error: stefanovarentino.java:150 location null ErrorCode(150) ");
                         player.sendMessage("/sv report でエラーコードを報告してください");
                         return;
                     }
@@ -169,8 +169,9 @@ public class stefanovarentino implements Listener {
                     }
                     else if (!cannotDamageList.contains(player.getName())) {
                         player.sendMessage("問題が発生しました");
-                        player.sendMessage("Error: stefanovarentino.java:162 player not in list ErrorCode(162) ");
+                        player.sendMessage("Error: stefanovarentino.java:172 player not in list ErrorCode(172)");
                         player.sendMessage("/sv report でエラーコードを報告してください");
+                        return;
                     }
                 }
 
@@ -224,8 +225,9 @@ public class stefanovarentino implements Listener {
                                 Player player2 = Bukkit.getPlayer(PlayerName);
                                 if (player2 == null) {
                                     player.sendMessage("問題が発生しました");
-                                    player.sendMessage("Error: stefanovarentino.java:227 player null ErrorCode(227) ");
+                                    player.sendMessage("Error: stefanovarentino.java:228 player null ErrorCode(228) ");
                                     player.sendMessage("/sv report でエラーコードを報告してください");
+                                    return;
                                 }
                                 player2.sendMessage("pvpがキャンセルされました。");
                             }
@@ -253,7 +255,7 @@ public class stefanovarentino implements Listener {
                             Player player2 = Bukkit.getPlayer(PlayerName);
                             if (player2 == null) {
                                 player.sendMessage("問題が発生しました");
-                                player.sendMessage("Error: stefanovarentino.java:256 player null ErrorCode(256) ");
+                                player.sendMessage("Error: stefanovarentino.java:258 player null ErrorCode(258) ");
                                 player.sendMessage("/sv report でエラーコードを報告してください");
                                 return;
                             }
@@ -275,7 +277,7 @@ public class stefanovarentino implements Listener {
                 if (itemStack.getType() == Material.APPLE) {
                     if (itemStack.getItemMeta() == null) {
                         player.sendMessage("問題が発生しました");
-                        player.sendMessage("Error: stefanovarentino.java:278 itemStack itemMeta null ErrorCode(278) ");
+                        player.sendMessage("Error: stefanovarentino.java:280 itemStack itemMeta null ErrorCode(280) ");
                         player.sendMessage("/sv report でエラーコードを報告してください");
                         return;
                     }
