@@ -136,11 +136,21 @@ public class stefanovarentino implements Listener {
                         player.sendMessage(ChatColor.AQUA + "もう一度アスレチックに挑戦してみましょう!");
                         return;
                     }
-                    if (athleticClear.getWorld() == null) return;
+                    if (athleticClear.getWorld() == null) {
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("Error: stefanovarentino.java:141 location null ErrorCode(141) ");
+                        player.sendMessage("/sv report でエラーコードを報告してください");
+                        return;
+                    }
                     AthleticUtil.afterAthleticAction(player, plugin, athleticClear);
                 }
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
-                    if (athleticStart.getWorld() == null) return;
+                    if (athleticStart.getWorld() == null) {
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("Error: stefanovarentino.java:145 location null ErrorCode(145) ");
+                        player.sendMessage("/sv report でエラーコードを報告してください");
+                        return;
+                    }
                     AthleticUtil.beforeAthleticAction(player, athleticStart, athleticTimer);
                 }
 
@@ -158,7 +168,9 @@ public class stefanovarentino implements Listener {
                         player.setHealth(20);
                     }
                     else if (!cannotDamageList.contains(player.getName())) {
-                        player.sendMessage("cannotDamageListに入っていないみたい...");
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("Error: stefanovarentino.java:162 player not in list ErrorCode(162) ");
+                        player.sendMessage("/sv report でエラーコードを報告してください");
                     }
                 }
 
@@ -178,8 +190,8 @@ public class stefanovarentino implements Listener {
                         }
                     }
                     else if (cannotDamageList.contains(player.getName())) {
-                        player.sendMessage("あなたはcannotDamageListに入っています");
-                        player.sendMessage("ErrorCode(CDL0001)");
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("Error: stefanovarentino.java:182 player in list ErrorCode(182) ");
                         player.sendMessage("/sv report でエラーコードを報告してください");
                     }
                 }
@@ -210,7 +222,11 @@ public class stefanovarentino implements Listener {
                         if (playerList.size() > 0) {
                             for (String PlayerName: playerList) {
                                 Player player2 = Bukkit.getPlayer(PlayerName);
-                                if (player2 == null) return;
+                                if (player2 == null) {
+                                    player.sendMessage("問題が発生しました");
+                                    player.sendMessage("Error: stefanovarentino.java:227 player null ErrorCode(227) ");
+                                    player.sendMessage("/sv report でエラーコードを報告してください");
+                                }
                                 player2.sendMessage("pvpがキャンセルされました。");
                             }
                         }
@@ -235,7 +251,12 @@ public class stefanovarentino implements Listener {
                         knockBackPlayerCounter = knockBackPlayerCounter - 1;
                         for (String PlayerName: knockBackPlayerList) {
                             Player player2 = Bukkit.getPlayer(PlayerName);
-                            if (player2 == null) return;
+                            if (player2 == null) {
+                                player.sendMessage("問題が発生しました");
+                                player.sendMessage("Error: stefanovarentino.java:256 player null ErrorCode(256) ");
+                                player.sendMessage("/sv report でエラーコードを報告してください");
+                                return;
+                            }
                         }
                     }
                     player.teleport(this.lobby);
@@ -252,7 +273,12 @@ public class stefanovarentino implements Listener {
 
 
                 if (itemStack.getType() == Material.APPLE) {
-                    if (itemStack.getItemMeta() == null) return;
+                    if (itemStack.getItemMeta() == null) {
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("Error: stefanovarentino.java:278 itemStack itemMeta null ErrorCode(278) ");
+                        player.sendMessage("/sv report でエラーコードを報告してください");
+                        return;
+                    }
                     if (itemStack.getItemMeta().getDisplayName().equals("最初に戻る(athletic1)")) {
                         player.teleport(this.athletic1);
                     }
