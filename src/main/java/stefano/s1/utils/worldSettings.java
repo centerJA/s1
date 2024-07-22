@@ -159,4 +159,10 @@ public class worldSettings {
         player.sendMessage("時間制限の前に全ての敵を倒しましょう!");
         player.sendMessage("------------------------------");
     }
+
+    public static void sendErrorMessageToPlayer(Player player, int s, String reason, String className) {
+        player.sendMessage("問題が発生しました");
+        player.sendMessage("Error: " + className + ".java:" + s + "****" + reason + "****" + "ErrorCode(" + s + ") ");
+        player.sendMessage("/sv report でエラーコードを報告してください");
+    }
 }

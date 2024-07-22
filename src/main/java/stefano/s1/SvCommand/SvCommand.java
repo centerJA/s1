@@ -102,7 +102,7 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                         player.sendMessage("/sv help       ヘルプを表示します");
                         player.sendMessage("/sv effects       エフェクトを出します");
-                        player.sendMessage(ChatColor.RED + "/sv report       このコマンドを打って表示されるリンクをクリックしてバグや誤字を報告してください");
+                        player.sendMessage("/sv report       このコマンドを打って表示されるリンクをクリックしてバグや誤字を報告してください");
                         player.sendMessage("/sv title       タイトルを表示します");
                         player.sendMessage("/sv hello       ワールド紹介文を表示します");
                         player.sendMessage("/sv notice       最近のお知らせを表示します");
@@ -136,11 +136,9 @@ public class SvCommand implements CommandExecutor {
                 }
                 else if (args[0].equals("report")) {
                     ComponentBuilder report = new ComponentBuilder("バグや誤字を見つけた際には" + ChatColor.AQUA + "ここをクリック" + ChatColor.WHITE + "して報告をお願いします!");
-                    BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://google.com")).create();
+                    BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAXcoW2dUQkEzSTlHUkZCNVVWSVdXUzRXOEtXSjFSTy4u")).create();
                     player.spigot().sendMessage(reportURL);
                     player.sendMessage("必要のない報告やスパムはしないでください!");
-                    player.sendMessage(ChatColor.RED + "まだ開発中の機能です!");
-                    player.sendMessage(ChatColor.RED + "現在報告用のサイトにはアクセスすることはできません!");
                 }
                 else if (args[0].equals("hello")) {
                     player.sendMessage("どうもこんにちは！StefanoVarentinoを制作しているInfIncです！");

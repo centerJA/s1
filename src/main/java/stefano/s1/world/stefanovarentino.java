@@ -59,7 +59,7 @@ public class stefanovarentino implements Listener {
 
 
     public stefanovarentino(S1 plugin) {
-        Bukkit.getLogger().info("stefanovarentino");
+        Bukkit.getLogger().info("StefanoVarentino Plugin loaded");
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
@@ -137,18 +137,14 @@ public class stefanovarentino implements Listener {
                         return;
                     }
                     if (athleticClear.getWorld() == null) {
-                        player.sendMessage("問題が発生しました");
-                        player.sendMessage("Error: stefanovarentino.java:141 location null ErrorCode(141) ");
-                        player.sendMessage("/sv report でエラーコードを報告してください");
+                        worldSettings.sendErrorMessageToPlayer(player, 140, "location null", "stefanovarentino");
                         return;
                     }
                     AthleticUtil.afterAthleticAction(player, plugin, athleticClear);
                 }
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
                     if (athleticStart.getWorld() == null) {
-                        player.sendMessage("問題が発生しました");
-                        player.sendMessage("Error: stefanovarentino.java:150 location null ErrorCode(150) ");
-                        player.sendMessage("/sv report でエラーコードを報告してください");
+                        worldSettings.sendErrorMessageToPlayer(player, 147, "location null", "stefanovarentino");
                         return;
                     }
                     AthleticUtil.beforeAthleticAction(player, athleticStart, athleticTimer);
@@ -157,6 +153,7 @@ public class stefanovarentino implements Listener {
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == -6 && Math.floor(e.getClickedBlock().getLocation().getY()) == 233 && Math.floor(e.getClickedBlock().getLocation().getZ()) == 25) {
                     if (cannotDamageList.contains(player.getName())) {
                         player.sendMessage("You joined " + ChatColor.AQUA + "Free PVP space");
+                        player.getInventory().addItem(ItemUtil.setItemMeta("聖なる剣", Material.STONE_SWORD));
                         player.teleport(freePvpSpace);
                         player.setHealth(20);
                         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
@@ -168,9 +165,7 @@ public class stefanovarentino implements Listener {
                         player.setHealth(20);
                     }
                     else if (!cannotDamageList.contains(player.getName())) {
-                        player.sendMessage("問題が発生しました");
-                        player.sendMessage("Error: stefanovarentino.java:172 player not in list ErrorCode(172)");
-                        player.sendMessage("/sv report でエラーコードを報告してください");
+                        worldSettings.sendErrorMessageToPlayer(player, 167, "player not in list", "stefanovarentino");
                         return;
                     }
                 }
@@ -184,6 +179,7 @@ public class stefanovarentino implements Listener {
                         }
                         else if (!playerPvpStatusIsPlayingList.contains(player.getName())) {
                             player.sendMessage("You left " + ChatColor.AQUA + "Free PVP space");
+                            player.getInventory().clear();
                             cannotDamageList.add(player.getName());
                             player.setHealth(20);
                             Location frontOfFreePvp = new Location(world, -3, 232, 25);
@@ -191,9 +187,8 @@ public class stefanovarentino implements Listener {
                         }
                     }
                     else if (cannotDamageList.contains(player.getName())) {
-                        player.sendMessage("問題が発生しました");
-                        player.sendMessage("Error: stefanovarentino.java:182 player in list ErrorCode(182) ");
-                        player.sendMessage("/sv report でエラーコードを報告してください");
+                        worldSettings.sendErrorMessageToPlayer(player, 188, "player in list", "stefanovarentino");
+                        return;
                     }
                 }
             }
@@ -223,12 +218,7 @@ public class stefanovarentino implements Listener {
                         if (playerList.size() > 0) {
                             for (String PlayerName: playerList) {
                                 Player player2 = Bukkit.getPlayer(PlayerName);
-                                if (player2 == null) {
-                                    player.sendMessage("問題が発生しました");
-                                    player.sendMessage("Error: stefanovarentino.java:228 player null ErrorCode(228) ");
-                                    player.sendMessage("/sv report でエラーコードを報告してください");
-                                    return;
-                                }
+                                if (player2 == null) return;
                                 player2.sendMessage("pvpがキャンセルされました。");
                             }
                         }
@@ -253,12 +243,7 @@ public class stefanovarentino implements Listener {
                         knockBackPlayerCounter = knockBackPlayerCounter - 1;
                         for (String PlayerName: knockBackPlayerList) {
                             Player player2 = Bukkit.getPlayer(PlayerName);
-                            if (player2 == null) {
-                                player.sendMessage("問題が発生しました");
-                                player.sendMessage("Error: stefanovarentino.java:258 player null ErrorCode(258) ");
-                                player.sendMessage("/sv report でエラーコードを報告してください");
-                                return;
-                            }
+                            if (player2 == null) return;
                         }
                     }
                     player.teleport(this.lobby);
@@ -276,9 +261,7 @@ public class stefanovarentino implements Listener {
 
                 if (itemStack.getType() == Material.APPLE) {
                     if (itemStack.getItemMeta() == null) {
-                        player.sendMessage("問題が発生しました");
-                        player.sendMessage("Error: stefanovarentino.java:280 itemStack itemMeta null ErrorCode(280) ");
-                        player.sendMessage("/sv report でエラーコードを報告してください");
+                        worldSettings.sendErrorMessageToPlayer(player, 268, "itemStack itemMeta null", "stefanovarentino");
                         return;
                     }
                     if (itemStack.getItemMeta().getDisplayName().equals("最初に戻る(athletic1)")) {
@@ -301,7 +284,6 @@ public class stefanovarentino implements Listener {
                     } else {
                         if (checkpointList.get(String.valueOf(player.getUniqueId())) == null) return;
                         if (!(checkpointList.contains(String.valueOf(player.getUniqueId())))) return;
-                        //null
                         player.teleport((Location) Objects.requireNonNull(checkpointList.get(String.valueOf(player.getUniqueId()))));
                     }
                 }
@@ -411,6 +393,9 @@ public class stefanovarentino implements Listener {
         if (knockBackPlayerList.contains(player.getName())) {
             knockBackPlayerList.remove(player.getName());
         }
+        if (!cannotDamageList.contains(player.getName())) {
+            cannotDamageList.add(player.getName());
+        }
     }
 
     @EventHandler
@@ -433,7 +418,9 @@ public class stefanovarentino implements Listener {
         Set<String> userTag = player.getScoreboardTags();
         boolean visible = false;
         if (this.world != world) return;
-        if (itemStack == null || itemStack.getItemMeta() == null) return;
+        if (itemStack == null || itemStack.getItemMeta() == null) {
+            return;
+        }
         if (userTag.contains("game")) {
             if (flag == 1) {
                 player.sendMessage("クールダウン中です！お待ちください！");
@@ -565,7 +552,10 @@ public class stefanovarentino implements Listener {
                 break;
             }
         }
-        if (e.getInventory().getLocation() == null) return;
+        if (e.getInventory().getLocation() == null) {
+            worldSettings.sendErrorMessageToPlayer(player, 555, "location null", "stefanovarentino");
+            return;
+        }
         if (isEmpty && inventory.getType().name().equals("CHEST")) {
             e.getInventory().getLocation().getBlock().setType(Material.AIR);
             for (String PlayerName: playerList) {
@@ -627,7 +617,10 @@ public class stefanovarentino implements Listener {
         World world = player.getWorld();
         Material material = e.getBlock().getType();
         if (this.world != world) return;
-        if (material == null) return;
+        if (material == null) {
+            worldSettings.sendErrorMessageToPlayer(player, 617, "material null", "stefanovarentino");
+            return;
+        }
         if (knockBackWhichCan.equals("false")) {
             knockBackUtil.knockBackBlockMaterialCheck(material, player, e);
         }
@@ -644,12 +637,10 @@ public class stefanovarentino implements Listener {
             playerPvpStatusIsPlayingList.add(String.valueOf(entity));
             Player player = Bukkit.getPlayer(String.valueOf(entity));
             if (player == null) return;
-            player.sendMessage("join cooldown");
             Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                 @Override
                 public void run() {
                     playerPvpStatusIsPlayingList.remove(String.valueOf(entity));
-                    player.sendMessage("leave cooldown");
                 }
             }, 100L);
         }
