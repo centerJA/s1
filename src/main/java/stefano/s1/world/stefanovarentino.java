@@ -36,17 +36,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 
 
 public class stefanovarentino implements Listener {
     S1 plugin;
+
     private World world;
     Location lobby, taikijyo, athletic1, checkpoint1, athleticClear, athleticStart, pvpStart, pvpFinal, taikijyof, freePvpSpace;
 
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
-    public static ArrayList<String> knockBackPlayerList, cannotDamageList, playerPvpStatusIsPlayingList;
+    public static ArrayList<String> knockBackPlayerList, cannotDamageList, playerPvpStatusIsPlayingList, playerCanPlayEffectInPvpList;
 
     String knockBackWhichCan = "true";
 
@@ -55,6 +57,8 @@ public class stefanovarentino implements Listener {
     public FileConfiguration checkpointList;
     BukkitTask Timer, BedwarsTimer;
     AthleticTimer athleticTimer;
+
+    Random random;
 
 
 
@@ -89,6 +93,8 @@ public class stefanovarentino implements Listener {
         this.knockBackPlayerList = new ArrayList<>();
         knockBackPlayerCounter = 0;
         playerPvpStatusIsPlayingList = new ArrayList<>();
+        this.playerCanPlayEffectInPvpList = new ArrayList<>();
+        this.random = new Random();
     }
 
 
@@ -106,7 +112,6 @@ public class stefanovarentino implements Listener {
                 player.setGameMode(GameMode.ADVENTURE);
             }
         }, 20L);
-
         worldSettings.firstSettings(player, lobby, cannotDamageList);
     }
 
@@ -118,10 +123,16 @@ public class stefanovarentino implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = e.getClickedBlock();
             if (block != null && block.getType() == Material.OAK_WALL_SIGN) {
+                player.sendMessage("Player clicked OAK_WALL_SIGN");
+                System.out.println("Player clicked OAK_WALL_SIGN");
                 Sign sign = (Sign) block.getState();
+                if (sign == null) return;
                 String[] lines = sign.getLines();
-
-                worldSettings.signClick(player, lines, checkpointList, athleticClear, plugin, knockBackPlayerList, playerList);
+                int ramdomInt = random.nextInt(5);
+                player.sendMessage("ramdomInt created");
+                System.out.println("ramdomInt created");
+                pvpUtil.makeEffectsList(Config.effectList);
+                worldSettings.signClick(player, lines, checkpointList, athleticClear, plugin, knockBackPlayerList, playerList, playerCanPlayEffectInPvpList, ramdomInt, Config.effectList);
 
             } else if (e.getClickedBlock().getType().equals(Material.ANVIL)) {
                 player.setHealth(20);
@@ -357,7 +368,7 @@ public class stefanovarentino implements Listener {
                 for (String PlayerName : playerList) {
                     Player player2 = Bukkit.getPlayer(PlayerName);
                     if (player2 == null) return;
-                    pvpUtil.pvpWinnerAction(player2, cannotDamageList);
+                    pvpUtil.pvpWinnerAction(player2, cannotDamageList, playerCanPlayEffectInPvpList);
                 }
             }
         } {
@@ -450,6 +461,7 @@ public class stefanovarentino implements Listener {
                     if (knockBackPlayerCounter == 2) {
                         knockBackWhichCan = "false";
                     }
+                    playerCanPlayEffectInPvpList.clear();
                     knockBackUtil.knockBackSetUp(player, taikijyo, knockBackPlayerList, visible, cannotDamageList, e, world, plugin);
                 }
 
@@ -495,7 +507,8 @@ public class stefanovarentino implements Listener {
                                         break;
                                     }
                                     cannotDamageList.remove(PlayerName);
-                                    pvpUtil.playerSettingsBeforeGame(player);
+                                    pvpUtil.playerSettingsBeforeGame(player, playerCanPlayEffectInPvpList, playerList);
+                                    pvpUtil.makeEffectsList(Config.effectList);
                                 }
                             }
                         }, 400L);
@@ -552,10 +565,7 @@ public class stefanovarentino implements Listener {
                 break;
             }
         }
-        if (e.getInventory().getLocation() == null) {
-            worldSettings.sendErrorMessageToPlayer(player, 555, "location null", "stefanovarentino");
-            return;
-        }
+        if (e.getInventory().getLocation() == null) return;
         if (isEmpty && inventory.getType().name().equals("CHEST")) {
             e.getInventory().getLocation().getBlock().setType(Material.AIR);
             for (String PlayerName: playerList) {

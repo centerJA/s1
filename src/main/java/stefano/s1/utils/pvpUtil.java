@@ -8,6 +8,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import stefano.s1.Config;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class pvpUtil {
@@ -32,7 +33,7 @@ public class pvpUtil {
         }
     }
 
-    public static void playerSettingsBeforeGame(Player player) {
+    public static void playerSettingsBeforeGame(Player player, ArrayList<String> playerCanPlayEffectInPvpList, ArrayList<String> playerList) {
         player.teleport(pvpStartPoint);
         player.setGameMode(GameMode.SURVIVAL);
         player.setFoodLevel(6);
@@ -46,6 +47,9 @@ public class pvpUtil {
         if (lobbyMeta == null) return;
         lobbyMeta.setDisplayName("ロビーに戻る");
         player.getInventory().setItem(9, lobby);
+        for (String PlayerName: playerList) {
+            playerCanPlayEffectInPvpList.add(PlayerName);
+        }
     }
 
     public static void playerSettingsInGame(Player player) {
@@ -76,7 +80,7 @@ public class pvpUtil {
         player.sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
     }
 
-    public static void pvpWinnerAction(Player player, ArrayList<String> cannotDamageList) {
+    public static void pvpWinnerAction(Player player, ArrayList<String> cannotDamageList, ArrayList<String> playerCanPlayEffectInPvpList) {
         player.sendMessage("pvp終了!");
         player.sendMessage(ChatColor.GOLD + "勝ち！");
         player.sendTitle(ChatColor.MAGIC + "", ChatColor.DARK_PURPLE + "勝ち！", 20, 40, 40);
@@ -84,6 +88,7 @@ public class pvpUtil {
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
         player.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
         cannotDamageList.add(player.getName());
+        playerCanPlayEffectInPvpList.clear();
     }
 
 
@@ -127,5 +132,14 @@ public class pvpUtil {
         double zzz1 = zz1 - gap;
         Location playerLocation = new Location(world, xx1, yy1, zzz1, 0, 0);
         playerPvp.teleport(playerLocation);
+    }
+
+    public static void makeEffectsList(ArrayList<PotionEffectType> effectList) {
+        effectList.add(PotionEffectType.REGENERATION);
+        effectList.add(PotionEffectType.BLINDNESS);
+        effectList.add(PotionEffectType.LEVITATION);
+        effectList.add(PotionEffectType.DAMAGE_RESISTANCE);
+        effectList.add(PotionEffectType.SPEED);
+        effectList.add(PotionEffectType.SLOW);
     }
 }

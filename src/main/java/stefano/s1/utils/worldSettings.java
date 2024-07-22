@@ -10,19 +10,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import stefano.s1.Config;
 import stefano.s1.S1;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public class worldSettings {
 
     public static void firstSettings(Player player, Location lobby, ArrayList<String> cannotDamageList) {
         cannotDamageList.add(player.getName());
-        player.sendMessage(String.valueOf(cannotDamageList));
         player.setFoodLevel(20);
         player.setHealth(20);
         player.sendTitle(player.getName() + ChatColor.AQUA + "さん", ChatColor.AQUA + "こんにちは！", 20, 40, 20);
@@ -38,7 +40,7 @@ public class worldSettings {
         player.getInventory().clear();
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
     }
-    public static void signClick(Player player, String[] lines, FileConfiguration checkpointList, Location athleticClear, S1 plugin, ArrayList<String> knockBackPlayerList, ArrayList<String> playerList) throws IOException {
+    public static void signClick(Player player, String[] lines, FileConfiguration checkpointList, Location athleticClear, S1 plugin, ArrayList<String> knockBackPlayerList, ArrayList<String> playerList, ArrayList<String> playerCanPlayEffectInPvpList, int ramdomInt, ArrayList<PotionEffectType> effectList) throws IOException {
         if (Objects.equals(lines[0], "tyekkupoinnto") || Objects.equals(lines[0], "チェックポイント")) {
             player.sendMessage(ChatColor.DARK_GREEN + "無事にチェックポイントを設定しました!");
             checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
@@ -98,6 +100,22 @@ public class worldSettings {
                 if (PlayerName2.equals(PlayerStringName)) {
                     returnPvpRules(player);
                 }
+            }
+        } else if (Objects.equals(lines[0], "effects")) {
+            String StringPlayerName = player.getName();
+            if (playerCanPlayEffectInPvpList.contains(StringPlayerName)) {
+                PotionEffectType effect = effectList.get((ramdomInt));
+                player.getInventory().setItem(11, ItemUtil.setCustomPotionMeta(effect, Material.SPLASH_POTION, "ポーション"));
+                playerCanPlayEffectInPvpList.remove(player.getName());
+                Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        playerCanPlayEffectInPvpList.add(player.getName());
+                    }
+                }, 600L);
+            } else {
+                    player.sendMessage("クールダウン中です!");
+                    return;
             }
         }
     }

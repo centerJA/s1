@@ -2,16 +2,22 @@ package stefano.s1;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 public class Config{
     public static int Range = 125, knockBackRange = 180;
+
+    static Random random;
 
     public static int CoolDownWitch = 0;
     public static Location lobby = new Location(Bukkit.getWorld("stefanovarentino"), 25.500, 223, 25.500, -90, 0)
@@ -34,6 +40,9 @@ public class Config{
                  ,checkpointList = new ArrayList<>();
 
     public static ArrayList<Material> itemList1 = new ArrayList<>();
+
+    public static ArrayList<PotionEffectType> effectList = new ArrayList<>();
+
 
 
     public static String mainText = ChatColor.AQUA + "金床をクリックしてゲームをしよう",
