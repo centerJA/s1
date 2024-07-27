@@ -22,6 +22,7 @@ import stefano.s1.S1;
 import stefano.s1.utils.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static stefano.s1.utils.AthleticTimer.tasks;
@@ -134,6 +135,11 @@ public class SvCommand implements CommandExecutor {
                         return false;
                     }
                 }
+
+                else if (args[0].equals("debugmode")) {
+                    Location debug = new Location(world, 79, 244, 43);
+                }
+
                 else if (args[0].equals("report")) {
                     ComponentBuilder report = new ComponentBuilder("バグや誤字を見つけた際には" + ChatColor.AQUA + "ここをクリック" + ChatColor.WHITE + "して報告をお願いします!");
                     BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAXcoW2dUQkEzSTlHUkZCNVVWSVdXUzRXOEtXSjFSTy4u")).create();

@@ -7,6 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import stefano.s1.Config;
+import stefano.s1.S1;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -80,15 +81,16 @@ public class pvpUtil {
         player.sendTitle(ChatColor.AQUA + "", ChatColor.RED + "最後まで生き残れ！", 20, 40, 20);
     }
 
-    public static void pvpWinnerAction(Player player, ArrayList<String> cannotDamageList, ArrayList<String> playerCanPlayEffectInPvpList) {
+    public static void pvpWinnerAction(Player player, ArrayList<String> cannotDamageList, ArrayList<String> playerCanPlayEffectInPvpList, S1 plugin, Location lobby) {
         player.sendMessage("pvp終了!");
         player.sendMessage(ChatColor.GOLD + "勝ち！");
         player.sendTitle(ChatColor.MAGIC + "", ChatColor.DARK_PURPLE + "勝ち！", 20, 40, 40);
-        player.sendMessage("赤いキノコをクリックしてロビーに戻る");
-        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+
         player.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
         cannotDamageList.add(player.getName());
         playerCanPlayEffectInPvpList.clear();
+        worldSettings.runTaskRater(plugin, 30L, player, lobby, "teleport");
+        player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
     }
 
 

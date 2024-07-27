@@ -65,17 +65,17 @@ public class knockBackUtil {
         }, 410L);
     }
 
-    public static void sendWinMsg(String winner, ArrayList<String> knockBackPlayerList, World world, boolean visible) {
+    public static void sendWinMsg(String winner, ArrayList<String> knockBackPlayerList, World world, boolean visible, S1 plugin, Location lobby) {
         for (String knockBackWinner: knockBackPlayerList) {
             if (winner.equals(knockBackWinner)) {
                 Player trueWinner = Bukkit.getPlayer(winner);
                 if (trueWinner == null) return;
                 trueWinner.sendTitle(ChatColor.GREEN + "勝利!", ChatColor.AQUA + "ノックバックの制覇者", 20, 40, 20);
-                trueWinner.sendMessage("赤いキノコをクリックしてロビーに戻る");
                 trueWinner.getInventory().clear();
-                trueWinner.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                 textDisplayUtil.removeKnockBackColumnText(world);
                 textDisplayUtil.showKnockBackIsStopping(Config.textLocationKnockBackColumn, Config.knockBackIsStopping, visible);
+                worldSettings.runTaskRater(plugin, 30L, trueWinner, lobby, "teleport");
+                trueWinner.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
             } else return;
         }
     }
@@ -140,16 +140,14 @@ public class knockBackUtil {
         }
     }
 
-    public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList, World world, boolean visible, ArrayList<String> cannotDamageList) {
+    public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList, World world, boolean visible, ArrayList<String> cannotDamageList, S1 plugin, Location lobby) {
         player.sendTitle(ChatColor.RED + "敗北...", "", 20, 40 , 20);
-        player.sendMessage("赤いキノコをクリックしてロビーに戻る");
         player.getInventory().clear();
-        player.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
         cannotDamageList.add(player.getName());
         knockBackPlayerList.remove(player.getName());
         String winner = knockBackPlayerList.get(0);
         cannotDamageList.add(winner);
-        knockBackUtil.sendWinMsg(winner, knockBackPlayerList, world, visible);
+        knockBackUtil.sendWinMsg(winner, knockBackPlayerList, world, visible, plugin, lobby);
     }
 
     public static void knockBackSetUp(Player player, Location taikijyo, ArrayList<String> knockBackPlayerList, boolean visible, ArrayList<String> cannotDamageList, InventoryClickEvent e, World world, S1 plugin) {

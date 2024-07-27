@@ -123,14 +123,10 @@ public class stefanovarentino implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = e.getClickedBlock();
             if (block != null && block.getType() == Material.OAK_WALL_SIGN) {
-                player.sendMessage("Player clicked OAK_WALL_SIGN");
-                System.out.println("Player clicked OAK_WALL_SIGN");
                 Sign sign = (Sign) block.getState();
                 if (sign == null) return;
                 String[] lines = sign.getLines();
                 int ramdomInt = random.nextInt(5);
-                player.sendMessage("ramdomInt created");
-                System.out.println("ramdomInt created");
                 pvpUtil.makeEffectsList(Config.effectList);
                 worldSettings.signClick(player, lines, checkpointList, athleticClear, plugin, knockBackPlayerList, playerList, playerCanPlayEffectInPvpList, ramdomInt, Config.effectList);
 
@@ -176,7 +172,8 @@ public class stefanovarentino implements Listener {
                         player.setHealth(20);
                     }
                     else if (!cannotDamageList.contains(player.getName())) {
-                        worldSettings.sendErrorMessageToPlayer(player, 167, "player not in list", "stefanovarentino");
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("ワールドを一度入り直してください");
                         return;
                     }
                 }
@@ -191,6 +188,7 @@ public class stefanovarentino implements Listener {
                         else if (!playerPvpStatusIsPlayingList.contains(player.getName())) {
                             player.sendMessage("You left " + ChatColor.AQUA + "Free PVP space");
                             player.getInventory().clear();
+                            player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
                             cannotDamageList.add(player.getName());
                             player.setHealth(20);
                             Location frontOfFreePvp = new Location(world, -3, 232, 25);
@@ -198,7 +196,8 @@ public class stefanovarentino implements Listener {
                         }
                     }
                     else if (cannotDamageList.contains(player.getName())) {
-                        worldSettings.sendErrorMessageToPlayer(player, 188, "player in list", "stefanovarentino");
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("ワールドを一度入り直してください");
                         return;
                     }
                 }
@@ -345,9 +344,11 @@ public class stefanovarentino implements Listener {
                     if (playerName != null) {
                         if (playerName != player2) {
                             boolean visible = false;
-                            knockBackUtil.knockBackLoserAction(player2, knockBackPlayerList, world, visible, cannotDamageList);
+                            knockBackUtil.knockBackLoserAction(player2, knockBackPlayerList, world, visible, cannotDamageList, plugin, lobby);
                             knockBackUtil.knockBackBlockCrear();
                             knockBackWhichCan = "true";
+                            worldSettings.runTaskRater(plugin, 30L, player2, lobby, "teleport");
+                            player2.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
                         }
                     } else return;
                 }
@@ -368,16 +369,19 @@ public class stefanovarentino implements Listener {
                 for (String PlayerName : playerList) {
                     Player player2 = Bukkit.getPlayer(PlayerName);
                     if (player2 == null) return;
-                    pvpUtil.pvpWinnerAction(player2, cannotDamageList, playerCanPlayEffectInPvpList);
+                    pvpUtil.pvpWinnerAction(player2, cannotDamageList, playerCanPlayEffectInPvpList, plugin, lobby);
                 }
             }
         } {
             if (knockBackPlayerList.contains(player.getName())) {
                 boolean visible = false;
-                knockBackUtil.knockBackLoserAction(player, knockBackPlayerList, world, visible, cannotDamageList);
+                playerCanPlayEffectInPvpList.clear();
+                knockBackUtil.knockBackLoserAction(player, knockBackPlayerList, world, visible, cannotDamageList, plugin, lobby);
                 knockBackWhichCan = "true";
                 knockBackPlayerList.remove(player.getName());
                 knockBackUtil.knockBackBlockCrear();
+                worldSettings.runTaskRater(plugin, 30L, player, lobby, "teleport");
+                player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
             }
         }
     }
@@ -462,6 +466,7 @@ public class stefanovarentino implements Listener {
                         knockBackWhichCan = "false";
                     }
                     playerCanPlayEffectInPvpList.clear();
+                    playerCanPlayEffectInPvpList.addAll(knockBackPlayerList);
                     knockBackUtil.knockBackSetUp(player, taikijyo, knockBackPlayerList, visible, cannotDamageList, e, world, plugin);
                 }
 
@@ -495,6 +500,7 @@ public class stefanovarentino implements Listener {
                         textDisplayUtil.removePvpColumnText(world);
                         textDisplayUtil.showPvpIsPlaying(Config.textLocationPvpColumn, Config.pvpIsPlaying, visible);
                         this.Timer = new Timer(playerList).runTaskTimer(this.plugin, 0L, 20L);
+                        pvpUtil.makeEffectsList(Config.effectList);
                         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                             @Override
                             public void run() {
@@ -508,7 +514,6 @@ public class stefanovarentino implements Listener {
                                     }
                                     cannotDamageList.remove(PlayerName);
                                     pvpUtil.playerSettingsBeforeGame(player, playerCanPlayEffectInPvpList, playerList);
-                                    pvpUtil.makeEffectsList(Config.effectList);
                                 }
                             }
                         }, 400L);
@@ -607,6 +612,7 @@ public class stefanovarentino implements Listener {
     public void onBlockPlaceEvent(BlockPlaceEvent e) {
         Player player = e.getPlayer();
         World world = player.getWorld();
+        Material material = e.getBlock().getType();
         Location location = e.getBlock().getLocation();
         if (this.world != world) return;
         if (Playing_Game) {
@@ -618,6 +624,10 @@ public class stefanovarentino implements Listener {
             pvpUtil.blockLocation(location);
         } else {
             knockBackUtil.knockBackWhoBlockPlaceCheck(knockBackPlayerList, player, location, e);
+        }
+
+        if (material == Material.RED_MUSHROOM) {
+            e.setCancelled(true);
         }
     }
 

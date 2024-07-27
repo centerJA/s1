@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -15,6 +16,7 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import stefano.s1.Config;
 import stefano.s1.S1;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -101,11 +103,13 @@ public class worldSettings {
                     returnPvpRules(player);
                 }
             }
-        } else if (Objects.equals(lines[0], "effects")) {
+        } else if (Objects.equals(lines[0], "クリックして") && Objects.equals(lines[1], "謎ポーションを")) {
             String StringPlayerName = player.getName();
             if (playerCanPlayEffectInPvpList.contains(StringPlayerName)) {
                 PotionEffectType effect = effectList.get((ramdomInt));
-                player.getInventory().setItem(11, ItemUtil.setCustomPotionMeta(effect, Material.SPLASH_POTION, "ポーション"));
+                player.getInventory().setItem(7, ItemUtil.setCustomPotionMeta(effect, Material.SPLASH_POTION, "謎のポーション"));
+                player.sendMessage("謎のポーションを受け取りました!");
+                player.sendMessage("60秒間は次のポーションは受け取ることができません!");
                 playerCanPlayEffectInPvpList.remove(player.getName());
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
@@ -117,6 +121,26 @@ public class worldSettings {
                     player.sendMessage("クールダウン中です!");
                     return;
             }
+        }
+
+        else if (Objects.equals(lines[0], "debugmode")) {
+            player.sendMessage(ChatColor.AQUA + "knockBackPlayerList");
+            player.sendMessage(String.valueOf(knockBackPlayerList));
+            player.sendMessage(ChatColor.AQUA + "playerCanPlayEffectInPvpList");
+            player.sendMessage(String.valueOf(playerCanPlayEffectInPvpList));
+            player.sendMessage("playerList");
+            player.sendMessage(String.valueOf(playerList));
+
+        }
+
+        else if (Objects.equals(lines[0], "この看板をクリックし") && Objects.equals(lines[1], "て自分のタイムを") && Objects.equals(lines[2], "知る")) {
+            File file = new File("./playerTime.yml");
+            YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
+            player.sendMessage("test");
+            Object clickedPlayerTime = yamlConfiguration.get(player.getName());
+            if (clickedPlayerTime == null) return;
+            player.sendMessage("test test");
+            player.sendMessage(clickedPlayerTime.toString());
         }
     }
 
@@ -182,5 +206,16 @@ public class worldSettings {
         player.sendMessage("問題が発生しました");
         player.sendMessage("Error: " + className + ".java:" + s + "****" + reason + "****" + "ErrorCode(" + s + ") ");
         player.sendMessage("/sv report でエラーコードを報告してください");
+    }
+
+    public static void runTaskRater(S1 plugin, long time, Player player, Location lobby, String s) {
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+                if (s.equals("teleport")) {
+                    player.teleport(lobby);
+                }
+            }
+        }, time);
     }
 }
