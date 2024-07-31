@@ -14,7 +14,10 @@ public class AthleticUtil {
         athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 2);
         player.sendTitle(ChatColor.AQUA + "", ChatColor.AQUA + "アスレチッククリア！", 20, 40, 20);
         AthleticTimer.stopTimer(player);
-        player.sendMessage("あなたの記録は" + player.getLevel() + "でした！");
+        player.sendMessage("あなたの記録は" + ChatColor.AQUA + player.getLevel() + ChatColor.WHITE + "秒でした！");
+        if (player.getLevel() < 100) {
+            player.sendMessage("プラグインからのメッセージ : 100秒を切るなんて、、ただ者ではないようです。");
+        }
         PlayerScore.setPlayerTime(player, player.getLevel(), plugin);
         ScoreBoardUtil.updateRanking(player);
         player.setLevel(0);

@@ -57,9 +57,13 @@ public class PlayerScore {
         if (yamlConfiguration.get(player.getName()) == null) {
             yamlConfiguration.set(player.getName(), goalTime);
             yamlConfiguration.save(logFile);
-    } else if(goalTime < (int) yamlConfiguration.get(player.getName())) {
+        } else if (goalTime < (int) yamlConfiguration.get(player.getName())) {
+            player.sendMessage("プラグインからのメッセージ : " + ChatColor.AQUA + "1位のタイムを抜かしました!!!");
             yamlConfiguration.set(player.getName(), goalTime);
             yamlConfiguration.save(logFile);
+        } else if (goalTime == (int) yamlConfiguration.get(player.getName())) {
+            player.sendMessage("プラグインからのメッセージ : " + ChatColor.AQUA + "1位のタイムと同じです!");
+            player.sendMessage("残念ですが、もう一度挑戦しましょう!");
         }
 
     }
@@ -69,7 +73,7 @@ public class PlayerScore {
         YamlConfiguration log = YamlConfiguration.loadConfiguration(file);
         String playerName = player.getName();
         if (playerName == null) {
-            player.sendMessage("nulldesu");
+            player.sendMessage("プラグインからのメッセージ : nullです");
             return;
         }
 

@@ -56,12 +56,12 @@ public class worldSettings {
             athleticClear.getWorld().playEffect(player.getLocation(), Effect.DRAGON_BREATH, 0, 1);
         } else if (Objects.equals(lines[0], "この世界の名前は")) {
             player.sendMessage("答えはなんと...." + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "!");
-        } else if (Objects.equals(lines[0], "この看板をクリックし") || Objects.equals(lines[0], "opathletic")) {
+        } else if (Objects.equals(lines[0], "この看板をクリックし") && Objects.equals(lines[1], "てタイムをリセット")) {
             if (Objects.equals(lines[1], "てタイムをリセット") || Objects.equals(lines[1], "remove")) {
                 askToUserYesOrNo(player);
             }
         } else if (Objects.equals(lines[0], "この先は暗室です")) {
-            player.sendMessage(ChatColor.AQUA + "い、今、、不気味な" + ChatColor.DARK_RED + "声" + ChatColor.AQUA + "、しなかった、？");
+            player.sendMessage("プラグインからのメッセージ : " + ChatColor.AQUA + "い、今、、不気味な" + ChatColor.DARK_RED + "声" + ChatColor.AQUA + "、しなかった、？");
             World world = Bukkit.getWorld("stefanovarentino");
             if (world == null) return;
             world.getBlockAt(Config.darkRoomLocationUnder).setType(Material.AIR);
@@ -85,7 +85,7 @@ public class worldSettings {
             Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    player.sendMessage(ChatColor.AQUA + "開放されたみたいだ...");
+                    player.sendMessage("プラグインからのメッセージ : " + ChatColor.AQUA + "開放されたみたいだ...");
                     world.getBlockAt(Config.darkRoomLocationUnder).setType(Material.AIR);
                     world.getBlockAt(Config.darkRoomLocationUp).setType(Material.AIR);
                 }
@@ -111,6 +111,7 @@ public class worldSettings {
                 player.sendMessage("謎のポーションを受け取りました!");
                 player.sendMessage("60秒間は次のポーションは受け取ることができません!");
                 playerCanPlayEffectInPvpList.remove(player.getName());
+                player.sendMessage(String.valueOf(knockBackPlayerList));
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
                     public void run() {
@@ -133,14 +134,18 @@ public class worldSettings {
 
         }
 
-        else if (Objects.equals(lines[0], "この看板をクリックし") && Objects.equals(lines[1], "て自分のタイムを") && Objects.equals(lines[2], "知る")) {
+        else if (lines[0].equals("この看板をクリックし") && lines[1].equals("て自分のタイムを") && lines[2].equals("知る")) {
             File file = new File("./playerTime.yml");
             YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
-            player.sendMessage("test");
             Object clickedPlayerTime = yamlConfiguration.get(player.getName());
             if (clickedPlayerTime == null) return;
-            player.sendMessage("test test");
-            player.sendMessage(clickedPlayerTime.toString());
+            player.sendMessage("あなたのタイムは" + ChatColor.AQUA + clickedPlayerTime + ChatColor.WHITE + "秒です!");
+            int a = Integer.parseInt(clickedPlayerTime.toString());
+            if (a < 100) {
+                player.sendMessage("プラグインからのメッセージ : 100秒を切るなんて、、ただ者ではないようです。");
+                player.getWorld().playEffect(player.getLocation(), Effect.SMOKE, 5, 5);
+                player.getWorld().playEffect(player.getLocation(), Effect.FIREWORK_SHOOT, 5, 5);
+            }
         }
     }
 
@@ -170,9 +175,9 @@ public class worldSettings {
 
     public static void askToUserYesOrNo(Player player) {
         player.sendMessage("本当に操作を続けますか?");
-        TextComponent userCommentYes = new TextComponent(ChatColor.GREEN + "[YES]");
+        TextComponent userCommentYes = new TextComponent(ChatColor.GREEN + "[YES - 操作を実行する]");
         userCommentYes.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv click perform userCommentYes"));
-        TextComponent userCommentNo = new TextComponent(ChatColor.RED + "[NO]");
+        TextComponent userCommentNo = new TextComponent(ChatColor.RED + "[NO - 操作を実行しない]");
         userCommentNo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sv click perform userCommentNo"));
         player.spigot().sendMessage(userCommentYes);
         player.spigot().sendMessage(userCommentNo);
@@ -185,6 +190,8 @@ public class worldSettings {
         player.sendMessage("マップは敵と向かい合わせになるような状態になっています");
         player.sendMessage(ChatColor.GREEN + "羊毛を使って相手の陣地まで行き、ノックバック棒で落とすと勝ちになります");
         player.sendMessage("「落ちる」の判断基準は、y座標が200以下になったときです");
+        player.sendMessage(ChatColor.GREEN + "謎のポーションをゲットしようと書いてある看板をクリックすると、ランダムな効果のポーションをゲットすることができます!");
+        player.sendMessage("謎のポーションをゲットすると、その後60秒間はゲットすることができません!");
         player.sendMessage(ChatColor.YELLOW + "外に行き過ぎると見えない壁があり、ブロックを置けません");
         player.sendMessage("すぐに相手の陣地に行き、相手を落としましょう!");
         player.sendMessage("------------------------------");
@@ -197,6 +204,8 @@ public class worldSettings {
         player.sendMessage("30秒間のクールダウンの時間の後、pvpが可能になります");
         player.sendMessage("スポーン地点の右側にはチェストがスポーンするところがあります");
         player.sendMessage(ChatColor.GREEN + "チェストにはダイヤ剣や金リンゴなどの強いアイテムが入手できます");
+        player.sendMessage(ChatColor.GREEN + "また、謎のポーションをゲットしようと書いてある看板をクリックすると、ランダムな効果のポーションをゲットすることができます!");
+        player.sendMessage("謎のポーションをゲットすると、その後60秒間はゲットすることができません!");
         player.sendMessage(ChatColor.YELLOW + "外に行き過ぎると見えない壁があり、出ることができません");
         player.sendMessage("時間制限の前に全ての敵を倒しましょう!");
         player.sendMessage("------------------------------");

@@ -466,7 +466,11 @@ public class stefanovarentino implements Listener {
                         knockBackWhichCan = "false";
                     }
                     playerCanPlayEffectInPvpList.clear();
-                    playerCanPlayEffectInPvpList.addAll(knockBackPlayerList);
+                    for (String PlayerName: knockBackPlayerList) {
+                        player.sendMessage(String.valueOf(knockBackPlayerList));
+                        playerCanPlayEffectInPvpList.add(PlayerName);
+                        player.sendMessage(String.valueOf(knockBackPlayerList));
+                    }
                     knockBackUtil.knockBackSetUp(player, taikijyo, knockBackPlayerList, visible, cannotDamageList, e, world, plugin);
                 }
 

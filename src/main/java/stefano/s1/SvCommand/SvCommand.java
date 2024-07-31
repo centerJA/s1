@@ -144,7 +144,7 @@ public class SvCommand implements CommandExecutor {
                     ComponentBuilder report = new ComponentBuilder("バグや誤字を見つけた際には" + ChatColor.AQUA + "ここをクリック" + ChatColor.WHITE + "して報告をお願いします!");
                     BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAXcoW2dUQkEzSTlHUkZCNVVWSVdXUzRXOEtXSjFSTy4u")).create();
                     player.spigot().sendMessage(reportURL);
-                    player.sendMessage("必要のない報告やスパムはしないでください!");
+                    player.sendMessage("プラグインからのメッセージ : 必要のない報告やスパムはしないでください!");
                 }
                 else if (args[0].equals("hello")) {
                     player.sendMessage("どうもこんにちは！StefanoVarentinoを制作しているInfIncです！");
@@ -177,7 +177,7 @@ public class SvCommand implements CommandExecutor {
                 else if (args[0].equals("tell")) {
                     if (args[1].equals("origin")) {
                         player.sendMessage(ChatColor.WHITE + "Stefano Varentinoの由来は" + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "です。");
-                        player.sendMessage("ハンカチの名前から来てるとは思いませんね…");
+                        player.sendMessage("プラグインからのメッセージ : ハンカチの名前から来てるとは思いませんね…");
                     }
                     else if (args[1].equals("cooperative")) {
                         player.sendMessage(ChatColor.AQUA + "ワールド作成協力者紹介");

@@ -56,9 +56,9 @@ public class Config{
                          knockBackMainText = "KNOCKBACK GAME";
 
     public static void showLatestTips(Player player) {
-        String date = "2024.07.22";
-        String main = "freePVPスペースが解放されました!";
-        String description = "ロビーの奥の方に参加できるところがあるので、いってみてください!";
+        String date = "2024.07.31";
+        String main = "pvp、knockbackにて謎のポーションをゲットできるようになりました!";
+        String description = "なんの効果のポーションがでるでしょうか、、";
         player.sendMessage(ChatColor.AQUA + "最近のお知らせ");
         player.sendMessage(date + " : " + main);
         player.sendMessage(description);
@@ -66,6 +66,7 @@ public class Config{
     }
 
     public static void showAllTips(Player player) {
+        player.sendMessage("2024.07.31 - 謎のポーションを受け取れるガジェットの公開");
         player.sendMessage("2024.07.22 - freePVPスペースの公開");
         player.sendMessage("2024.07.01 - knockBackゲームの敗北のタイミングの設定の変更");
         player.sendMessage("2024.06.15 - コマンド一覧表示の大幅変更");

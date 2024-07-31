@@ -7,6 +7,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import stefano.s1.Config;
 import stefano.s1.S1;
 
@@ -142,6 +144,7 @@ public class knockBackUtil {
 
     public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList, World world, boolean visible, ArrayList<String> cannotDamageList, S1 plugin, Location lobby) {
         player.sendTitle(ChatColor.RED + "敗北...", "", 20, 40 , 20);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 100));
         player.getInventory().clear();
         cannotDamageList.add(player.getName());
         knockBackPlayerList.remove(player.getName());
