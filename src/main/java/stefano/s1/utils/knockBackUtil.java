@@ -140,6 +140,14 @@ public class knockBackUtil {
             player.sendMessage("地形の破壊は許可されていません!");
             e.setCancelled(true);
         }
+        else if (material.equals(Material.OAK_WALL_SIGN) || material.equals(Material.OAK_SIGN)) {
+            player.sendMessage("地形の破壊は許可されていません!");
+            e.setCancelled(true);
+        }
+        else if (material.equals(Material.STONE)) {
+            player.sendMessage("地形の破壊は許可されていません!");
+            e.setCancelled(true);
+        }
     }
 
     public static void knockBackLoserAction(Player player, ArrayList<String> knockBackPlayerList, World world, boolean visible, ArrayList<String> cannotDamageList, S1 plugin, Location lobby) {
