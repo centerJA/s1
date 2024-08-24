@@ -44,7 +44,7 @@ public class stefanovarentino implements Listener {
     S1 plugin;
 
     private World world;
-    Location lobby, taikijyo, athletic1, checkpoint1, athleticClear, athleticStart, pvpStart, pvpFinal, taikijyof, freePvpSpace;
+    Location lobby, taikijyo, athletic1, checkpoint1, athleticClear, athleticStart, pvpStart, pvpFinal, taikijyof, freePvpSpace, athleticBoxStart, athleticBoxClear;
 
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
@@ -80,6 +80,8 @@ public class stefanovarentino implements Listener {
                 athleticStart = new Location(world, 55, 239, 25);
                 pvpStart = new Location(world, 25, 70, 24, -90, 0);
                 freePvpSpace = new Location(world, 6.500, 237.500, 25.500, 90, 0);
+                athleticBoxStart = new Location(world, 50, 211, 100);
+                athleticBoxClear = new Location(world, 50, 249, 98);
             }
         }, 10L);
         this.playerList = new ArrayList<>();
@@ -150,7 +152,24 @@ public class stefanovarentino implements Listener {
                     }
                     AthleticUtil.afterAthleticAction(player, plugin, athleticClear);
                 }
+
+                else if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticBoxClear.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticBoxClear.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticBoxClear.getY())) {
+                    if (player.getLevel() == 0) {
+                        player.sendMessage(ChatColor.AQUA + "あなたのタイムは現在0です!");
+                        player.sendMessage(ChatColor.AQUA + "もう一度アスレチックに挑戦してみましょう!");
+                        return;
+                    }
+                    AthleticUtil.afterAthleticAction(player, plugin, athleticBoxClear);
+                }
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
+                    if (athleticStart.getWorld() == null) {
+                        worldSettings.sendErrorMessageToPlayer(player, 147, "location null", "stefanovarentino");
+                        return;
+                    }
+                    AthleticUtil.beforeAthleticAction(player, athleticStart, athleticTimer);
+                }
+
+                else if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticBoxStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticBoxStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticBoxStart.getY())) {
                     if (athleticStart.getWorld() == null) {
                         worldSettings.sendErrorMessageToPlayer(player, 147, "location null", "stefanovarentino");
                         return;
@@ -452,6 +471,7 @@ public class stefanovarentino implements Listener {
                 }
                 Inventory athleticInventory = Bukkit.createInventory(null, 54, "アスレチック一覧");
                 athleticInventory.setItem(0, ItemUtil.setItemMeta("シンプル", Material.PAPER));
+                athleticInventory.setItem(2, ItemUtil.setItemMeta("ボックス", Material.PAPER));
                 player.openInventory(athleticInventory);
                 player.addScoreboardTag("athletic");
             }
@@ -548,9 +568,16 @@ public class stefanovarentino implements Listener {
         }
         if (userTag.contains("athletic")) {
             e.setCancelled(true);
-            if (itemStack.getType() == Material.PAPER && itemStack.getItemMeta().getDisplayName().equals("シンプル")) {
-                AthleticTimer.settingsAthleticSimple(player);
-            }
+
+            if (itemStack.getType() == Material.PAPER) {
+                if (itemStack.getItemMeta().getDisplayName().equals("シンプル")) {
+                    AthleticTimer.settingsAthleticSimple(player);
+                }
+
+                else if (itemStack.getItemMeta().getDisplayName().equals("ボックス")) {
+                    AthleticTimer.settingsAthleticBox(player);
+                }
+             }
         }
     }
 

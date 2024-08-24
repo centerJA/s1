@@ -35,7 +35,7 @@ public class AthleticTimer  {
             AthleticTimer.stopTimer(player);
         }
         playerTimes.put(player, 0);
-        timerTask = new BukkitRunnable() {
+        timerTask =     new BukkitRunnable() {
             @Override
             public void run() {
                 int elapsedSeconds = playerTimes.get(player) + 1;
@@ -72,6 +72,15 @@ public class AthleticTimer  {
 
     public static void settingsAthleticSimple(Player player) {
         player.teleport(Config.athletic1);
+        settingsAthleticCommon(player);
+    }
+
+    public static void settingsAthleticBox(Player player) {
+        player.teleport(Config.athleticBox);
+        settingsAthleticCommon(player);
+    }
+
+    public static void settingsAthleticCommon(Player player) {
         ScoreBoardUtil.updateRanking(player);
         player.getInventory().clear();
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
@@ -81,7 +90,5 @@ public class AthleticTimer  {
         player.sendMessage(ChatColor.AQUA + "チェックポイントの設定方法は、何も持っていない状態でチェックポイントと書いてある看板をクリックします。");
         player.sendMessage(ChatColor.YELLOW + "速さ重視なら、もちろんチェックポイントを設定しなくてもok！");
         player.sendMessage(ChatColor.YELLOW + "石の感圧板を踏んだらスタートするよ！");
-
     }
-
 }

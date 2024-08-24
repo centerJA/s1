@@ -32,7 +32,8 @@ public class Config{
                           ,darkRoomLocationUnder = new Location(Bukkit.getWorld("stefanovarentino"), -6, 228, 25)
                           ,darkRoomLocationUp = new Location(Bukkit.getWorld("stefanovarentino"), -6, 229, 25)
                           ,darkRoomPlayerTeleport = new Location(Bukkit.getWorld("stefanovarentino"), -5.500, 228, 25.500)
-                          ,darkRoomPlayerTeleport1 = new Location(Bukkit.getWorld("stefanovarentino"), -6.500, 228, 25.500);
+                          ,darkRoomPlayerTeleport1 = new Location(Bukkit.getWorld("stefanovarentino"), -6.500, 228, 25.500)
+                          ,athleticBox = new Location(Bukkit.getWorld("stefanovarentino"), 50.500, 211, 98.500, 0, 0);
 
 
 
@@ -56,9 +57,9 @@ public class Config{
                          knockBackMainText = "KNOCKBACK GAME";
 
     public static void showLatestTips(Player player) {
-        String date = "2024.07.31";
-        String main = "pvp、knockbackにて謎のポーションをゲットできるようになりました!";
-        String description = "なんの効果のポーションがでるでしょうか、、";
+        String date = "2024.08.24";
+        String main = "athleticにて新しいマップ box が公開されました!!";
+        String description = "上までかけあがろう!";
         player.sendMessage(ChatColor.AQUA + "最近のお知らせ");
         player.sendMessage(date + " : " + main);
         player.sendMessage(description);
@@ -66,6 +67,7 @@ public class Config{
     }
 
     public static void showAllTips(Player player) {
+        player.sendMessage("2024.08.24 - athletic - boxの公開");
         player.sendMessage("2024.07.31 - 謎のポーションを受け取れるガジェットの公開");
         player.sendMessage("2024.07.22 - freePVPスペースの公開");
         player.sendMessage("2024.07.01 - knockBackゲームの敗北のタイミングの設定の変更");
