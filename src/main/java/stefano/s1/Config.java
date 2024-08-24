@@ -72,6 +72,8 @@ public class Config{
         player.sendMessage("2024.06.15 - コマンド一覧表示の大幅変更");
         player.sendMessage("2024.05.25 - お知らせの表示機能の追加");
     }
+
+
 }
 
 
