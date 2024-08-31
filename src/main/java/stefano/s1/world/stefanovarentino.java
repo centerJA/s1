@@ -31,6 +31,7 @@ import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.*;
+import sun.util.resources.cldr.ext.LocaleNames_ii;
 
 import java.io.File;
 import java.io.IOException;
@@ -180,6 +181,7 @@ public class stefanovarentino implements Listener {
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == -6 && Math.floor(e.getClickedBlock().getLocation().getY()) == 233 && Math.floor(e.getClickedBlock().getLocation().getZ()) == 25) {
                     if (cannotDamageList.contains(player.getName())) {
                         player.sendMessage("You joined " + ChatColor.AQUA + "Free PVP space");
+                        player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("聖なる剣", Material.STONE_SWORD));
                         player.teleport(freePvpSpace);
                         player.setHealth(20);
@@ -237,7 +239,7 @@ public class stefanovarentino implements Listener {
                     if (playerList.contains(player.getName())) {
                         playerList.remove(player.getName());
                         stefano.s1.utils.Timer.stopCountDownTimer();
-                        e.getPlayer().sendMessage("pvpをキャンセルしました。");
+                        e.getPlayer().sendMessage("pvpをキャンセルしました");
                         textDisplayUtil.removePvpColumnText(world);
                         boolean visible = false;
                         textDisplayUtil.removePvpColumnText(world);
@@ -245,11 +247,11 @@ public class stefanovarentino implements Listener {
                         if (!(Timer == null)) {
                             Timer.cancel();
                         }
-                        if (playerList.size() > 0) {
+                        if (playerList.size() == 1) {
                             for (String PlayerName: playerList) {
                                 Player player2 = Bukkit.getPlayer(PlayerName);
                                 if (player2 == null) return;
-                                player2.sendMessage("pvpがキャンセルされました。");
+                                player2.sendMessage("pvpがキャンセルされました");
                             }
                         }
                     }
@@ -260,7 +262,7 @@ public class stefanovarentino implements Listener {
                         textDisplayUtil.removeKnockBackColumnText(world);
                         boolean visible = false;
                         textDisplayUtil.showKnockBackIsStopping(Config.textLocationKnockBackColumn, Config.knockBackIsStopping, visible);
-                        e.getPlayer().sendMessage("knockbackをキャンセルしました。");
+                        player.sendMessage("knockbackをキャンセルしました");
                         e.getPlayer().teleport(lobby);
                         e.getPlayer().getInventory().clear();
                         e.getPlayer().getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
@@ -274,6 +276,7 @@ public class stefanovarentino implements Listener {
                         for (String PlayerName: knockBackPlayerList) {
                             Player player2 = Bukkit.getPlayer(PlayerName);
                             if (player2 == null) return;
+                            player2.sendMessage("knockbackがキャンセルされました");
                         }
                     }
                     player.teleport(this.lobby);
@@ -381,6 +384,7 @@ public class stefanovarentino implements Listener {
         Player player = e.getEntity();
         World world = player.getWorld();
         if (this.world != world) return;
+        e.getDrops().clear();
         if (Playing_Game) {
             playerList.remove(player.getName());
             if (playerList.size() == 1) {
@@ -392,18 +396,22 @@ public class stefanovarentino implements Listener {
                     pvpUtil.pvpWinnerAction(player2, cannotDamageList, playerCanPlayEffectInPvpList, plugin, lobby);
                 }
             }
-        } {
-            if (knockBackPlayerList.contains(player.getName())) {
-                boolean visible = false;
-                playerCanPlayEffectInPvpList.clear();
-                knockBackUtil.knockBackLoserAction(player, knockBackPlayerList, world, visible, cannotDamageList, plugin, lobby);
-                knockBackWhichCan = "true";
-                knockBackPlayerList.remove(player.getName());
-                knockBackUtil.knockBackBlockCrear();
-                worldSettings.runTaskRater(plugin, 30L, player, lobby, "teleport");
-                player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
-            }
         }
+        else if (knockBackPlayerList.contains(player.getName())) {
+            boolean visible = false;
+            playerCanPlayEffectInPvpList.clear();
+            knockBackUtil.knockBackLoserAction(player, knockBackPlayerList, world, visible, cannotDamageList, plugin, lobby);
+            knockBackWhichCan = "true";
+            knockBackPlayerList.remove(player.getName());
+            knockBackUtil.knockBackBlockCrear();
+            worldSettings.runTaskRater(plugin, 30L, player, lobby, "teleport");
+            player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
+        }
+
+        else if (player.getLevel() > 5) {
+            AthleticTimer.stopTimer(player);
+        }
+
     }
 
 
@@ -516,7 +524,6 @@ public class stefanovarentino implements Listener {
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     if (!playerList.contains(player.getName())) {
                         playerList.add(player.getName());
-                        player.sendMessage(String.valueOf(playerList));
                     }
                     player.sendMessage(ChatColor.YELLOW + playerList.toString());
                     pvpUtil.blockLocationAllRemove();
@@ -626,7 +633,7 @@ public class stefanovarentino implements Listener {
                     playerList.add(player.getName());
                 }
             }
-            if (commandContents.equalsIgnoreCase("creative")) {
+            else if (commandContents.equalsIgnoreCase("creative")) {
                 if (!e.getPlayer().getName().equals("markcs11")) {
                     Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                         @Override
@@ -635,6 +642,36 @@ public class stefanovarentino implements Listener {
                             e.getPlayer().sendMessage("権限がありません!");
                         }
                     }, 27L);
+                }
+            }
+
+            else if (commandContents.equalsIgnoreCase("lobby")) {
+                if (knockBackPlayerList.contains(player.getName())) {
+                    knockBackPlayerList.remove(player.getName());
+                    knockBackPlayerCounter = knockBackPlayerCounter - 1;
+                    player.sendMessage("knockbackをキャンセルしました");
+                    if (knockBackPlayerList.size() == 1) {
+                        for (String PlayerName: knockBackPlayerList) {
+                            Player knockBackPlayer = Bukkit.getPlayer(PlayerName);
+                            if (knockBackPlayer == null) return;
+                            knockBackPlayer.sendMessage("knockbackがキャンセルされました");
+                            knockBackTimerUtil.stopBedwarsCountDownTimer();
+                        }
+                    }
+                }
+
+                else if (playerList.contains(player.getName())) {
+                    playerList.remove(player.getName());
+                    player.sendMessage("pvpをキャンセルしました");
+                    if (playerList.size() == 1) {
+                        for (String PlayerName: playerList) {
+                            Player pvpPlayer = Bukkit.getPlayer(PlayerName);
+                            if (pvpPlayer == null) return;
+                            pvpPlayer.sendMessage("pvpがキャンセルされました");
+                            LimitTimer.stopTimer();
+                            stefano.s1.utils.Timer.stopCountDownTimer();
+                        }
+                    }
                 }
             }
         }

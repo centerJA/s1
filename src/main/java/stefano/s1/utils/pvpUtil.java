@@ -90,6 +90,7 @@ public class pvpUtil {
         cannotDamageList.add(player.getName());
         playerCanPlayEffectInPvpList.clear();
         worldSettings.runTaskRater(plugin, 30L, player, lobby, "teleport");
+        player.getInventory().clear();
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
     }
 

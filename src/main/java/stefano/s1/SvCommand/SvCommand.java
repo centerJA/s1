@@ -96,6 +96,7 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage("/sv tell origin       名前の由来を表示します");
                         player.sendMessage("/sv tell cooperative       このワールドの共同製作者を表示します");
                         player.sendMessage("/sv tell homepageurl       ホームページのURLを表示します");
+                        player.sendMessage("/sv ping       自分のpingを表示する");
                         player.spigot().sendMessage(back);
                         player.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                     }
@@ -134,10 +135,6 @@ public class SvCommand implements CommandExecutor {
                         player.sendMessage("OP権限が必要です");
                         return false;
                     }
-                }
-
-                else if (args[0].equals("debugmode")) {
-                    Location debug = new Location(world, 79, 244, 43);
                 }
 
                 else if (args[0].equals("report")) {
@@ -197,6 +194,24 @@ public class SvCommand implements CommandExecutor {
                 else if (args[0].equals("title")) {
                     player.sendTitle("SV", "This is Stefano Varentino", 5, 50, 35);
                 }
+                else if (args[0].equals("ping")) {
+                    int ping = player.getPing();
+                    if (ping <= 50) {
+                        player.sendMessage(ping + "ms - " + ChatColor.BLUE + "超安定で快適");
+                    }
+                    else if (ping > 50 && ping <= 100) {
+                        player.sendMessage(ping + "ms - " + ChatColor.AQUA + "安定");
+                    }
+                    else if (ping > 100 && ping <= 150) {
+                        player.sendMessage(ping + "ms - " + ChatColor.GREEN + "普通");
+                    }
+                    else if (ping > 150 && ping <= 200) {
+                        player.sendMessage(ping + "ms - " + ChatColor.YELLOW + "不安定");
+                    }
+                    else if (ping > 200) {
+                        player.sendMessage(ping + "ms - " + ChatColor.RED + "超不安定で不快");
+                    }
+                }
                 else if (args[0].equals("history")) {
                     Config.showAllTips(player);
                 }
@@ -210,10 +225,13 @@ public class SvCommand implements CommandExecutor {
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
                         Config.playerList.remove(player.getName());
+
+
                     }
                     else if (args[1].equals("athletic")) {
                         Inventory athleticInventory = Bukkit.createInventory(null, 54, "アスレチック一覧");
                         athleticInventory.setItem(0, ItemUtil.setItemMeta("シンプル", Material.PAPER));
+                        athleticInventory.setItem(2, ItemUtil.setItemMeta("ボックス", Material.PAPER));
                         player.openInventory(athleticInventory);
                         player.addScoreboardTag("athletic");
                     }

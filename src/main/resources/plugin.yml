@@ -4,21 +4,21 @@ main: stefano.s1.S1
 api-version: 1.16
 commands:
   sv:
-    description: type(sendMessage)command list
+    description: type(sendMessage) command list
   sv effects:
-    description: type(playEffects)dragon breath
+    description: type(playEffects) dragon breath
   sv tell origin:
-    description: tyoe(sendMessage)tell origin
+    description: type(sendMessage) tell origin
   sv tell cooperative:
-    description: type(sendMessage)cooperative player
+    description: type(sendMessage) cooperative player
   sv tell homePageURL:
-    description: type(sendMessage)SV homePage URL
+    description: type(sendMessage) SV homePage URL
   sv tp lobby:
-    description: type(teleport)lobby
+    description: type(teleport) lobby
   sv tp athletic:
-    description: type(teleport)athletic
+    description: type(teleport) athletic
   sv tp svinfo:
-    description: type(teleport)sv information center
+    description: type(teleport) sv information center
   sv tp pvpMap:
     description: type(teleport) restriction(!Playing_Game)pvpMap
   sv help:
@@ -33,3 +33,5 @@ commands:
     description: type(sendMessage) world introduce
   sv notice:
     description: type(sendMessage) latest notice
+  sv ping:
+    description: type(sendMessage) tell ping
