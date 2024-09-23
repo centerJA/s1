@@ -31,7 +31,7 @@ public class knockBackTimerUtil extends BukkitRunnable {
         nowknockBackTime--;
     }
 
-    public static void stopBedwarsCountDownTimer() {
+    public static void stopknockBackCountDownTimer() {
         nowknockBackTime = -100;
     }
 }

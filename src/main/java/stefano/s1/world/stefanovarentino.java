@@ -5,7 +5,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -23,15 +22,10 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import stefano.s1.Config;
 import stefano.s1.S1;
 import stefano.s1.utils.*;
-import sun.util.resources.cldr.ext.LocaleNames_ii;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +44,8 @@ public class stefanovarentino implements Listener {
     public  ArrayList<String> playerList, deathPlayerList, athleticPlayerList;
 
     public static ArrayList<String> knockBackPlayerList, cannotDamageList, playerPvpStatusIsPlayingList, playerCanPlayEffectInPvpList;
+
+    public static ArrayList<String> stefanoVarentinoAllPlayerList;
 
     String knockBackWhichCan = "true";
 
@@ -98,6 +94,7 @@ public class stefanovarentino implements Listener {
         playerPvpStatusIsPlayingList = new ArrayList<>();
         this.playerCanPlayEffectInPvpList = new ArrayList<>();
         this.random = new Random();
+        stefanoVarentinoAllPlayerList = new ArrayList<>();
     }
 
 
@@ -108,7 +105,13 @@ public class stefanovarentino implements Listener {
     public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e) {
         Player player = e.getPlayer();
         World world = player.getWorld();
-        if (this.world != world) return;
+        if (this.world != world) {
+            if (stefanoVarentinoAllPlayerList.contains(player.getName())) {
+                stefanoVarentinoAllPlayerList.remove(player.getName());
+            }
+            return;
+
+        }
 
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
@@ -116,7 +119,9 @@ public class stefanovarentino implements Listener {
                 player.setGameMode(GameMode.ADVENTURE);
             }
         }, 20L);
+        stefanoVarentinoAllPlayerList.add(player.getName());
         worldSettings.firstSettings(player, lobby, cannotDamageList);
+        player.sendMessage(String.valueOf(stefanoVarentinoAllPlayerList));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -269,7 +274,7 @@ public class stefanovarentino implements Listener {
 
                     if (knockBackPlayerList.contains(player.getName())) {
                         knockBackPlayerList.remove(player.getName());
-                        knockBackTimerUtil.stopBedwarsCountDownTimer();
+                        knockBackTimerUtil.stopknockBackCountDownTimer();
                         textDisplayUtil.removeKnockBackColumnText(world);
                         boolean visible = false;
                         textDisplayUtil.showKnockBackIsStopping(Config.textLocationKnockBackColumn, Config.knockBackIsStopping, visible);
@@ -299,6 +304,13 @@ public class stefanovarentino implements Listener {
                     player.getInventory().clear();
                     player.getInventory().addItem(ItemUtil.setItemMeta("ロビーの中心に戻る", Material.RED_MUSHROOM));
                     playerList.remove(player.getName());
+
+
+                    if (bedwarsUtil.bedwars1sPlayerList.contains(player.getName())) {
+                        bedwarsUtil.bedwars1sPlayerList.remove(player.getName());
+                        player.sendMessage("bedwarsをキャンセルしました");
+                        bedwarsUtil.bedwars1sPlayerListSizeChecker();
+                    }
                 }
 
 
@@ -490,7 +502,7 @@ public class stefanovarentino implements Listener {
                 if (this.checkpointList.getString(String.valueOf(player.getUniqueId())) != null) {
                     checkpointList.set(String.valueOf(player.getUniqueId()), null);
                 }
-                Inventory athleticInventory = Bukkit.createInventory(null, 54, "アスレチック一覧");
+                Inventory athleticInventory = Bukkit.createInventory(null, 9, "アスレチック一覧");
                 athleticInventory.setItem(0, ItemUtil.setItemMeta("シンプル", Material.PAPER));
                 athleticInventory.setItem(2, ItemUtil.setItemMeta("ボックス", Material.PAPER));
                 player.openInventory(athleticInventory);
@@ -596,8 +608,7 @@ public class stefanovarentino implements Listener {
                 }
             }
 
-
-
+            //bedwars--------------------------------------------------------------------------
 
             if (itemStack.getType() == Material.RED_BED && itemStack.getItemMeta().getDisplayName().equals("bedwars")) {
                 if (!worldSettings.earlyAccessChecker("bedwarsAccess")) {
@@ -605,7 +616,12 @@ public class stefanovarentino implements Listener {
                     player.sendMessage("できるまで少々お待ちを...");
                     return;
                 }
-                bedwarsUtil.firstBedwarsAction(player);
+                Inventory bedwarsInventory = Bukkit.createInventory(null, 9, "アスレチック一覧");
+                bedwarsInventory.setItem(0, ItemUtil.setItemMeta("1人 (1 x8)", Material.BLUE_BED));
+                bedwarsInventory.setItem(2, ItemUtil.setItemMeta("4人 (4 x2)", Material.GREEN_BED));
+                player.openInventory(bedwarsInventory);
+                player.addScoreboardTag("bedwars");
+                bedwarsUtil.firstBedwars1sAction(player, plugin, taikijyo);
             }
         }
         if (userTag.contains("athletic")) {
@@ -700,7 +716,7 @@ public class stefanovarentino implements Listener {
                             Player knockBackPlayer = Bukkit.getPlayer(PlayerName);
                             if (knockBackPlayer == null) return;
                             knockBackPlayer.sendMessage("knockbackがキャンセルされました");
-                            knockBackTimerUtil.stopBedwarsCountDownTimer();
+                            knockBackTimerUtil.stopknockBackCountDownTimer();
                         }
                     }
                 }
