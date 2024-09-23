@@ -26,12 +26,16 @@ public class ScoreBoardUtil {
         Scoreboard scoreboard = createScoreboard();
         Map<String, Integer> TimesMap = new HashMap<>();
         if (scoreboard == null) {
-            player.sendMessage("スコアボードが見つかりませんでした。At ScoreBoardUtil.java:29");
+            player.sendMessage("問題が発生しました");
+            player.sendMessage("現在アクセスできません");
+            player.sendMessage("Cannot get scoreboard");
         }
         if (scoreboard == null) return;
         Objective objective = scoreboard.getObjective("1st player");
         if (yamlConfiguration == null) {
-            player.sendMessage("yamlConfigurationが見つかりませんでした。At ScoreBoardUtil.java:31");
+            player.sendMessage("問題が発生しました");
+            player.sendMessage("現在アクセスできません");
+            player.sendMessage("Cannot get yaml");
             return;
         }
 
@@ -63,11 +67,15 @@ public class ScoreBoardUtil {
         Scoreboard scoreboard = createScoreboard();
         String ObjectiveName = "1st player";
         if (scoreboard == null) {
-            player.sendMessage("スコアボードが見つかりませんでした。At ScoreBoardUtil.java:62");
+            player.sendMessage("問題が発生しました");
+            player.sendMessage("現在アクセスできません");
+            player.sendMessage("Cannot get scoreboard");
         }
         Objective objective = scoreboard.getObjective(ObjectiveName);
         if (objective == null) {
-            player.sendMessage(ChatColor.DARK_RED + "オブジェクトが見つかりませんでした。At ScoreBoardUtil.java:66");
+            player.sendMessage("問題が発生しました");
+            player.sendMessage("現在アクセスできません");
+            player.sendMessage("Cannot get objective");
             return;
         }
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -77,7 +85,9 @@ public class ScoreBoardUtil {
     public static void removeScoreboard(Player player) {
         ScoreboardManager manager = player.getServer().getScoreboardManager();
         if (manager == null) {
-            player.sendMessage(ChatColor.DARK_RED + "マネージャーが見つかりませんでした。At ScoreBoardUtil.java:74");
+            player.sendMessage("問題が発生しました");
+            player.sendMessage("現在アクセスできません");
+            player.sendMessage("Cannot get manager");
         }
         Scoreboard scoreboard = manager.getMainScoreboard();
         player.setScoreboard(scoreboard);

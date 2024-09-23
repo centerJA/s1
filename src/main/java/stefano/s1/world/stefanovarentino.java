@@ -148,7 +148,9 @@ public class stefanovarentino implements Listener {
                         return;
                     }
                     if (athleticClear.getWorld() == null) {
-                        worldSettings.sendErrorMessageToPlayer(player, 140, "location null", "stefanovarentino");
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("現在アクセスできません");
+                        player.sendMessage("Cannot get world");
                         return;
                     }
                     AthleticUtil.afterAthleticAction(player, plugin, athleticClear);
@@ -164,7 +166,9 @@ public class stefanovarentino implements Listener {
                 }
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticStart.getY())) {
                     if (athleticStart.getWorld() == null) {
-                        worldSettings.sendErrorMessageToPlayer(player, 147, "location null", "stefanovarentino");
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("現在アクセスできません");
+                        player.sendMessage("Cannot get world");;
                         return;
                     }
                     AthleticUtil.beforeAthleticAction(player, athleticStart, athleticTimer);
@@ -172,7 +176,9 @@ public class stefanovarentino implements Listener {
 
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == Math.floor(athleticBoxStart.getX()) && Math.floor(e.getClickedBlock().getLocation().getY()) == Math.floor(athleticBoxStart.getY()) && Math.floor(e.getClickedBlock().getY()) == Math.floor(athleticBoxStart.getY())) {
                     if (athleticStart.getWorld() == null) {
-                        worldSettings.sendErrorMessageToPlayer(player, 147, "location null", "stefanovarentino");
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("現在アクセスできません");
+                        player.sendMessage("Cannot get world");
                         return;
                     }
                     AthleticUtil.beforeAthleticAction(player, athleticStart, athleticTimer);
@@ -180,6 +186,11 @@ public class stefanovarentino implements Listener {
 
                 else if (Math.floor(e.getClickedBlock().getLocation().getX()) == -6 && Math.floor(e.getClickedBlock().getLocation().getY()) == 233 && Math.floor(e.getClickedBlock().getLocation().getZ()) == 25) {
                     if (cannotDamageList.contains(player.getName())) {
+                       if (!worldSettings.earlyAccessChecker("teleportToFreePvpSpaceAccess")) {
+                            player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                            player.sendMessage("できるまで少々お待ちを...");
+                            return;
+                        }
                         player.sendMessage("You joined " + ChatColor.AQUA + "Free PVP space");
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("聖なる剣", Material.STONE_SWORD));
@@ -294,7 +305,9 @@ public class stefanovarentino implements Listener {
 
                 if (itemStack.getType() == Material.APPLE) {
                     if (itemStack.getItemMeta() == null) {
-                        worldSettings.sendErrorMessageToPlayer(player, 268, "itemStack itemMeta null", "stefanovarentino");
+                        player.sendMessage("問題が発生しました");
+                        player.sendMessage("現在アクセスできません");
+                        player.sendMessage("Cannot get itemStack");
                         return;
                     }
                     if (itemStack.getItemMeta().getDisplayName().equals("最初に戻る(athletic1)")) {
@@ -485,6 +498,11 @@ public class stefanovarentino implements Listener {
             }
             //knockBack--------------------------------------------------------------------------------------------
             else if (itemStack.getType() == Material.STICK && itemStack.getItemMeta().getDisplayName().equals("knockback")) {
+                if (!worldSettings.earlyAccessChecker("knockBackAccess")) {
+                    player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                    player.sendMessage("できるまで少々お待ちを...");
+                    return;
+                }
                 if (knockBackWhichCan.equals("false")) {
                     player.sendMessage("2人しかできないので今プレイしている人が終わるまでお待ちください!");
                     e.setCancelled(true);
@@ -506,6 +524,11 @@ public class stefanovarentino implements Listener {
             }
             //pvp------------------------------------------------------------------------------------------
             else if (itemStack.getType() == Material.EMERALD && itemStack.getItemMeta().getDisplayName().equals("pvp")) {
+                if (!worldSettings.earlyAccessChecker("pvpAccessF")) {
+                    player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                    player.sendMessage("できるまで少々お待ちを...");
+                    return;
+                }
                 player.setHealth(20);
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
@@ -572,16 +595,38 @@ public class stefanovarentino implements Listener {
                     }
                 }
             }
+
+
+
+
+            if (itemStack.getType() == Material.RED_BED && itemStack.getItemMeta().getDisplayName().equals("bedwars")) {
+                if (!worldSettings.earlyAccessChecker("bedwarsAccess")) {
+                    player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                    player.sendMessage("できるまで少々お待ちを...");
+                    return;
+                }
+                bedwarsUtil.firstBedwarsAction(player);
+            }
         }
         if (userTag.contains("athletic")) {
             e.setCancelled(true);
 
             if (itemStack.getType() == Material.PAPER) {
                 if (itemStack.getItemMeta().getDisplayName().equals("シンプル")) {
+                    if (!worldSettings.earlyAccessChecker("athleticSimpleAccess")) {
+                        player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                        player.sendMessage("できるまで少々お待ちを...");
+                        return;
+                    }
                     AthleticTimer.settingsAthleticSimple(player);
                 }
 
                 else if (itemStack.getItemMeta().getDisplayName().equals("ボックス")) {
+                    if (!worldSettings.earlyAccessChecker("athleticBoxAccess")) {
+                        player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                        player.sendMessage("できるまで少々お待ちを...");
+                        return;
+                    }
                     AthleticTimer.settingsAthleticBox(player);
                 }
              }
@@ -707,7 +752,9 @@ public class stefanovarentino implements Listener {
         Material material = e.getBlock().getType();
         if (this.world != world) return;
         if (material == null) {
-            worldSettings.sendErrorMessageToPlayer(player, 617, "material null", "stefanovarentino");
+            player.sendMessage("問題が発生しました");
+            player.sendMessage("現在アクセスできません");
+            player.sendMessage("Cannot get material");
             return;
         }
         if (knockBackWhichCan.equals("false")) {

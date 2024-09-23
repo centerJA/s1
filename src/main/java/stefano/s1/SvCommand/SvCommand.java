@@ -138,10 +138,15 @@ public class SvCommand implements CommandExecutor {
                 }
 
                 else if (args[0].equals("report")) {
+                    if (!worldSettings.earlyAccessChecker("sendReportInSvCommandAccess")) {
+                        player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                        player.sendMessage("できるまで少々お待ちを...");
+                        return false;
+                    }
                     ComponentBuilder report = new ComponentBuilder("バグや誤字を見つけた際には" + ChatColor.AQUA + "ここをクリック" + ChatColor.WHITE + "して報告をお願いします!");
                     BaseComponent[] reportURL = report.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAXcoW2dUQkEzSTlHUkZCNVVWSVdXUzRXOEtXSjFSTy4u")).create();
                     player.spigot().sendMessage(reportURL);
-                    player.sendMessage("プラグインからのメッセージ : 必要のない報告やスパムはしないでください!");
+                    player.sendMessage("必要のない報告やスパムはしないでください!");
                 }
                 else if (args[0].equals("hello")) {
                     player.sendMessage("どうもこんにちは！StefanoVarentinoを制作しているInfIncです！");
@@ -174,7 +179,7 @@ public class SvCommand implements CommandExecutor {
                 else if (args[0].equals("tell")) {
                     if (args[1].equals("origin")) {
                         player.sendMessage(ChatColor.WHITE + "Stefano Varentinoの由来は" + ChatColor.AQUA + "ハンカチ" + ChatColor.WHITE + "です。");
-                        player.sendMessage("プラグインからのメッセージ : ハンカチの名前から来てるとは思いませんね…");
+                        player.sendMessage("ハンカチの名前から来てるとは思いませんね…");
                     }
                     else if (args[1].equals("cooperative")) {
                         player.sendMessage(ChatColor.AQUA + "ワールド作成協力者紹介");
@@ -195,6 +200,11 @@ public class SvCommand implements CommandExecutor {
                     player.sendTitle("SV", "This is Stefano Varentino", 5, 50, 35);
                 }
                 else if (args[0].equals("ping")) {
+                    if (!worldSettings.earlyAccessChecker("teleportToBlackRoomAccess")) {
+                        player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                        player.sendMessage("できるまで少々お待ちを...");
+                        return false;
+                    }
                     int ping = player.getPing();
                     if (ping <= 50) {
                         player.sendMessage(ping + "ms - " + ChatColor.BLUE + "超安定で快適");
@@ -236,12 +246,22 @@ public class SvCommand implements CommandExecutor {
                         player.addScoreboardTag("athletic");
                     }
                     else if (args[1].equals("pvpMap") || args[1].equals("pvpmap")) {
+                        if (!worldSettings.earlyAccessChecker("teleportTopvpMapAccess")) {
+                            player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                            player.sendMessage("できるまで少々お待ちを...");
+                            return false;
+                        }
                         player.sendMessage("pvpMapにテレポートしました");
                         player.teleport(Config.pvpStart);
                         player.getInventory().clear();
                         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
                     }
                     else if (args[1].equals("svinfo")) {
+                        if (!worldSettings.earlyAccessChecker("teleportToSvinfoAccess")) {
+                            player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                            player.sendMessage("できるまで少々お待ちを...");
+                            return false;
+                        }
                         player.sendMessage("svInfoにテレポートしました");
                         player.teleport(Config.svinfo);
                         player.getInventory().clear();

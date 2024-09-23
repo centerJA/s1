@@ -1,6 +1,5 @@
 package stefano.s1.utils;
 
-import jdk.tools.jlink.plugin.Plugin;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -12,16 +11,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.io.BukkitObjectInputStream;
 import stefano.s1.Config;
 import stefano.s1.S1;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
 
 public class worldSettings {
 
@@ -61,6 +57,11 @@ public class worldSettings {
                 askToUserYesOrNo(player);
             }
         } else if (Objects.equals(lines[0], "この先は暗室です")) {
+            if (!earlyAccessChecker("teleportToBlackRoomAccess")) {
+                player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                player.sendMessage("できるまで少々お待ちを...");
+                return;
+            }
             player.sendMessage("プラグインからのメッセージ : " + ChatColor.AQUA + "い、今、、不気味な" + ChatColor.DARK_RED + "声" + ChatColor.AQUA + "、しなかった、？");
             World world = Bukkit.getWorld("stefanovarentino");
             if (world == null) return;
@@ -85,7 +86,7 @@ public class worldSettings {
             Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    player.sendMessage("プラグインからのメッセージ : " + ChatColor.AQUA + "開放されたみたいだ...");
+                    player.sendMessage(ChatColor.AQUA + "開放されたみたいだ...");
                     world.getBlockAt(Config.darkRoomLocationUnder).setType(Material.AIR);
                     world.getBlockAt(Config.darkRoomLocationUp).setType(Material.AIR);
                 }
@@ -125,6 +126,11 @@ public class worldSettings {
         }
 
         else if (Objects.equals(lines[0], "debugmode")) {
+            if (!worldSettings.earlyAccessChecker("sendDebugInSvCommandAccess")) {
+                player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                player.sendMessage("できるまで少々お待ちを...");
+                return;
+            }
             player.sendMessage(ChatColor.AQUA + "knockBackPlayerList");
             player.sendMessage(String.valueOf(knockBackPlayerList));
             player.sendMessage(ChatColor.AQUA + "playerCanPlayEffectInPvpList");
@@ -133,6 +139,7 @@ public class worldSettings {
             player.sendMessage(String.valueOf(playerList));
 
         }
+
 
         else if (lines[0].equals("この看板をクリックし") && lines[1].equals("て自分のタイムを") && lines[2].equals("知る")) {
             File file = new File("./playerTime.yml");
@@ -161,7 +168,7 @@ public class worldSettings {
         if (knockBackStick == null) return;
         knockBackStick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
         gameListInventory.setItem(1, knockBackStick);
-        gameListInventory.setItem(2, ItemUtil.setItemMeta("アスレチック", Material.REDSTONE_BLOCK));
+        gameListInventory.setItem(2, ItemUtil.setItemMeta("athletic", Material.REDSTONE_BLOCK));
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
@@ -171,6 +178,8 @@ public class worldSettings {
             }
         }, 3L);
         e.setCancelled(true);
+        ItemStack bedwars = ItemUtil.setItemMeta("bedwars", Material.RED_BED);
+        gameListInventory.setItem(3, bedwars);
     }
 
     public static void askToUserYesOrNo(Player player) {
@@ -211,11 +220,6 @@ public class worldSettings {
         player.sendMessage("------------------------------");
     }
 
-    public static void sendErrorMessageToPlayer(Player player, int s, String reason, String className) {
-        player.sendMessage("問題が発生しました");
-        player.sendMessage("Error: " + className + ".java:" + s + "****" + reason + "****" + "ErrorCode(" + s + ") ");
-        player.sendMessage("/sv report でエラーコードを報告してください");
-    }
 
     public static void runTaskRater(S1 plugin, long time, Player player, Location lobby, String s) {
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
@@ -227,4 +231,71 @@ public class worldSettings {
             }
         }, time);
     }
+
+    public static boolean earlyAccessChecker(String string) {
+        //falseがアクセス不可、trueがアクセス可能
+        boolean pvpAccess = true;
+        boolean knockBackAccess = true;
+        boolean athleticBoxAccess = true;
+        boolean athleticSimpleAccess = true;
+        boolean teleportToSvinfoAccess = true;
+        boolean teleportToPvpMapAccess = false; //ほかの人がpvpをしている際にまぎれこんでしまうため
+        boolean sendPingInSvCommandAccess = true;
+        boolean sendReportInSvCommandAccess = false; //report機能が完全に完成していないため、スパム対策不十分ため
+        boolean teleportToFreePvpSpaceAccess = true;
+        boolean teleportToBlackRoomAccess = true;
+        boolean bedwarsAccess = false; //開発段階のため
+        boolean sendDebugInSvCommandAccess = false; //開発段階のため
+
+        if (string.equals("pvpAccess")) {
+            return pvpAccess; //
+        }
+        else if (string.equals("knockBackAccess")) {
+            return knockBackAccess; //
+        }
+        else if (string.equals("athleticBoxAccess")) {
+            return athleticBoxAccess; //
+        }
+        else if (string.equals("athleticSimpleAccess")) {
+            return athleticSimpleAccess; //
+        }
+        else if (string.equals("teleportToSvinfoAccess")) {
+            return teleportToSvinfoAccess; //
+        }
+        else if (string.equals("teleportToPvpMapAccess")) {
+            return teleportToPvpMapAccess; //
+        }
+        else if (string.equals("sendPingInSvCommandAccess")) {
+            return sendPingInSvCommandAccess; //
+        }
+        else if (string.equals("sendReportInSvCommandAccess")) {
+            return sendReportInSvCommandAccess; //
+        }
+        else if (string.equals("teleportToFreePvpSpaceAccess")) {
+            return teleportToFreePvpSpaceAccess; //
+        }
+        else if (string.equals("teleportToBlackRoomAccess")) {
+            return teleportToBlackRoomAccess; //
+        }
+        else if (string.equals("bedwarsAccess")) {
+            return bedwarsAccess; //
+        }
+        else {
+            return false;
+
+        }
+    }
+
+
+
+
+    /*
+     /sv tp pvpMapを使用するとpvpをしている最中にも参加出来でしまう問題を解決する
+     report機能を完成させる
+     report機能をスパムなどに悪用されないようにする
+     bedwarsを完成させる
+     文字の色を役割ごとに変更する
+     discordのチャンネルに参加して人の名前や、ほかの人がプレイしているゲームなどを知らせる
+     debugモードを完成させる
+     */
 }

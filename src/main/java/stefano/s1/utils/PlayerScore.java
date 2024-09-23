@@ -73,7 +73,9 @@ public class PlayerScore {
         YamlConfiguration log = YamlConfiguration.loadConfiguration(file);
         String playerName = player.getName();
         if (playerName == null) {
-            player.sendMessage("プラグインからのメッセージ : nullです");
+            player.sendMessage("問題が発生しました");
+            player.sendMessage("現在アクセスできません");
+            player.sendMessage("Cannot get playerName");
             return;
         }
 
