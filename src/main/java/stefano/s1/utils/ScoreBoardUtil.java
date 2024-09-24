@@ -71,6 +71,7 @@ public class ScoreBoardUtil {
             player.sendMessage("現在アクセスできません");
             player.sendMessage("Cannot get scoreboard");
         }
+        if (scoreboard == null) return;
         Objective objective = scoreboard.getObjective(ObjectiveName);
         if (objective == null) {
             player.sendMessage("問題が発生しました");
@@ -88,6 +89,7 @@ public class ScoreBoardUtil {
             player.sendMessage("問題が発生しました");
             player.sendMessage("現在アクセスできません");
             player.sendMessage("Cannot get manager");
+            return;
         }
         Scoreboard scoreboard = manager.getMainScoreboard();
         player.setScoreboard(scoreboard);

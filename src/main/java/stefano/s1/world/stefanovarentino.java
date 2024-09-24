@@ -495,7 +495,7 @@ public class stefanovarentino implements Listener {
                 e.setCancelled(true);
             }
             //athletic--------------------------------------------------------------------------------------------
-            if (itemStack.getType() == Material.REDSTONE_BLOCK && itemStack.getItemMeta().getDisplayName().equals("アスレチック")) {
+            if (itemStack.getType() == Material.REDSTONE_BLOCK && itemStack.getItemMeta().getDisplayName().equals("athletic")) {
                 player.setHealth(20);
                 String name = player.getDisplayName();
                 athleticPlayerList.add(name);
@@ -536,7 +536,7 @@ public class stefanovarentino implements Listener {
             }
             //pvp------------------------------------------------------------------------------------------
             else if (itemStack.getType() == Material.EMERALD && itemStack.getItemMeta().getDisplayName().equals("pvp")) {
-                if (!worldSettings.earlyAccessChecker("pvpAccessF")) {
+                if (!worldSettings.earlyAccessChecker("pvpAccess")) {
                     player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
                     player.sendMessage("できるまで少々お待ちを...");
                     return;
@@ -775,6 +775,12 @@ public class stefanovarentino implements Listener {
         }
         if (knockBackWhichCan.equals("false")) {
             knockBackUtil.knockBackBlockMaterialCheck(material, player, e);
+        } else {
+            if (player.getName().equals("InfInc") || player.getName().equals("markcs11")) {
+                player.sendMessage("blockが破壊されました");
+            } else {
+                e.setCancelled(true);
+            }
         }
     }
     @EventHandler

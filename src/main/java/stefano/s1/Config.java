@@ -57,9 +57,9 @@ public class Config{
                          knockBackMainText = "KNOCKBACK GAME";
 
     public static void showLatestTips(Player player) {
-        String date = "2024.08.24";
-        String main = "athleticにて新しいマップ box が公開されました!!";
-        String description = "上までかけあがろう!";
+        String date = "2024.09.22";
+        String main = "bedwarsの開発を開始しました!!";
+        String description = "できるまで待っててほしい!!!!!";
         player.sendMessage(ChatColor.AQUA + "最近のお知らせ");
         player.sendMessage(date + " : " + main);
         player.sendMessage(description);
@@ -67,7 +67,8 @@ public class Config{
     }
 
     public static void showAllTips(Player player) {
-        player.sendMessage("2024.08.24 - athletic - boxの公開");
+        player.sendMessage("2024.09.22 - bedwarsの開発開始");
+        player.sendMessage("2024.08.24 - athleticのマップ box の公開");
         player.sendMessage("2024.07.31 - 謎のポーションを受け取れるガジェットの公開");
         player.sendMessage("2024.07.22 - freePVPスペースの公開");
         player.sendMessage("2024.07.01 - knockBackゲームの敗北のタイミングの設定の変更");
