@@ -1,10 +1,12 @@
 package stefano.s1.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -40,4 +42,23 @@ public class ItemUtil {
             return answer;
         }
     }
+
+
+    public static ItemStack setLeatherColor(Material material, Color color) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : Bukkit.getItemFactory().getItemMeta(item.getType());
+        LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) meta;
+        if (leatherArmorMeta == null) return null;
+//        leatherArmorMeta.setColor(Color.fromBGR(10,50,100));
+
+        leatherArmorMeta.setColor(color);
+        item.setItemMeta(leatherArmorMeta);
+        return item;
+    }
+
+    public static ItemStack setColorWool(Material material) {
+        ItemStack item = new ItemStack(material, 1);
+        return item;
+    }
+
 }

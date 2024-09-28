@@ -306,11 +306,7 @@ public class stefanovarentino implements Listener {
                     playerList.remove(player.getName());
 
 
-                    if (bedwarsUtil.bedwars1sPlayerList.contains(player.getName())) {
-                        bedwarsUtil.bedwars1sPlayerList.remove(player.getName());
-                        player.sendMessage("bedwarsをキャンセルしました");
-                        bedwarsUtil.bedwars1sPlayerListSizeChecker();
-                    }
+                    bedwarsUtil.removePlayerName(player);
                 }
 
 
@@ -513,6 +509,7 @@ public class stefanovarentino implements Listener {
                 if (!worldSettings.earlyAccessChecker("knockBackAccess")) {
                     player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
                     player.sendMessage("できるまで少々お待ちを...");
+                    e.setCancelled(true);
                     return;
                 }
                 if (knockBackWhichCan.equals("false")) {
@@ -539,6 +536,7 @@ public class stefanovarentino implements Listener {
                 if (!worldSettings.earlyAccessChecker("pvpAccess")) {
                     player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
                     player.sendMessage("できるまで少々お待ちを...");
+                    e.setCancelled(true);
                     return;
                 }
                 player.setHealth(20);
@@ -610,18 +608,23 @@ public class stefanovarentino implements Listener {
 
             //bedwars--------------------------------------------------------------------------
 
-            if (itemStack.getType() == Material.RED_BED && itemStack.getItemMeta().getDisplayName().equals("bedwars")) {
-                if (!worldSettings.earlyAccessChecker("bedwarsAccess")) {
-                    player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
-                    player.sendMessage("できるまで少々お待ちを...");
-                    return;
+            else if (itemStack.getType() == Material.RED_BED && itemStack.getItemMeta().getDisplayName().equals("bedwars")) {
+
+                if (!player.getName().equals("InfInc") || !player.getName().equals("markcs11")) {
+                    if (!worldSettings.earlyAccessChecker("bedwarsAccess")) {
+                        player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
+                        player.sendMessage("できるまで少々お待ちを...");
+                        e.setCancelled(true);
+                        return;
+                    } //自分なのに入れない
                 }
                 Inventory bedwarsInventory = Bukkit.createInventory(null, 9, "アスレチック一覧");
-                bedwarsInventory.setItem(0, ItemUtil.setItemMeta("1人 (1 x8)", Material.BLUE_BED));
-                bedwarsInventory.setItem(2, ItemUtil.setItemMeta("4人 (4 x2)", Material.GREEN_BED));
+                bedwarsInventory.setItem(0, ItemUtil.setItemMeta("solo(1 x8) マップ:1", Material.BLUE_BED));
+                bedwarsInventory.setItem(2, ItemUtil.setItemMeta("solo(1 x8) マップ:2", Material.YELLOW_BED));
+                bedwarsInventory.setItem(4, ItemUtil.setItemMeta("4v4(4 x2) マップ:1", Material.GREEN_BED));
+                bedwarsInventory.setItem(6, ItemUtil.setItemMeta("4v4(4 x2) マップ:2", Material.PURPLE_BED));
                 player.openInventory(bedwarsInventory);
                 player.addScoreboardTag("bedwars");
-                bedwarsUtil.firstBedwars1sAction(player, plugin, taikijyo);
             }
         }
         if (userTag.contains("athletic")) {
@@ -632,6 +635,7 @@ public class stefanovarentino implements Listener {
                     if (!worldSettings.earlyAccessChecker("athleticSimpleAccess")) {
                         player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
                         player.sendMessage("できるまで少々お待ちを...");
+                        e.setCancelled(true);
                         return;
                     }
                     AthleticTimer.settingsAthleticSimple(player);
@@ -641,12 +645,33 @@ public class stefanovarentino implements Listener {
                     if (!worldSettings.earlyAccessChecker("athleticBoxAccess")) {
                         player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
                         player.sendMessage("できるまで少々お待ちを...");
+                        e.setCancelled(true);
                         return;
                     }
                     AthleticTimer.settingsAthleticBox(player);
                 }
              }
         }
+
+        else if (itemStack.getType() == Material.BLUE_BED && itemStack.getItemMeta().getDisplayName().equals("solo(1 x8) マップ:1")) {
+            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.BLUE_BED);
+            e.setCancelled(true);
+        }
+        else if (itemStack.getType() == Material.YELLOW_BED && itemStack.getItemMeta().getDisplayName().equals("solo(1 x8) マップ:2")) {
+            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.YELLOW_BED);
+            e.setCancelled(true);
+        }
+        else if (itemStack.getType() == Material.GREEN_BED && itemStack.getItemMeta().getDisplayName().equals("4v4(4 x2) マップ:1")) {
+            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.GREEN_BED);
+            e.setCancelled(true);
+        }
+        else if (itemStack.getType() == Material.PURPLE_BED && itemStack.getItemMeta().getDisplayName().equals("4v4(4 x2) マップ:2")) {
+            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.PURPLE_BED);
+            e.setCancelled(true);
+
+        }
+
+
     }
 
     @EventHandler
