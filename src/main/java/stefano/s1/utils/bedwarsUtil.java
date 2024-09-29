@@ -53,7 +53,7 @@ public class bedwarsUtil {
 
     public static ItemStack colorBlockBeforeGame = null;
 
-    public static void firstBedwarsAction(Player player, S1 plugin, Location taikijyo, Material material) {
+    public static void firstBedwarsAction(Player player, S1 plugin, Location taikijyo, Material material, ArrayList<String> cannotDamageList) {
         player.sendMessage("Hello, World!");
 
         if (material.equals(Material.BLUE_BED)) {
@@ -62,7 +62,7 @@ public class bedwarsUtil {
                 player.sendMessage("後ほどまた試してみてください");
                 return;
             }
-            programOfBedwars1sInaa(plugin, player, taikijyo);
+            programOfBedwars1sInaa(plugin, player, taikijyo, cannotDamageList);
         }
 
         else if (material.equals(Material.YELLOW_BED)) {
@@ -99,7 +99,7 @@ public class bedwarsUtil {
     }
 
 
-    public static void programOfBedwars1sInaa(S1 plugin, Player player, Location taikijyo) {
+    public static void programOfBedwars1sInaa(S1 plugin, Player player, Location taikijyo, ArrayList<String> cannotDamageList) {
         if (bedwars1sPlayerListInaa.size() == 8) {
             player.sendMessage("現在誰かがbedwarsをプレイ中です!!");
             player.sendMessage("後ほどまた試してみてください");
@@ -108,11 +108,11 @@ public class bedwarsUtil {
         player.teleport(taikijyo);
         player.getInventory().clear();
         player.getInventory().setItem(0, ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
+        bedwars1sPlayerListInaa.add(player.getName());
+        player.sendMessage(ChatColor.YELLOW + String.valueOf(bedwars1sPlayerListInaa));
         if (bedwars1sPlayerListInaa.size() >= 2) {
-
-            bedwars1sPlayerListInaa.add(player.getName());
             new bedwarsTimerUtil(bedwars1sPlayerListInaa).runTaskTimer(plugin, 0L, 20L);
-            bedwars1sStartSession(bedwars1sPlayerListInaa);
+            bedwars1sStartSession(bedwars1sPlayerListInaa, plugin, cannotDamageList);
             if (bedwars1sPlayerListInaa.size() == 8) {
                 canPlayBedwars1sStatusInaa = false;
             }
@@ -128,7 +128,7 @@ public class bedwarsUtil {
 
 
 
-    public static void removePlayerName(Player player) {
+    public static void removePlayerName(Player player, ArrayList<String> cannotDamageList) {
         String playerName = player.getName();
         if (bedwars1sPlayerListInaa.contains(playerName)) {
             bedwars1sPlayerListInaa.remove(playerName);
@@ -144,6 +144,10 @@ public class bedwarsUtil {
 
         else if (bedwars4vPlayerListInbb.contains(playerName)) {
             bedwars4vPlayerListInbb.remove(playerName);
+        }
+
+        if (!cannotDamageList.contains(playerName)) {
+            cannotDamageList.add(playerName);
         }
     }
 
@@ -169,7 +173,16 @@ public class bedwarsUtil {
 
 
 
-    public static void bedwars1sStartSession(ArrayList<String> bedwars1sPlayerList) {
+    public static void bedwars1sStartSession(ArrayList<String> bedwars1sPlayerList, S1 plugin, ArrayList<String> cannotDamageList) {
+
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+                for (String PlayerName: bedwars1sPlayerList) {
+                    cannotDamageList.remove(PlayerName);
+                }
+            }
+        }, 410L);
 
         int playerListSize = bedwars1sPlayerList.size();
         List<String[]> colorList = new ArrayList<>();

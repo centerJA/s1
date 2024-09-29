@@ -306,7 +306,7 @@ public class stefanovarentino implements Listener {
                     playerList.remove(player.getName());
 
 
-                    bedwarsUtil.removePlayerName(player);
+                    bedwarsUtil.removePlayerName(player, cannotDamageList);
                 }
 
 
@@ -609,8 +609,8 @@ public class stefanovarentino implements Listener {
             //bedwars--------------------------------------------------------------------------
 
             else if (itemStack.getType() == Material.RED_BED && itemStack.getItemMeta().getDisplayName().equals("bedwars")) {
-
-                if (!player.getName().equals("InfInc") || !player.getName().equals("markcs11")) {
+                if (!player.getName().equals("InfInc")) {
+                    player.sendMessage("okay");
                     if (!worldSettings.earlyAccessChecker("bedwarsAccess")) {
                         player.sendMessage("現在開発中、又は改装中のためアクセス不可です!!");
                         player.sendMessage("できるまで少々お待ちを...");
@@ -625,6 +625,7 @@ public class stefanovarentino implements Listener {
                 bedwarsInventory.setItem(6, ItemUtil.setItemMeta("4v4(4 x2) マップ:2", Material.PURPLE_BED));
                 player.openInventory(bedwarsInventory);
                 player.addScoreboardTag("bedwars");
+                player.sendMessage("aaaaaaaa");
             }
         }
         if (userTag.contains("athletic")) {
@@ -654,19 +655,19 @@ public class stefanovarentino implements Listener {
         }
 
         else if (itemStack.getType() == Material.BLUE_BED && itemStack.getItemMeta().getDisplayName().equals("solo(1 x8) マップ:1")) {
-            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.BLUE_BED);
+            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.BLUE_BED, cannotDamageList);
             e.setCancelled(true);
         }
         else if (itemStack.getType() == Material.YELLOW_BED && itemStack.getItemMeta().getDisplayName().equals("solo(1 x8) マップ:2")) {
-            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.YELLOW_BED);
+            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.YELLOW_BED, cannotDamageList);
             e.setCancelled(true);
         }
         else if (itemStack.getType() == Material.GREEN_BED && itemStack.getItemMeta().getDisplayName().equals("4v4(4 x2) マップ:1")) {
-            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.GREEN_BED);
+            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.GREEN_BED, cannotDamageList);
             e.setCancelled(true);
         }
         else if (itemStack.getType() == Material.PURPLE_BED && itemStack.getItemMeta().getDisplayName().equals("4v4(4 x2) マップ:2")) {
-            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.PURPLE_BED);
+            bedwarsUtil.firstBedwarsAction(player, plugin, taikijyo, Material.PURPLE_BED, cannotDamageList);
             e.setCancelled(true);
 
         }
