@@ -119,7 +119,7 @@ public class stefanovarentino implements Listener {
                 player.setGameMode(GameMode.ADVENTURE);
             }
         }, 20L);
-        stefanoVarentinoAllPlayerList.add(player.getName());
+//        stefanoVarentinoAllPlayerList.add(player.getName());
         worldSettings.firstSettings(player, lobby, cannotDamageList);
         player.sendMessage(String.valueOf(stefanoVarentinoAllPlayerList));
     }
@@ -137,7 +137,7 @@ public class stefanovarentino implements Listener {
                 String[] lines = sign.getLines();
                 int ramdomInt = random.nextInt(5);
                 pvpUtil.makeEffectsList(Config.effectList);
-                worldSettings.signClick(player, lines, checkpointList, athleticClear, plugin, knockBackPlayerList, playerList, playerCanPlayEffectInPvpList, ramdomInt, Config.effectList);
+                worldSettings.signClick(player, lines, checkpointList, athleticClear, plugin, knockBackPlayerList, playerList, playerCanPlayEffectInPvpList, ramdomInt, Config.effectList, stefanoVarentinoAllPlayerList);
 
             } else if (e.getClickedBlock().getType().equals(Material.ANVIL)) {
                 player.setHealth(20);

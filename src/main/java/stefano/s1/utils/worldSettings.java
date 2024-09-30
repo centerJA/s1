@@ -38,7 +38,7 @@ public class worldSettings {
         player.getInventory().clear();
         player.getInventory().addItem(ItemUtil.setItemMeta("ロビーに戻る", Material.RED_MUSHROOM));
     }
-    public static void signClick(Player player, String[] lines, FileConfiguration checkpointList, Location athleticClear, S1 plugin, ArrayList<String> knockBackPlayerList, ArrayList<String> playerList, ArrayList<String> playerCanPlayEffectInPvpList, int ramdomInt, ArrayList<PotionEffectType> effectList) throws IOException {
+    public static void signClick(Player player, String[] lines, FileConfiguration checkpointList, Location athleticClear, S1 plugin, ArrayList<String> knockBackPlayerList, ArrayList<String> playerList, ArrayList<String> playerCanPlayEffectInPvpList, int ramdomInt, ArrayList<PotionEffectType> effectList, ArrayList<String> stefanoVarentinoAllPlayerList) throws IOException {
         if (Objects.equals(lines[0], "tyekkupoinnto") || Objects.equals(lines[0], "チェックポイント")) {
             player.sendMessage(ChatColor.DARK_GREEN + "無事にチェックポイントを設定しました!");
             checkpointList.set(String.valueOf(player.getUniqueId()), player.getLocation());
@@ -138,6 +138,10 @@ public class worldSettings {
             player.sendMessage("playerList");
             player.sendMessage(String.valueOf(playerList));
 
+        }
+
+        else if (Objects.equals(lines[0], "allplclear")) {
+            stefanoVarentinoAllPlayerList.clear();
         }
 
 
